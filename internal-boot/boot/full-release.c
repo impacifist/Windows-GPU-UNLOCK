@@ -63,7 +63,7 @@ static EFI_STATUS ReadConfigFull(UINT32 *cfg) {
   s=io->GetLocation(io,&seg,&bus,&dev,&fun);
   if(s!=EFI_SUCCESS || seg || bus!=1 || dev || fun)return EFI_UNSUPPORTED;
   s=io->Pci.Read(io,EfiPciIoWidthUint32,0,64,cfg);
-  if(s==EFI_SUCCESS && (cfg[0]!=0x220410de || cfg[11]!=0x145410de || cfg[2]!=0x030000a1 || cfg[4]!=0xf5000000 || (cfg[1]&4)))s=EFI_UNSUPPORTED;
+  if(s==EFI_SUCCESS && (cfg[0]!=GU_BOARD_ID || cfg[11]!=GU_BOARD_SUBSYSTEM || cfg[2]!=0x030000a1 || cfg[4]!=(UINT32)GU_BAR0_BASE || (cfg[1]&4)))s=EFI_UNSUPPORTED;
   return s;
 }
 static EFI_STATUS CheckBar(BOOLEAN first) {
@@ -73,8 +73,8 @@ static EFI_STATUS CheckBar(BOOLEAN first) {
   if(s==EFI_SUCCESS) {
     EFI_ACPI_ADDRESS_SPACE_DESCRIPTOR *d=raw;
     if(!d || d->Desc!=ACPI_ADDRESS_SPACE_DESCRIPTOR || d->Len!=sizeof(*d)-3 || d->ResType || d->AddrSpaceGranularity!=32 ||
-       d->AddrRangeMin!=0xf5000000 || d->AddrLen!=0x1000000 || d->AddrTranslationOffset ||
-       (d->AddrRangeMax!=0xf5ffffff && d->AddrRangeMax!=0x00ffffff) || ((UINT8 *)(d+1))[0]!=ACPI_END_TAG_DESCRIPTOR)s=EFI_UNSUPPORTED;
+       d->AddrRangeMin!=GU_BAR0_BASE || d->AddrLen!=0x1000000 || d->AddrTranslationOffset ||
+       (d->AddrRangeMax!=GU_BAR0_END && d->AddrRangeMax!=0x00ffffff) || ((UINT8 *)(d+1))[0]!=ACPI_END_TAG_DESCRIPTOR)s=EFI_UNSUPPORTED;
     if(s==EFI_SUCCESS) {
       UINT8 sum=0;for(UINTN i=0;i<sizeof(*d)+2;i++)sum=(UINT8)(sum+((UINT8 *)d)[i]);
       if(((UINT8 *)d)[sizeof(*d)+1] && sum)s=EFI_CRC_ERROR;
@@ -92,9 +92,9 @@ static EFI_STATUS Cold(UINT32 *values) {
     EFI_STATUS s=io->Mem.Read(io,EfiPciIoWidthUint32,0,ColdOffsets[i],1,&values[i]);
     if(s!=EFI_SUCCESS)return s;
   }
-  if(values[0]!=0xb72000a1 || values[1]!=0x8b8f || values[2]!=0x3ff || values[3]!=0x10 || values[4] ||
+  if(values[0]!=GU_CHIP_ID || values[1]!=0x8b8f || values[2]!=0x3ff || values[3]!=0x10 || values[4] ||
      values[5]!=0xffffff8f || values[6]==0xffffffff || values[6]==0x88888888 || (values[6]&0xffff0000)==0xbadf0000 ||
-     values[7]>15 || values[8]!=0x6000)return EFI_NOT_READY;
+     values[7]>15 || values[8]!=GU_DEVICE_MEMORY_SIZE)return EFI_NOT_READY;
   return EFI_SUCCESS;
 }
 static EFI_STATUS Prom(VOID) {
@@ -103,16 +103,16 @@ static EFI_STATUS Prom(VOID) {
   if(s!=EFI_SUCCESS || !data)return EFI_OUT_OF_RESOURCES;
   if(!io->Mem.Read)s=EFI_UNSUPPORTED;
   for(UINTN at=0;s==EFI_SUCCESS && at<1048576;at+=65536)s=io->Mem.Read(io,EfiPciIoWidthUint8,0,0x300000+at,65536,data+at);
-  if(s==EFI_SUCCESS && !GuHashMatches(data,1048576,"8ea297373e9e5d3600ff41ad9fae88f2d14c98c017d100669f7333981da673b4"))s=EFI_CRC_ERROR;
+  if(s==EFI_SUCCESS && !GuHashMatches(data,1048576,GU_PROM_SHA256))s=EFI_CRC_ERROR;
   if(bs->FreePool(data)!=EFI_SUCCESS)s=EFI_DEVICE_ERROR;
   return s;
 }
 static EFI_STATUS Profile(EFI_HANDLE agent,BOOLEAN mouse) {
   EFI_BOOT_SERVICES *bs=Full.Table->BootServices;EFI_DRIVER_BINDING_PROTOCOL *d=NULL;EFI_LOADED_IMAGE_PROTOCOL *im=NULL;
   EFI_STATUS s=Interface(bs,agent,&BindingGuid,(VOID **)&d);
-  if(s!=EFI_SUCCESS || !d || !d->Stop || d->DriverBindingHandle!=agent || d->ImageHandle!=agent || d->Version!=(mouse?1:0x60008))return EFI_UNSUPPORTED;
+  if(s!=EFI_SUCCESS || !d || !d->Stop || d->DriverBindingHandle!=agent || d->ImageHandle!=agent || d->Version!=(mouse?1:GU_NVGOP_VERSION))return EFI_UNSUPPORTED;
   s=Interface(bs,d->ImageHandle,&ImageGuid,(VOID **)&im);
-  UINTN size=mouse?0x9000:0x2b6e0,offset=mouse?0x157c:0x698;
+  UINTN size=mouse?GU_EDID_IMAGE_SIZE:GU_NVGOP_IMAGE_SIZE,offset=mouse?GU_EDID_STOP:GU_NVGOP_STOP;
   if(s!=EFI_SUCCESS || !im || !im->ImageBase || im->ImageSize!=size || im->ImageCodeType!=(mouse?EfiRuntimeServicesCode:EfiBootServicesCode) ||
      (UINTN)d->Stop!=(UINTN)im->ImageBase+offset || !im->FilePath)return EFI_UNSUPPORTED;
   UINTN n=0;
@@ -127,12 +127,49 @@ static EFI_STATUS Profile(EFI_HANDLE agent,BOOLEAN mouse) {
   }
   /* Both original PE relocation tables contain zero relocations in .text.
    * Therefore hash the loaded code range directly; never hash relocated data. */
-  UINTN rva=mouse?0x1000:0x280,bytes=mouse?0x38f8:0x23d6a;
-  const char *hash=mouse?"53ef1716fa7a8cf866c986e85dd8412185a9fd58dd89e90202f97cb0997c96a6":"6aad26e6909c9791dd0caba92d6658e9dfd8009aee80676002bf24ce2ad24d08";
+  UINTN rva=mouse?0x1000:0x280,bytes=mouse?GU_EDID_TEXT_BYTES:GU_NVGOP_TEXT_BYTES;
+  const char *hash=mouse?GU_EDID_TEXT_SHA256:GU_NVGOP_TEXT_SHA256;
   return GuHashMatches((UINT8 *)im->ImageBase+rva,bytes,hash)?EFI_SUCCESS:EFI_CRC_ERROR;
 }
 static EFI_STATUS FullConsumers(const GRAPH *g) {
-#ifdef GU_HEADLESS_RESEARCH
+#if defined(GU_HEADLESS_RESEARCH) && GU_CONSOLE_AGGREGATE
+  UINTN owners=0,children=0,edid=0,combo=0;
+  EFI_BOOT_SERVICES *bs=Full.Table->BootServices;
+  for(UINTN i=0;i<g->Count;i++) {
+    const EDGE *e=&g->Edges[i];if(e->Handle!=PreparedPlan.RtxPci)continue;
+    if(e->Count!=1 || !e->Agent)return EFI_ACCESS_DENIED;
+    if(GuGuidEqual(&e->Protocol,&PathGuid) && e->Attributes==EFI_OPEN_PROTOCOL_BY_CHILD_CONTROLLER){children++;Full.Children[0]=e->Controller;}
+    else if(e->Attributes==EFI_OPEN_PROTOCOL_BY_DRIVER && e->Controller==PreparedPlan.RtxPci) {
+      if(e->Agent!=PreparedPlan.NvAgent)return EFI_ACCESS_DENIED;
+      if(GuGuidEqual(&e->Protocol,&PciGuid)){Full.NvAgent=e->Agent;owners++;}
+    } else return EFI_ACCESS_DENIED;
+  }
+  if(owners!=1 || children!=1 || Full.NvAgent==Full.Image || Full.NvAgent!=PreparedPlan.NvAgent ||
+     Full.Children[0]!=PreparedPlan.Rtx)return EFI_ACCESS_DENIED;
+  {
+    EFI_DEVICE_PATH_PROTOCOL *path=NULL;VOID *edid=NULL;
+    EFI_STATUS s=Interface(bs,Full.Children[0],&PathGuid,(VOID **)&path);
+    if(s!=EFI_SUCCESS || !DisplayRoute(path,RtxPath))return EFI_UNSUPPORTED;
+    UINT32 cfg[16];EFI_HANDLE pci=NULL;EFI_PCI_IO_PROTOCOL *io=NULL;
+    s=PciFor(bs,path,1,GU_BOARD_ID,GU_BOARD_SUBSYSTEM,&pci,&io,cfg);
+    if(s!=EFI_SUCCESS || pci!=PreparedPlan.RtxPci || io!=PreparedPlan.RtxIo || !Bytes(cfg,PreparedPlan.RtxConfig,sizeof(cfg)))return EFI_NOT_READY;
+    for(UINTN j=0;j<36;j++)Full.ChildPaths[0][j]=((UINT8 *)path)[j];
+    if(Interface(bs,Full.Children[0],&EdidGuid,&edid)!=EFI_SUCCESS)return EFI_UNSUPPORTED;
+  }
+  for(UINTN i=0;i<g->Count;i++) {
+    const EDGE *e=&g->Edges[i];if(e->Handle!=Full.Children[0])continue;
+    if(e->Count!=1 || !e->Agent)return EFI_ACCESS_DENIED;
+    if(GuGuidEqual(&e->Protocol,&EdidGuid) && e->Attributes==EFI_OPEN_PROTOCOL_BY_DRIVER && e->Controller==Full.Children[0] && e->Agent==PreparedPlan.EdidAgent){Full.EdidAgent=e->Agent;edid++;}
+    else if(GuGuidEqual(&e->Protocol,&GopGuid) && e->Attributes==EFI_OPEN_PROTOCOL_BY_DRIVER && e->Controller==Full.Children[0] && e->Agent==PreparedPlan.ComboAgent)combo++;
+    else if(GuGuidEqual(&e->Protocol,&GopGuid) && e->Attributes==EFI_OPEN_PROTOCOL_BY_CHILD_CONTROLLER && e->Controller==PreparedPlan.Agg && e->Agent==PreparedPlan.ComboAgent)combo++;
+    else return EFI_ACCESS_DENIED;
+  }
+  if(edid!=1 || combo!=2 || Full.EdidAgent!=PreparedPlan.EdidAgent || Full.EdidAgent==Full.NvAgent || Full.EdidAgent==Full.Image)return EFI_ACCESS_DENIED;
+  /* The aggregate topology has exactly one display child; record it for the
+   * shared stage-3 EDID detach loop (v0.3.1 runtime child discovery). */
+  Full.ChildCount=1;
+  return EFI_SUCCESS;
+#elif defined(GU_HEADLESS_RESEARCH)
   UINTN owners=0,children=0;
   EFI_BOOT_SERVICES *bs=Full.Table->BootServices;
   for(UINTN i=0;i<g->Count;i++) {
@@ -160,7 +197,7 @@ static EFI_STATUS FullConsumers(const GRAPH *g) {
     EFI_STATUS s=Interface(bs,Full.Children[c],&PathGuid,(VOID **)&path);
     if(s!=EFI_SUCCESS || !DisplayRoute(path,RtxPath))return EFI_UNSUPPORTED;
     UINT32 cfg[16];EFI_HANDLE pci=NULL;EFI_PCI_IO_PROTOCOL *io=NULL;
-    s=PciFor(bs,path,1,0x220410de,0x145410de,&pci,&io,cfg);
+    s=PciFor(bs,path,1,GU_BOARD_ID,GU_BOARD_SUBSYSTEM,&pci,&io,cfg);
     if(s!=EFI_SUCCESS || pci!=PreparedPlan.RtxPci || io!=PreparedPlan.RtxIo || !Bytes(cfg,PreparedPlan.RtxConfig,sizeof(cfg)))return EFI_NOT_READY;
     for(UINTN j=0;j<36;j++)Full.ChildPaths[c][j]=((UINT8 *)path)[j];
     for(UINTN prior=0;prior<c;prior++)if(Bytes(Full.ChildPaths[prior],path,36))return EFI_UNSUPPORTED;
@@ -210,7 +247,37 @@ static EFI_STATUS FullConsumers(const GRAPH *g) {
   return amdEdid==1?EFI_SUCCESS:EFI_ACCESS_DENIED;
 #endif
 }
+#if defined(GU_HEADLESS_RESEARCH) && GU_CONSOLE_AGGREGATE
+/* 0 keep exact, 1 may disappear (tolerated orphan cascade), 2 must be gone. */
+static UINTN EdgeClass(const EDGE *e,UINTN stage) {
+  if(stage>=3 && e->Handle==PreparedPlan.Rtx && e->Agent==PreparedPlan.EdidAgent)return 2;
+  if(e->Agent==PreparedPlan.EdidAgent)return 1;
+  if(e->Handle==PreparedPlan.Agg)return 1;
+  if(stage>=4 && ((e->Handle==PreparedPlan.RtxPci && (e->Agent==PreparedPlan.NvAgent || e->Agent==PreparedPlan.NvChildAgent)) ||
+     e->Handle==PreparedPlan.Rtx || (e->Agent==PreparedPlan.ComboAgent && e->Handle!=PreparedPlan.RtxPci)))return 2;
+  return 0;
+}
+#endif
 static BOOLEAN FullExpected(const GRAPH *g,UINTN stage) {
+#if defined(GU_HEADLESS_RESEARCH) && GU_CONSOLE_AGGREGATE
+  UINTN wanted=0,own=0;
+  for(UINTN i=0;i<g->Count;i++) {
+    const EDGE *e=&g->Edges[i];BOOLEAN matched=FALSE;
+    if(Full.Owned && e->Handle==PreparedPlan.RtxPci && e->Agent==Full.Image && !e->Controller &&
+       e->Attributes==EFI_OPEN_PROTOCOL_EXCLUSIVE && e->Count==1 && GuGuidEqual(&e->Protocol,&PciGuid)){own++;continue;}
+    for(UINTN j=0;j<PreparedGraph->Count;j++)if(SameEdge(e,&PreparedGraph->Edges[j])){matched=TRUE;break;}
+    if(!matched || EdgeClass(e,stage)==2)return FALSE;
+  }
+  for(UINTN i=0;i<PreparedGraph->Count;i++) {
+    const EDGE *e=&PreparedGraph->Edges[i];UINTN cls=EdgeClass(e,stage);UINTN found=0;
+    if(cls==2)continue;
+    for(UINTN j=0;j<g->Count;j++)if(SameEdge(e,&g->Edges[j]))found++;
+    if(cls==0 && found!=1)return FALSE;
+    if(cls==1 && found>1)return FALSE;
+    wanted+=found;
+  }
+  return g->Count==wanted+own;
+#else
   UINTN wanted=0,own=0;
   for(UINTN i=0;i<g->Count;i++) {
     const EDGE *e=&g->Edges[i];
@@ -234,6 +301,7 @@ static BOOLEAN FullExpected(const GRAPH *g,UINTN stage) {
     if(found!=1)return FALSE;
   }
   return g->Count==wanted+own;
+#endif
 }
 static EFI_STATUS AmdOnly(VOID) {
 #ifdef GU_HEADLESS_RESEARCH
@@ -245,11 +313,27 @@ static EFI_STATUS AmdOnly(VOID) {
   EFI_HANDLE *handles=NULL;UINTN count=0;
   EFI_STATUS s=bs->LocateHandleBuffer(ByProtocol,&GopGuid,NULL,&count,&handles);
   if(s==EFI_NOT_FOUND && !count && !handles)return EFI_SUCCESS;
+#if GU_CONSOLE_AGGREGATE
+  /* The aggregate console GOP may already be gone; zero or one pathless
+     zero-FB GOP is the only tolerated survivor. */
+  if(s!=EFI_SUCCESS || !handles || count>1){if(handles)bs->FreePool(handles);return EFI_UNSUPPORTED;}
+  EFI_GRAPHICS_OUTPUT_PROTOCOL *gop=NULL;EFI_DEVICE_PATH_PROTOCOL *path=NULL;
+  s=Interface(bs,handles[0],&GopGuid,(VOID **)&gop);
+  if(s==EFI_SUCCESS && (!gop->Mode || gop->Mode->FrameBufferBase || gop->Mode->FrameBufferSize))s=EFI_UNSUPPORTED;
+  if(s==EFI_SUCCESS){EFI_STATUS ps=Interface(bs,handles[0],&PathGuid,(VOID **)&path);if(!((ps==EFI_UNSUPPORTED || ps==EFI_NOT_FOUND) && !path))s=EFI_UNSUPPORTED;}
+  if(s==EFI_SUCCESS) {
+    EFI_HANDLE agent=NULL;
+    if(handles[0]!=p->Agg){s=EFI_UNSUPPORTED;}
+    else{s=AggGopAgent(bs,handles[0],&agent);}
+    if(s==EFI_SUCCESS && agent && agent!=p->GfxAgent)s=EFI_UNSUPPORTED;
+  }
+#else
   if(s!=EFI_SUCCESS || !handles || count!=1){if(handles)bs->FreePool(handles);return EFI_UNSUPPORTED;}
   EFI_GRAPHICS_OUTPUT_PROTOCOL *gop=NULL;EFI_DEVICE_PATH_PROTOCOL *path=NULL;
   s=Interface(bs,handles[0],&GopGuid,(VOID **)&gop);
   if(s==EFI_SUCCESS && (handles[0]!=p->Console || !gop->Mode || gop->Mode->FrameBufferBase || gop->Mode->FrameBufferSize))s=EFI_UNSUPPORTED;
   if(s==EFI_SUCCESS){EFI_STATUS ps=Interface(bs,handles[0],&PathGuid,(VOID **)&path);if(!((ps==EFI_UNSUPPORTED || ps==EFI_NOT_FOUND) && !path))s=EFI_UNSUPPORTED;}
+#endif
   if(bs->FreePool(handles)!=EFI_SUCCESS)s=EFI_DEVICE_ERROR;
   return s;
 #else
@@ -287,7 +371,7 @@ static EFI_STATUS AmdOnly(VOID) {
 }
 static EFI_STATUS CapturePermit(VOID) {
   GU_CAPS caps;EFI_STATUS s=ReadConfigFull(Full.Config);
-  if(s==EFI_SUCCESS && (!GuCheckConfig(Full.Config,0,1,0,0,&caps) || Full.Config[4]!=0xf5000000 || Full.Config[2]!=0x030000a1))s=EFI_UNSUPPORTED;
+  if(s==EFI_SUCCESS && (!GuCheckConfig(Full.Config,0,1,0,0,&caps) || Full.Config[4]!=(UINT32)GU_BAR0_BASE || Full.Config[2]!=0x030000a1))s=EFI_UNSUPPORTED;
   s=Note("capture-pci-config256",s);if(s!=EFI_SUCCESS)return s;
   s=LogConfig("pre-nv-pci",Full.Config);if(s!=EFI_SUCCESS)return s;
   s=Note("capture-bar0",CheckBar(TRUE));if(s!=EFI_SUCCESS)return s;
@@ -390,7 +474,7 @@ EFI_STATUS GuReleaseGop(EFI_SYSTEM_TABLE *t,EFI_HANDLE image,GU_PREPARE_LOG log,
     if(s==EFI_SUCCESS)s=Snapshot(bs,&g);
     if(s==EFI_SUCCESS && !FullExpected(&g,stage-1))s=EFI_NOT_READY;
 #ifdef GU_HEADLESS_RESEARCH
-    for(UINTN c=0;s==EFI_SUCCESS && c<2;c++) {
+    for(UINTN c=0;s==EFI_SUCCESS && c<Full.ChildCount;c++) {
       EFI_DEVICE_PATH_PROTOCOL *path=NULL;
       s=Interface(bs,Full.Children[c],&PathGuid,(VOID **)&path);
       if(s==EFI_SUCCESS && !PathMatches(path,Full.ChildPaths[c]))s=EFI_NOT_READY;

@@ -248,7 +248,7 @@ static EFI_STATUS BarCheck(VOID) {
       r->AddrRangeMin!=GU_BAR0_BASE || r->AddrLen!=0x1000000 || r->AddrTranslationOffset ||
       /* UEFI describes an inclusive end; pinned EDK2 PciBusDxe instead returns
          PciBar.Alignment. Both representations describe this exact 16 MiB BAR. */
-      (r->AddrRangeMax!=0xf5ffffff && r->AddrRangeMax!=0x00ffffff) ||
+      (r->AddrRangeMax!=GU_BAR0_END && r->AddrRangeMax!=0x00ffffff) ||
       r->AddrSpaceGranularity!=32 || ((UINT8 *)(r+1))[0]!=ACPI_END_TAG_DESCRIPTOR)status=EFI_UNSUPPORTED;
     else {
       UINT8 *raw=(UINT8 *)r,sum=0;
@@ -275,7 +275,7 @@ static EFI_STATUS ColdCheck(VOID) {
 #ifdef GU_ENTRY_LATCHED
   UINT32 entry0=0,entry1=0;BOOLEAN latched=GuGetEntrySelectors(&entry0,&entry1);
   GuLog("cold expected: profile=%s chip=%#x memory=%#x entry_latched=%u SS0=%#x SS1=%#x SS0target=0x88888888 SS1policy=%s entry=%#x target=0x8\n",
-    GU_STOCK_PROFILE_NAME,0xb72000a1U,GU_DEVICE_MEMORY_SIZE,latched,entry0,entry1,
+    GU_STOCK_PROFILE_NAME,GU_CHIP_ID,GU_DEVICE_MEMORY_SIZE,latched,entry0,entry1,
 #ifdef GU_ENTRY_LATCHED_SS1_PRESERVE
     "preserve",
 #else
@@ -284,12 +284,12 @@ static EFI_STATUS ColdCheck(VOID) {
     entry1);
 #else
   GuLog("cold expected: profile=%s chip=%#x memory=%#x SS0=%#x SS1=%#x\n",
-    GU_STOCK_PROFILE_NAME,0xb72000a1U,GU_DEVICE_MEMORY_SIZE,GU_STOCK_PROFILE_SS0,6U);
+    GU_STOCK_PROFILE_NAME,GU_CHIP_ID,GU_DEVICE_MEMORY_SIZE,GU_STOCK_PROFILE_SS0,6U);
 #endif
   GuLog("cold observed: profile=%s chip=%#x memory=%#x SS0=%#x SS1=%#x\n",
     GU_STOCK_PROFILE_NAME,chip,memory,ss0,ss1);
   if(Gu.fault)return EFI_DEVICE_ERROR;
-  if(chip!=0xb72000a1 || memory!=GU_DEVICE_MEMORY_SIZE ||
+  if(chip!=GU_CHIP_ID || memory!=GU_DEVICE_MEMORY_SIZE ||
      gpu_unlock_gfw_assess(&s) || s.plm!=0x8b8f || s.boot!=0x3ff || s.cpuctl!=0x10 ||
      hi!=0 || plm!=0xffffff8f || !Gu.prom_verified)
     return EFI_NOT_READY;
@@ -327,7 +327,7 @@ static EFI_STATUS PromCheck(VOID) {
   Gu.profile_verified=FALSE;
   VOID *prom=GuAlloc(1048576);if(!prom)return EFI_OUT_OF_RESOURCES;
   GuCopyFromIo(prom,(VOID *)(UINTN)(Gu.bar_base+0x300000),1048576);
-  BOOLEAN good=!Gu.fault && GuHashMatches(prom,1048576,"8ea297373e9e5d3600ff41ad9fae88f2d14c98c017d100669f7333981da673b4");
+  BOOLEAN good=!Gu.fault && GuHashMatches(prom,1048576,GU_PROM_SHA256);
   GuFree(prom);Gu.prom_verified=good;GuLog("live PROM hash matched=%u\n",(unsigned)good);return good?EFI_SUCCESS:EFI_CRC_ERROR;
 }
 static EFI_STATUS Arm(VOID) {
@@ -390,7 +390,7 @@ static BOOLEAN HeadlessFinalHardware(VOID) {
   struct gpu_unlock_gfw_sample sample={.config_ok=true,.plm=GuRead32(GU_GFW_PLM_OFFSET),
     .boot=GuRead32(GU_GFW_BOOT_OFFSET),.cpuctl=GuRead32(GU_GFW_CPUCTL_OFFSET)};
   return !gpu_unlock_gfw_assess(&sample) && sample.plm==0x8b8f && sample.boot==0x3ff && sample.cpuctl==0x10 &&
-    GuRead32(0)==0xb72000a1 && GuRead32(0x1fa828)==0 && GuRead32(GU_FEAT_PLM_OFFSET)==0xffffff8f &&
+    GuRead32(0)==GU_CHIP_ID && GuRead32(0x1fa828)==0 && GuRead32(GU_FEAT_PLM_OFFSET)==0xffffff8f &&
     GuRead32(0x1183a4)==GU_DEVICE_MEMORY_SIZE && GuRead32(GU_FEAT_SS0_OFFSET)==ss0 && GuRead32(GU_FEAT_SS1_OFFSET)==ss1 && !Gu.fault;
 }
 #endif

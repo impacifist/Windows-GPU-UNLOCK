@@ -2,8 +2,13 @@
 
 [English](COMPATIBILITY.en.md) | **한국어**
 
-모델명만 확인하는 구현이 아닙니다. v0.3.0은 이전 AMD 화면 시험과 같은 PC에서 내부
-headless 부팅 1회 성공을 추가합니다. 다른 RTX 3090·플랫폼의 지원을 의미하지 않습니다.
+모델명만 확인하는 구현이 아닙니다. 두 PC에서 내부 headless 부팅 성공이 기록되어 있습니다.
+빌드는 [internal-boot/unlock/machine-profile.h](../internal-boot/unlock/machine-profile.h)에서
+빌드 시점에 선택된 하나의 검토된 프로필 전용이며, 다른 GPU·플랫폼은 지원하지 않습니다.
+두 번째 프로필(B660M-E D4 BIOS 4003 / RTX 3070 Ti / iGPU 없는 Intel 호스트, AMI aggregate
+console)의 지표·조건은 [English 문서](COMPATIBILITY.en.md)의 Profile 2 표를 참조하세요.
+
+## 프로필 1: ASUS TUF B650M / RTX 3090 FE(최초 검증)
 
 | 공통 GPU·플랫폼 항목 | 검증한 값 |
 |---|---|

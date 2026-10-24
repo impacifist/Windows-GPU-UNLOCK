@@ -1,6 +1,6 @@
 /* GPL-2.0-only. Research-only, observational policy; never calls console methods. */
 #pragma once
-#include "port.h"
+#include "port.h" /* pulls machine-profile.h: GU_CONSOLE_AGGREGATE */
 #include <Protocol/GraphicsOutput.h>
 #include <Protocol/SimpleTextIn.h>
 #include <Protocol/SimpleTextOut.h>
@@ -88,9 +88,16 @@ static BOOLEAN GuHeadlessCheckInner(VOID) {
     for(UINTN i=0;s==EFI_SUCCESS && i<n;i++) {
       EFI_DEVICE_PATH_PROTOCOL *dp=NULL;EFI_GRAPHICS_OUTPUT_PROTOCOL *g=NULL;
       EFI_STATUS ps=bs->HandleProtocol(handles[i],&path,(VOID **)&dp);
+#if !GU_CONSOLE_AGGREGATE
       if((ps!=EFI_UNSUPPORTED && ps!=EFI_NOT_FOUND) || dp ||
          (handles[i]!=t->ConsoleOutHandle && handles[i]!=t->StandardErrorHandle) ||
          bs->HandleProtocol(handles[i],&gop,(VOID **)&g)!=EFI_SUCCESS || !g || !g->Mode || g->Mode->FrameBufferBase || g->Mode->FrameBufferSize)s=EFI_UNSUPPORTED;
+#else
+      /* Aggregate topology: the AMI combo aggregate GOP is pathless and is
+         not a console handle; any pathless zero-FB GOP is tolerated. */
+      if((ps!=EFI_UNSUPPORTED && ps!=EFI_NOT_FOUND) || dp ||
+         bs->HandleProtocol(handles[i],&gop,(VOID **)&g)!=EFI_SUCCESS || !g || !g->Mode || g->Mode->FrameBufferBase || g->Mode->FrameBufferSize)s=EFI_UNSUPPORTED;
+#endif
       for(UINTN j=0;j<i;j++)if(handles[j]==handles[i])s=EFI_UNSUPPORTED;
     }
   }

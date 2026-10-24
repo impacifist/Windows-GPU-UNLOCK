@@ -1,12 +1,14 @@
 # GPL-2.0-only. Isolated exact-platform headless unlock wrapper/child package.
-param([string]$Clang='clang',[string]$LldLink='lld-link')
+param([string]$Clang='clang',[string]$LldLink='lld-link',[string]$Python='python',[ValidateSet('b650m-3090fe','b660m-3070ti')][string]$HardwareProfile='b650m-3090fe')
+$hwDefine=if($HardwareProfile -eq 'b660m-3070ti'){'-DGU_PROFILE_B660M_3070TI'}else{'-DGU_PROFILE_B650M_3090FE'}
+$hwName=if($HardwareProfile -eq 'b660m-3070ti'){'ASUS-TUF-GAMING-B660M-E-D4-4003-RTX3070TI'}else{'ASUS-TUF-B650M-PLUS-WIFI-3057-RTX3090-FE'}
 $ErrorActionPreference='Stop'
 $repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 . (Join-Path $repo 'internal-boot/install/headless-package.ps1')
 $null=Assert-HeadlessLocalConfig $repo
 $beforeInputs=Get-HeadlessInputInventory $repo
 $unlock=Join-Path $repo 'internal-boot/unlock'
-& (Join-Path $unlock 'build.ps1') -ExperimentalUnlock -StockProfile entryLatchedSs1Full -InternalBoot -AutomaticBoot -HeadlessResearch -Clang $Clang -LldLink $LldLink
+& (Join-Path $unlock 'build.ps1') -ExperimentalUnlock -StockProfile entryLatchedSs1Full -InternalBoot -AutomaticBoot -HeadlessResearch -Clang $Clang -LldLink $LldLink -Python $Python -HardwareProfile $HardwareProfile
 if(!$?){throw 'Headless child build failed'}
 $child=Join-Path $unlock 'build/experimental/entryLatchedSs1Full/internal/automatic/headless-research/RTX3090-EXPERIMENTAL-entryLatchedSs1Full-INTERNAL-AUTO-HEADLESS-RESEARCH.EFI'
 $cm=Get-Content (Join-Path (Split-Path $child) 'build-manifest.json') -Raw | ConvertFrom-Json
@@ -20,15 +22,15 @@ try {
  $objects=@()
  foreach($source in $sources) {
   $obj='build/headless/'+[IO.Path]::GetFileNameWithoutExtension($source)+'.obj'
-  & $Clang -target x86_64-pc-windows-msvc -std=c11 -ffreestanding -fno-builtin -fno-stack-protector -mno-red-zone -fshort-wchar -Os -Wall -Wextra -Werror -DGU_HEADLESS_RESEARCH -DGU_SINGLE_RTX_CONSOLE -DGU_FULL_UNLOCK -DGU_AUTOMATIC_BOOT -I ../../deps/edk2/MdePkg/Include -I ../../deps/edk2/MdePkg/Include/X64 -c $source -o $obj
+  & $Clang -target x86_64-pc-windows-msvc -std=c11 -ffreestanding -fno-builtin -fno-stack-protector -mno-red-zone -fshort-wchar -Os -Wall -Wextra -Werror -DGU_HEADLESS_RESEARCH -DGU_SINGLE_RTX_CONSOLE -DGU_FULL_UNLOCK -DGU_AUTOMATIC_BOOT $hwDefine -I ../../deps/edk2/MdePkg/Include -I ../../deps/edk2/MdePkg/Include/X64 -c $source -o $obj
   if($LASTEXITCODE -ne 0){throw "Headless wrapper compile failed: $source"};$objects+=$obj
  }
  & $LldLink /nologo /nodefaultlib /subsystem:efi_application /entry:efi_main /machine:x64 /base:0 /dynamicbase /nxcompat /timestamp:0 /opt:ref /opt:icf /map:build/headless/HEADLESS.map /out:build/headless/HEADLESS.EFI @objects
  if($LASTEXITCODE -ne 0){throw 'Headless wrapper link failed'}
- & python ../unlock/verify_pe.py build/headless/HEADLESS.EFI build/headless/HEADLESS.map --output build/headless/pe-verification.json
+ & $Python ../unlock/verify_pe.py build/headless/HEADLESS.EFI build/headless/HEADLESS.map --output build/headless/pe-verification.json
  if($LASTEXITCODE -ne 0){throw 'Headless wrapper PE verification failed'}
  $afterInputs=Get-HeadlessInputInventory $repo
  if(($beforeInputs | ConvertTo-Json -Depth 4 -Compress) -cne ($afterInputs | ConvertTo-Json -Depth 4 -Compress)){throw 'Inputs changed while building; no package manifest will be published'}
- [ordered]@{Format=2;HardwareProfile='ASUS-TUF-B650M-PLUS-WIFI-3057-RTX3090-FE';Mode='single-rtx-headless-unlock-then-windows';CanUnlock=$true;RequiresHumanKey=$false;HardwareTested=$false;ChildSha256=$hash;ChildBytes=(Get-Item $child).Length;ChildManifestSha256=(Get-FileHash -LiteralPath (Join-Path (Split-Path $child) 'build-manifest.json')).Hash;EfiSha256=(Get-FileHash -LiteralPath build/headless/HEADLESS.EFI).Hash;EfiBytes=(Get-Item build/headless/HEADLESS.EFI).Length;Inputs=(Get-HeadlessInputInventory $repo -WithContract);BuiltUtc=[DateTime]::UtcNow.ToString('o')} | ConvertTo-Json -Depth 6 | Set-Content build/headless/manifest.json -Encoding utf8
+ [ordered]@{Format=2;HardwareProfile=$hwName;Mode='single-rtx-headless-unlock-then-windows';CanUnlock=$true;RequiresHumanKey=$false;HardwareTested=$false;ChildSha256=$hash;ChildBytes=(Get-Item $child).Length;ChildManifestSha256=(Get-FileHash -LiteralPath (Join-Path (Split-Path $child) 'build-manifest.json')).Hash;EfiSha256=(Get-FileHash -LiteralPath build/headless/HEADLESS.EFI).Hash;EfiBytes=(Get-Item build/headless/HEADLESS.EFI).Length;Inputs=(Get-HeadlessInputInventory $repo -WithContract);BuiltUtc=[DateTime]::UtcNow.ToString('o')} | ConvertTo-Json -Depth 6 | Set-Content build/headless/manifest.json -Encoding utf8
  $null=Assert-HeadlessPackage $repo
 } finally {Pop-Location}

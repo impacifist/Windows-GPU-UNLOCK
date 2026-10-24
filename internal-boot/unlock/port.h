@@ -3,13 +3,12 @@
 #include <Protocol/PciIo.h>
 #include <Protocol/DevicePath.h>
 #include <stddef.h>
+#include "machine-profile.h"
 
-#define GU_BOARD_ID 0x220410deU
-#define GU_BOARD_SUBSYSTEM 0x145410deU
+/* Secondary display adapter on the B650M profile (Raphael iGPU). The
+   aggregate-console profile has no second adapter. */
 #define GU_AMD_ID 0x164e1002U
 #define GU_AMD_SUBSYSTEM 0x88771043U
-#define GU_BAR0_BASE 0xf5000000ULL
-#define GU_DEVICE_MEMORY_SIZE 0x6000U
 /* The default artifact is read-only. Legacy host containment tests are never
    a production enable switch; experimental firmware requires its own define. */
 #if defined(GU_HOST_WRITE_TEST) && __STDC_HOSTED__ != 1

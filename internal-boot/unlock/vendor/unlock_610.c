@@ -20,11 +20,11 @@
 #include "unlock_610.h"
 #include "vbios_610.h"
 
-#ifndef GU_TARGET_PCI_ID
-#define GU_TARGET_PCI_ID 0x220410deU
-#endif
 #ifdef GU_UEFI_PORT
 #include "../port.h"
+#endif
+#ifndef GU_TARGET_PCI_ID
+#define GU_TARGET_PCI_ID GU_BOARD_ID
 #endif
 
 #define SEC2_BASE 0x00840000u

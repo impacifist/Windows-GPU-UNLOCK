@@ -10,6 +10,10 @@
 #include <Protocol/GraphicsOutput.h>
 #include <Protocol/PciIo.h>
 #include <Guid/GlobalVariable.h>
+#include "../unlock/machine-profile.h"
+#ifdef GU_DIAGNOSTIC_PROBE
+#include "probe.h"
+#endif
 
 #define MAX_HANDLES 4096
 #define MAX_PROTOCOLS 256
@@ -22,14 +26,7 @@ static EFI_GUID GopGuid=EFI_GRAPHICS_OUTPUT_PROTOCOL_GUID;
 static EFI_GUID PciGuid=EFI_PCI_IO_PROTOCOL_GUID;
 static EFI_GUID GlobalGuid=EFI_GLOBAL_VARIABLE;
 
-typedef struct {
-  EFI_SYSTEM_TABLE *Table;
-  EFI_FILE_PROTOCOL *File;
-  EFI_STATUS Io;
-  BOOLEAN Complete;
-  UINTN Used,Total;
-  char Buffer[4096];
-} CAPTURE;
+
 static EFI_STATUS Flush(CAPTURE *c) {
   if(c->Io!=EFI_SUCCESS)return c->Io;
   if(c->Used) {
@@ -40,14 +37,14 @@ static EFI_STATUS Flush(CAPTURE *c) {
   }
   return c->Io;
 }
-static VOID Text(CAPTURE *c,const char *s) {
+VOID Text(CAPTURE *c,const char *s) {
   while(*s && c->Io==EFI_SUCCESS) {
     if(c->Total>=MAX_BYTES){c->Io=EFI_VOLUME_FULL;c->Complete=FALSE;return;}
     if(c->Used==sizeof(c->Buffer) && Flush(c)!=EFI_SUCCESS)return;
     c->Buffer[c->Used++]=*s++;c->Total++;
   }
 }
-static VOID Hex(CAPTURE *c,UINT64 v,UINTN digits) {
+VOID Hex(CAPTURE *c,UINT64 v,UINTN digits) {
   char s[17];
   if(digits>16)digits=16;
   for(UINTN i=0;i<digits;i++)s[i]="0123456789abcdef"[(v>>((digits-i-1)*4))&15];
@@ -58,8 +55,8 @@ static VOID Guid(CAPTURE *c,const EFI_GUID *g) {
   Hex(c,g->Data1,8);Text(c,"-");Hex(c,g->Data2,4);Text(c,"-");Hex(c,g->Data3,4);Text(c,"-");
   for(UINTN i=0;i<8;i++){if(i==2)Text(c,"-");Hex(c,g->Data4[i],2);}
 }
-static VOID End(CAPTURE *c) {Text(c,"\r\n");}
-static VOID Problem(CAPTURE *c,const char *where,EFI_STATUS s) {
+VOID End(CAPTURE *c) {Text(c,"\r\n");}
+VOID Problem(CAPTURE *c,const char *where,EFI_STATUS s) {
   c->Complete=FALSE;Text(c,"incomplete reason=");Text(c,where);Field(c," status=0x",s);End(c);
 }
 /* Variable paths have a known byte size. Firmware interface paths do not;
@@ -143,7 +140,15 @@ static VOID Details(CAPTURE *c,EFI_HANDLE h,EFI_GUID *g) {
       Field(c,"gop width=0x",gp->Mode->Info->HorizontalResolution);
       Field(c," height=0x",gp->Mode->Info->VerticalResolution);
       Field(c," stride=0x",gp->Mode->Info->PixelsPerScanLine);End(c);
-    } else Problem(c,"gop-info",EFI_NOT_READY);
+    } else {
+#if GU_CONSOLE_AGGREGATE
+      /* Aggregate/pathless GOPs legitimately lack Mode->Info on this firmware;
+         record it as an observation, not a capture failure. */
+      Field(c,"gop info-bytes=0x",gp->Mode->SizeOfInfo);End(c);
+#else
+      Problem(c,"gop-info",EFI_NOT_READY);
+#endif
+    }
   }
   if(pci) {
     EFI_PCI_IO_PROTOCOL *io=p;UINTN segment=0,bus=0,dev=0,fun=0;UINT32 config[16];
@@ -169,6 +174,10 @@ EFI_STATUS GuCaptureGraph(EFI_SYSTEM_TABLE *t,EFI_FILE_PROTOCOL *file) {
   Variables(&c);
   EFI_BOOT_SERVICES *bs=t->BootServices;EFI_HANDLE *handles=NULL;UINTN count=0;
   EFI_STATUS s=bs->LocateHandleBuffer(AllHandles,NULL,NULL,&count,&handles);
+#ifdef GU_DIAGNOSTIC_PROBE
+    /* Read-only profile probe: config space, caps, BAR/PROM hash, image dumps. */
+    (void)GuProbeGpu(t,&c);
+#endif
   Field(&c,"handles status=0x",s);Field(&c," count=0x",count);End(&c);
   if(s!=EFI_SUCCESS || !handles || !count || count>MAX_HANDLES)Problem(&c,"handle-snapshot",s==EFI_SUCCESS?EFI_BAD_BUFFER_SIZE:s);
   else for(UINTN i=0;i<count && c.Io==EFI_SUCCESS;i++) {

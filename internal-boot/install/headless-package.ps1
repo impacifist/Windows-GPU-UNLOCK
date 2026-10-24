@@ -20,10 +20,17 @@ function Assert-HeadlessLocalConfig([string]$Repo){
  if($text -notcontains ('#define GU_INTERNAL_PARTITION_INITIALIZER '+(Get-HeadlessGuidInitializer ([guid]$cfg.UnlockPartitionGuid))) -or $text -notcontains ('#define GU_WINDOWS_PARTITION_INITIALIZER '+(Get-HeadlessGuidInitializer ([guid]$cfg.WindowsPartitionGuid)))){throw 'Generated partition header differs from local configuration'}
  return $cfg
 }
+function Get-HeadlessProfileIdentity([string]$Profile){
+ switch($Profile){
+  'ASUS-TUF-B650M-PLUS-WIFI-3057-RTX3090-FE'{return @{Board='TUF GAMING B650M-PLUS WIFI';Bios='3057'}}
+  'ASUS-TUF-GAMING-B660M-E-D4-4003-RTX3070TI'{return @{Board='TUF GAMING B660M-E D4';Bios='4003'}}
+ }
+ throw ('Unknown hardware profile: '+$Profile)
+}
 function Assert-HeadlessPackage([string]$Repo){
  $null=Assert-HeadlessLocalConfig $Repo
  $m=Get-Content -LiteralPath (Join-Path $Repo 'internal-boot/boot/build/headless/manifest.json') -Raw | ConvertFrom-Json
- if($m.Format -ne 2 -or $m.Mode -ne 'single-rtx-headless-unlock-then-windows' -or $m.CanUnlock -ne $true -or $m.RequiresHumanKey -ne $false -or $m.HardwareProfile -ne 'ASUS-TUF-B650M-PLUS-WIFI-3057-RTX3090-FE'){throw 'Unexpected headless package profile'}
+ if($m.Format -ne 2 -or $m.Mode -ne 'single-rtx-headless-unlock-then-windows' -or $m.CanUnlock -ne $true -or $m.RequiresHumanKey -ne $false -or $m.HardwareProfile -notin @('ASUS-TUF-B650M-PLUS-WIFI-3057-RTX3090-FE','ASUS-TUF-GAMING-B660M-E-D4-4003-RTX3070TI')){throw 'Unexpected headless package profile'}
  $actual=Get-HeadlessInputInventory $Repo -WithContract
  if($actual.Count -ne $m.Inputs.Count){throw 'Build source set changed; rebuild the package'}
  for($i=0;$i -lt $actual.Count;$i++){if($actual[$i].Path -cne $m.Inputs[$i].Path -or $actual[$i].Sha256 -ne $m.Inputs[$i].Sha256){throw ('Build input changed; rebuild: '+$actual[$i].Path)}}
@@ -46,6 +53,10 @@ function Get-HeadlessPromotionOrder([string[]]$Current,[string]$Id){
 }
 function Get-HeadlessAssetSpecs([string]$Repo){
  $specs=@(Get-Content -LiteralPath (Join-Path $Repo 'internal-boot/unlock/assets.json') -Raw | ConvertFrom-Json)
+ if($specs.Count -eq 1 -and $specs[0].Name -is [array]){
+  $flat=$specs[0];$specs=@()
+  for($i=0;$i -lt $flat.Name.Count;$i++){$specs+=[pscustomobject]@{Name=$flat.Name[$i];Bytes=[int64]$flat.Bytes[$i];Sha256=[string]$flat.Sha256[$i]}}
+ }
  $names=@('booter_load_ga102.bin','v67-ga102-610.43.03.bin','gsp_ga10x.bin','gsp_boot_ga102.bin','gsp_boot_desc_ga102.bin')
  if($specs.Count -ne 5 -or @($specs.Name | Select-Object -Unique).Count -ne 5){throw 'Exactly five unique firmware assets required'}
  foreach($s in $specs){if($s.Name -notin $names -or $s.Bytes -le 0 -or $s.Sha256 -notmatch '^[0-9a-f]{64}$'){throw 'Invalid firmware asset contract'}}

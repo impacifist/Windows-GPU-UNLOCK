@@ -13,6 +13,30 @@
 - Release remains source-only. Do not publish local EFI binaries, firmware,
   PROM captures, raw boot logs, partition identifiers or machine-local config.
 
+## 2026-10-24 — GA104 RTX 3070 Ti machine profile (second verified machine)
+
+- Added compile-time machine profiles in internal-boot/unlock/machine-profile.h:
+  -DGU_PROFILE_B650M_3090FE (default, original verified machine) and
+  -DGU_PROFILE_B660M_3070TI. PCI/subsystem, BAR0, chip/VRAM, PROM, root-port,
+  display-path and all EFI driver fingerprints are profile constants; a build
+  remains exact-machine and a user-editable file never selects them.
+- New aggregate-console headless topology (GU_CONSOLE_AGGREGATE) for hosts
+  without a second display GPU: nvgop owns the target PCI function, the AMI
+  GOP combo splitter serves the console through an aggregate GOP, and the
+  wrapper releases the nvgop/EDID/combo/text chain instead of the two-child
+  nvgop console used on the B650M profile.
+- Hardware verified on TUF GAMING B660M-E D4 BIOS 4003, i7-12700F, MSI
+  RTX 3070 Ti: one headless unlock transaction, direct Windows start with
+  display recovery, cuBLAS GEMM n=4096 medians FP16 88.7 / BF16 88.6 TFLOPS.
+  S3 sleep still invalidates the unlock; no resume path exists.
+- internal-boot/unlock/build.ps1, research/headless/build-unlock.ps1,
+  Configure.ps1 and Headless.ps1 take -HardwareProfile (default b650m-3090fe);
+  installer board/BIOS gates follow the built package profile. The B650M
+  profile keeps its original code paths and constants behind the same checks.
+- Added a read-only diagnostic probe (probe.c, -DGU_DIAGNOSTIC_PROBE) used to
+  fingerprint new platforms; it performs no writes and is compiled into
+  diagnostic/headless wrapper builds.
+
 ## 2026-10-24 — v0.3.0 headless internal handoff, public setup and recovery
 
 - Verified one internal headless boot on the exact ASUS BIOS 3057 / RTX 3090 FE

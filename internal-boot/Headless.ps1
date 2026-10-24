@@ -51,7 +51,8 @@ function Target {
  $wv=$w[0] | Get-Volume
  if(!$wv.Path -or !(Test-Path -LiteralPath (Join-Path $wv.Path 'EFI\Microsoft\Boot\bootmgfw.efi'))){throw 'Windows Boot Manager missing'}
  $board=Get-CimInstance Win32_BaseBoard;$bios=Get-CimInstance Win32_BIOS
- if($board.Product -ne 'TUF GAMING B650M-PLUS WIFI' -or $bios.SMBIOSBIOSVersion -ne '3057'){throw 'Unsupported firmware profile'}
+ $identity=Get-HeadlessProfileIdentity $package.HardwareProfile
+ if($board.Product -ne $identity.Board -or $bios.SMBIOSBIOSVersion -ne $identity.Bios){throw 'Unsupported firmware profile'}
  return $v.Path
 }
 $root=Target

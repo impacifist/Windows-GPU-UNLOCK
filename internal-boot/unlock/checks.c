@@ -166,7 +166,7 @@ int GuDisplayPath(const EFI_DEVICE_PATH_PROTOCOL *Path, UINTN MaxBytes) {
 
   if (TakePci(&Bytes, &MaxBytes, 8, 1) && TakePci(&Bytes, &MaxBytes, 0, 0)) {
     Route = 1;
-  } else if (TakePci(&Bytes, &MaxBytes, 1, 1) && TakePci(&Bytes, &MaxBytes, 0, 0)) {
+  } else if (TakePci(&Bytes, &MaxBytes, GU_ROOT_PORT_DEVICE, GU_ROOT_PORT_FUNCTION) && TakePci(&Bytes, &MaxBytes, 0, 0)) {
     Route = 2;
   } else {
     return 0;
