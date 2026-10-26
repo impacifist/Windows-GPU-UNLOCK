@@ -86,8 +86,8 @@ static void fail(const char *expression,const char *file,int line) {
   size_t length=strlen(fake.log);
   fprintf(stderr,"ASSERTION FAILED [%s] %s:%d: %s\n",case_names[fake.mode],file,line,expression);
   fprintf(stderr,"started=%u quiesced=%u fault=%u retained=%u GSP=%zu SEC2=%zu FLR=%zu mappings=%zu buffers=%zu\n",
-    Gu.started,Gu.quiesced,Gu.fault,Gu.retained,fake.gsp_starts,fake.sec2_starts,
-    fake.flrs,fake.live_maps,fake.live_buffers);
+    Gu.started,Gu.quiesced,Gu.fault,Gu.retained,(size_t)fake.gsp_starts,(size_t)fake.sec2_starts,
+    (size_t)fake.flrs,(size_t)fake.live_maps,(size_t)fake.live_buffers);
   fprintf(stderr,"%s",fake.log+(length>5000?length-5000:0));
   exit(1);
 }
@@ -135,8 +135,8 @@ static VOID check_fwsec_image(void) {
   /* FWSEC-FRTS location pinned per profile PROM. */
 #if defined(GU_PROFILE_B650M_3090FE)
   CHECK(fw.image_off==0x4239c && fw.image_size==0xde00 && fw.dmem_size==sizeof(gsp_dmem));
-#elif defined(GU_PROFILE_X870_3090TI)
-  CHECK(fw.image_off==0x41758 && fw.image_size==0xea00 && fw.dmem_size==sizeof(gsp_dmem)); /* VBIOS 94.02.a0.00.2c */
+#elif defined(GU_PROFILE_X870_3090TI) || defined(GU_PROFILE_Z690I_3090TI)
+  CHECK(fw.image_off==0x41758 && fw.image_size==0xea00 && fw.dmem_size==sizeof(gsp_dmem)); /* X870 94.02.a0.00.2c and Z690-I 94.02.a0.00.01 */
 #elif defined(GU_PROFILE_H610M_3060)
   CHECK(fw.image_off==0x416bc && fw.image_size==0xea00 && fw.dmem_size==sizeof(gsp_dmem)); /* Gigabyte RTX 3060 12GB PROM 727dd833 */
 #elif defined(GU_PROFILE_B660PLUS_3060)
@@ -565,7 +565,7 @@ int main(int argc,char **argv) {
     if(mode==SELECTOR_LOST)CHECK(fake.flrs==1 && result && !Gu.quiesced);
 #endif
     printf("EFI integration %s: result=%d safe=%u retained=%u live_maps=%zu starts=%zu/%zu flr=%zu PASS\n",
-      case_names[mode],result,safe,Gu.retained,fake.live_maps,fake.gsp_starts,fake.sec2_starts,fake.flrs);
+      case_names[mode],result,safe,Gu.retained,(size_t)fake.live_maps,(size_t)fake.gsp_starts,(size_t)fake.sec2_starts,(size_t)fake.flrs);
     dispose_host_fixture();
   }
 #ifdef GU_ENTRY_LATCHED

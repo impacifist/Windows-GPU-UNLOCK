@@ -95,10 +95,27 @@ function NewFixture([string]$Name){
 }
 
 # These tests validate coherent provenance, not executable PE contents or hardware.
+$z690=Get-HeadlessProfileIdentity 'ASUS-ROG-STRIX-Z690-I-4601-RTX3090TI'
+Check ($z690.Board -ceq 'ROG STRIX Z690-I GAMING WIFI' -and $z690.Bios -ceq '4601') 'Z690-I identity pins board and BIOS'
+$z690Fixture=NewFixture 'z690i'
+$z690Manifest=ReadJson $z690Fixture $packageRelative
+$z690Manifest.HardwareProfile='ASUS-ROG-STRIX-Z690-I-4601-RTX3090TI'
+PutJson $z690Fixture $packageRelative $z690Manifest
+Check ((Assert-HeadlessPackage $z690Fixture).HardwareProfile -ceq $z690Manifest.HardwareProfile) 'coherent Z690-I internal package accepted'
 $normal=NewFixture 'normal'
 $m=Assert-HeadlessPackage $normal
 Check ($m.Format -eq 2 -and $m.ChildBytes -gt 0) 'complete synthetic package accepted'
 Check ((Get-HeadlessAssetSpecs $normal).Count -eq 5) 'five valid unique asset contracts accepted'
+$reordered=NewFixture 'reordered-inputs'
+$reorderedManifest=ReadJson $reordered $packageRelative
+[array]::Reverse($reorderedManifest.Inputs)
+PutJson $reordered $packageRelative $reorderedManifest
+Check ((Assert-HeadlessPackage $reordered).Format -eq 2) 'cross-platform inventory ordering does not change package identity'
+$duplicate=NewFixture 'duplicate-input'
+$duplicateManifest=ReadJson $duplicate $packageRelative
+$duplicateManifest.Inputs[0]=$duplicateManifest.Inputs[1]
+PutJson $duplicate $packageRelative $duplicateManifest
+Reject 'duplicate input cannot replace a required source' {Assert-HeadlessPackage $duplicate} 'Build input changed'
 $inventory=@(Get-HeadlessInputInventory $normal -WithContract)
 foreach($required in @('internal-boot/boot/platform-config.h','internal-boot/boot/media.h','internal-boot/local-config.json','internal-boot/unlock/assets.json','deps/edk2/MdePkg/Include/Uefi.h','deps/edk2/MdePkg/Include/Protocol/PciIo.h','internal-boot/boot/build/headless/child-contract.h')){
  Check ($inventory.Path -contains $required) ('inventory includes '+$required)

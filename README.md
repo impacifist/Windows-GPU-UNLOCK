@@ -5,6 +5,11 @@
 Experimental UEFI GPU unlock and direct Windows handoff, expanded through
 community contributions.
 
+The [ASUS Z690-I / RTX 3090 Ti profile](evidence/z690i-3090ti-usb/README.md)
+has contributor-reported USB and internal EFI unlock results. Matched BF16
+measurements at 450 W show 1.68× throughput at 8192² and 1.84× at 4096² for the internal
+route; exact hardware, source/build provenance and numerical samples are linked.
+
 ## GPU support
 
 **Success reports apply to specific cards and systems, not every card of the same
@@ -16,7 +21,7 @@ GPU model.** Check the linked motherboard, BIOS and card requirements before bui
 | **RTX 3070 Ti 8GB** | Hardware success reported; internal headless | [Supported configuration](docs/COMPATIBILITY.en.md#profile-2-asus-tuf-b660m-e-d4--rtx-3070-ti-aggregate-console) |
 | **RTX 3080** | No dedicated profile in this port; upstream project target | [Project origins](THIRD_PARTY_NOTICES.md) |
 | **RTX 3090 FE 24GB** | Hardware success recorded; internal headless; default profile | [Supported configuration](docs/COMPATIBILITY.en.md#profile-1-asus-tuf-b650m--rtx-3090-fe-original) |
-| **RTX 3090 Ti 24GB** | Hardware success reported; headless USB only | [Supported configuration](docs/COMPATIBILITY.en.md#profile-3-gigabyte-x870-aorus-elite-wifi7--rtx-3090-ti-headless-usb) |
+| **RTX 3090 Ti 24GB** | Hardware success reported; USB and internal on exact profiles | [X870 USB](docs/COMPATIBILITY.en.md#profile-3-gigabyte-x870-aorus-elite-wifi7--rtx-3090-ti-headless-usb) · [Z690-I USB/internal](evidence/z690i-3090ti-usb/README.md) |
 
 The [compatibility guide](docs/COMPATIBILITY.en.md) lists exact build profiles and
 distinguishes maintainer tests from contributor reports. Results concern their

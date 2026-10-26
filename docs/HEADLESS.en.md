@@ -10,8 +10,39 @@ completed one guarded transaction and Windows display recovery was observed.
 
 The CPU was a Ryzen 7 7800X3D, which contains an iGPU. No active AMD GOP was used.
 This does not verify CPUs without an iGPU or other systems.
-[Exact compatibility](COMPATIBILITY.en.md) still applies. Headless USB is untested;
-the [legacy USB guide](GUIDE.en.md) describes an AMD-display manual route.
+[Exact compatibility](COMPATIBILITY.en.md) still applies. The original B650M
+record above does not establish headless USB support; later contributor USB
+results are listed in that compatibility guide. The [legacy USB guide](GUIDE.en.md)
+describes an AMD-display manual route.
+
+## Z690-I contributor profile (2026-10-26)
+
+The source also supports configuring and building the exact
+`z690i-3090ti` profile for a dedicated internal ESP. Its USB unlock and Windows
+handoff have succeeded, with matched BF16 gains of 1.68×–1.83×. On 2026-10-26
+its internal ESP boot also succeeded: clean transaction, Windows display recovery
+and BF16 throughput of 143.228/133.639 TFLOPS at 8192²/4096². The internal entry
+was then promoted first, retaining Windows Boot Manager second. See
+[the machine evidence](../evidence/z690i-3090ti-usb/README.md).
+
+On the target Windows machine, run `internal-boot/Configure.ps1` with
+`-HardwareProfile z690i-3090ti`, the dedicated ESP letter, and the existing
+Windows ESP GUID. The Linux builder `research/profile/build_z690i.py` accepts
+`--internal-config` pointing to this tree's generated
+`internal-boot/local-config.json`, together with its existing capture, assets,
+Windows GUID and toolchain arguments. Copy the generated header and JSON without
+changing their bytes between Windows and Linux. It runs 12 host jobs and builds
+the same guarded wrapper/child, authenticating the configured GPT partition.
+It publishes the source inventory and child manifest required by the existing
+installer. Keep the corresponding source tree and build outputs together.
+
+Use `internal-boot/Headless.ps1 -Assets <local-assets> -Register` to install and
+append the entry without changing the current default. Test it from firmware
+Boot Override after a full shutdown. Only after internal unlock, Windows recovery
+and BF16 performance are observed should `-EnableAutomatic -ConfirmedSuccess`
+promote it. `-RestoreWindowsFirst` remains independent of package availability.
+The tested local cross-toolchain is Clang/LLD 20.1.2; no version change is required
+for this path.
 
 ## Prerequisites and storage
 

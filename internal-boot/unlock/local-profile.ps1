@@ -151,7 +151,7 @@ function Assert-GuUsbManifest([string]$Repo,$Manifest) {
  foreach($key in @('EfiSha256','ChildSha256')){
   if($Manifest.$key -isnot [string] -or $Manifest.$key -cnotmatch '^[0-9a-f]{64}$'){throw "Invalid USB artifact hash: $key"}
  }
- $reviewed=@('ASUS-TUF-B650M-PLUS-WIFI-3057-RTX3090-FE','ASUS-TUF-GAMING-B660M-E-D4-4003-RTX3070TI','GIGABYTE-X870-AORUS-ELITE-WIFI7-F13d-RTX3090TI','ASUS-PRIME-B660-PLUS-D4-3010-RTX3060','GIGABYTE-H610M-H-FC-RTX3060-12GB')
+ $reviewed=@('ASUS-ROG-STRIX-Z690-I-4601-RTX3090TI','ASUS-TUF-B650M-PLUS-WIFI-3057-RTX3090-FE','ASUS-TUF-GAMING-B660M-E-D4-4003-RTX3070TI','GIGABYTE-X870-AORUS-ELITE-WIFI7-F13d-RTX3090TI','ASUS-PRIME-B660-PLUS-D4-3010-RTX3060','GIGABYTE-H610M-H-FC-RTX3060-12GB')
  if($Manifest.HardwareProfile -isnot [string]){throw 'Missing USB hardware profile'}
  if($Manifest.HardwareProfile -cmatch '^LOCAL-[0-9a-f]{8}-[0-9a-f]{8}-[0-9a-f]{8}$') {
   Assert-LocalProfilePackage $Repo $Manifest

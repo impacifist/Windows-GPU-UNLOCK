@@ -10,10 +10,10 @@
  */
 #pragma once
 
-#if (defined(GU_PROFILE_B650M_3090FE) + defined(GU_PROFILE_B660M_3070TI) + defined(GU_PROFILE_X870_3090TI) + defined(GU_PROFILE_B660PLUS_3060) + defined(GU_PROFILE_LOCAL) + defined(GU_PROFILE_H610M_3060) + defined(GU_PROFILE_PROBE_H610M_3060)) > 1
+#if (defined(GU_PROFILE_Z690I_3090TI) + defined(GU_PROFILE_B650M_3090FE) + defined(GU_PROFILE_B660M_3070TI) + defined(GU_PROFILE_X870_3090TI) + defined(GU_PROFILE_B660PLUS_3060) + defined(GU_PROFILE_LOCAL) + defined(GU_PROFILE_H610M_3060) + defined(GU_PROFILE_PROBE_H610M_3060)) > 1
 #error Select exactly one machine profile
 #endif
-#if !defined(GU_PROFILE_B650M_3090FE) && !defined(GU_PROFILE_B660M_3070TI) && !defined(GU_PROFILE_X870_3090TI) && !defined(GU_PROFILE_B660PLUS_3060) && !defined(GU_PROFILE_LOCAL) && !defined(GU_PROFILE_H610M_3060) && !defined(GU_PROFILE_PROBE_H610M_3060)
+#if !defined(GU_PROFILE_Z690I_3090TI) && !defined(GU_PROFILE_B650M_3090FE) && !defined(GU_PROFILE_B660M_3070TI) && !defined(GU_PROFILE_X870_3090TI) && !defined(GU_PROFILE_B660PLUS_3060) && !defined(GU_PROFILE_LOCAL) && !defined(GU_PROFILE_H610M_3060) && !defined(GU_PROFILE_PROBE_H610M_3060)
 #define GU_PROFILE_B650M_3090FE 1
 #endif
 
@@ -33,7 +33,7 @@
  * (aggregate GOP + text-out driver chain; verified on AMI boards without a
  * second display GPU). 0 = nvgop owns the console GOP on the target directly
  * (original verified B650M headless topology). */
-#if defined(GU_PROFILE_B660M_3070TI) || defined(GU_PROFILE_B660PLUS_3060)
+#if defined(GU_PROFILE_Z690I_3090TI) || defined(GU_PROFILE_B660M_3070TI) || defined(GU_PROFILE_B660PLUS_3060)
 #define GU_CONSOLE_AGGREGATE 1
 #else
 #define GU_CONSOLE_AGGREGATE 0
@@ -148,6 +148,49 @@
 #define GU_EDID_TEXT_BYTES 0x37beU
 #define GU_EDID_TEXT_SHA256 "9a08c48e3a09965d1dda48b05a400311d71160d727cc9250630976cf4057eca9"
 /* nvgop-ga1xx 0x60010: byte-identical .text to the B660M/3070 Ti entry. */
+#define GU_NVGOP_VERSION 0x60010U
+#define GU_NVGOP_IMAGE_SIZE 0x26ae0U
+#define GU_NVGOP_STOP 0x678U
+#define GU_NVGOP_TEXT_BYTES 0x20d33U
+#define GU_NVGOP_TEXT_SHA256 "615b37a708b1894e18d7fa60cfcdacaa4d8b598863a10b8103d231a595847b2b"
+
+#elif defined(GU_PROFILE_Z690I_3090TI)
+
+/* ASUS ROG STRIX Z690-I GAMING WIFI BIOS 4601, i9-12900KS, UHD770
+ * present without a physical GOP, NVIDIA RTX 3090 Ti (GA102). Experimental:
+ * one successful cold USB unlock boot recorded on 2026-10-26. The AMI
+ * aggregate driver fingerprints match B660M; see evidence/z690i-3090ti-usb. */
+#define GU_PROFILE_NAME "ASUS-ROG-STRIX-Z690-I-4601-RTX3090TI"
+#define GU_BOARD_ID 0x220310deU
+#define GU_BOARD_SUBSYSTEM 0x161810deU
+#define GU_BAR0_BASE 0x76000000ULL
+#define GU_BAR0_END 0x76ffffffULL
+#define GU_DEVICE_MEMORY_SIZE 0x5ff4U
+#define GU_CHIP_ID 0xb72000a1U
+#define GU_PROM_SHA256 "586baad14e09c28019499c7270aa608b878f8a87c457de13490fa7a855cfb30a"
+#define GU_ROOT_PORT_DEVICE 1U
+#define GU_ROOT_PORT_FUNCTION 0U
+/* 36-byte display device path: ACPI root, PciRoot(0), Pci(1,0), endpoint. */
+#define GU_RTX_PATH_BYTES \
+  2,1,12,0,0xd0,0x41,3,10,0,0,0,0,1,1,6,0,0,1,1,1,6,0,0,0,2,3,8,0,64,3,1,128,127,255,4,0
+/* AMI console splitter text-out driver (BIOS 4601 image fingerprint). */
+#define GU_CONSOLE_TEXT_SIZE 0x6a40U
+#define GU_CONSOLE_TEXT_STOP 0x104cU
+#define GU_CONSOLE_TEXT_VERSION 0x10U
+/* AMI GOP combo splitter C1 GOP (BIOS 4601 image fingerprint). */
+#define GU_CONSOLE_GFX_SIZE 0x3bc0U
+#define GU_CONSOLE_GFX_STOP 0xb2cU
+#define GU_CONSOLE_GFX_VERSION 0x10U
+/* AMI GOP combo aggregate driver present only in this topology. */
+#define GU_COMBO_SIZE 0x2160U
+#define GU_COMBO_STOP 0x88cU
+#define GU_COMBO_VERSION 0x11U
+/* AMI EDID/mouse runtime driver (BIOS 4601 image fingerprint). */
+#define GU_EDID_IMAGE_SIZE 0x9000U
+#define GU_EDID_STOP 0x14d4U
+#define GU_EDID_TEXT_BYTES 0x37daU
+#define GU_EDID_TEXT_SHA256 "a015d52f55fa6441414458e2b699ba2edcb53f03b001ac6367e45bcd908c418e"
+/* nvgop-ga1xx driver captured on GA102 (binding 0x60010). */
 #define GU_NVGOP_VERSION 0x60010U
 #define GU_NVGOP_IMAGE_SIZE 0x26ae0U
 #define GU_NVGOP_STOP 0x678U
