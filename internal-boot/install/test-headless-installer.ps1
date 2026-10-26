@@ -16,7 +16,7 @@ $global:HeadlessConfig=[pscustomobject]@{UnlockDriveLetter='U';UnlockPartitionGu
 $childRelative='unlock/build/experimental/entryLatchedSs1Full/internal/automatic/headless-research/RTX3090-EXPERIMENTAL-entryLatchedSs1Full-INTERNAL-AUTO-HEADLESS-RESEARCH.EFI'
 $wrapper=Join-Path $fixture 'internal-boot/boot/build/headless/HEADLESS.EFI';$child=Join-Path $fixture ('internal-boot/'+$childRelative)
 TextFile $wrapper 'synthetic wrapper';TextFile $child 'synthetic child'
-$global:HeadlessPackage=[pscustomobject]@{EfiSha256=(Get-FileHash $wrapper).Hash;ChildSha256=(Get-FileHash $child).Hash}
+$global:HeadlessPackage=[pscustomobject]@{HardwareProfile='ASUS-ROG-STRIX-Z690-I-4601-RTX3090TI';EfiSha256=(Get-FileHash $wrapper).Hash;ChildSha256=(Get-FileHash $child).Hash}
 [void][IO.Directory]::CreateDirectory((Join-Path $fixture 'internal-boot/install'))
 [IO.File]::Copy((Join-Path $PSScriptRoot 'automatic-policy.ps1'),(Join-Path $fixture 'internal-boot/install/automatic-policy.ps1'),$false)
 $helperPath=(Join-Path $PSScriptRoot 'headless-package.ps1').Replace("'","''")
@@ -58,7 +58,7 @@ function Get-Partition {param([string]$DriveLetter)
 }
 function Get-Disk {param($Number)return [pscustomobject]@{UniqueId='synthetic-disk'}}
 function Get-Volume {param([Parameter(ValueFromPipeline)]$InputObject)process{return [pscustomobject]@{FileSystem='FAT32';Path=$(if($InputObject.IsSystem){$global:HeadlessWindows}else{$global:HeadlessTarget})}}}
-function Get-CimInstance {param($ClassName)if($ClassName -eq 'Win32_BaseBoard'){return [pscustomobject]@{Product='TUF GAMING B650M-PLUS WIFI'}};return [pscustomobject]@{SMBIOSBIOSVersion='3057'}}
+function Get-CimInstance {param($ClassName)if($ClassName -eq 'Win32_BaseBoard'){return [pscustomobject]@{Product='ROG STRIX Z690-I GAMING WIFI'}};return [pscustomobject]@{SMBIOSBIOSVersion='4601'}}
 function Confirm-SecureBootUEFI {return $false}
 function Get-BitLockerVolume {param($MountPoint)return [pscustomobject]@{VolumeStatus=0;ProtectionStatus=0}}
 function Get-Item {param($LiteralPath,$Path)

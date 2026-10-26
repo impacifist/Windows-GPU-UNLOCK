@@ -1,5 +1,25 @@
 # Changes
 
+## Unreleased — experimental ASUS Z690-I / RTX 3090 Ti profile
+
+- Add the BIOS 4601 machine profile using the captured PCI/PROM/display pins
+  and the existing ASUS aggregate-console release path. Runtime release and
+  transaction guards are unchanged; the generic local generator still refuses
+  aggregate consoles.
+- Add captured graph replay, Linux host verification and a Linux USB/internal builder.
+  The Windows USB builder and staging manifest recognize `z690i-3090ti`.
+- Host tests and PE checks pass. The subsequent first cold USB boot completed
+  the unlock and returned to Windows; BF16 measured 142.87 TFLOPS at 8192 square
+  and a 450 W limit. A matched locked baseline measured 85.18 TFLOPS: a 1.68×
+  throughput ratio; the 4096-square comparison measured 1.83×. See
+  [the evidence record](evidence/z690i-3090ti-usb/README.md).
+- Support the dedicated internal ESP installer with exact board/BIOS/GPT identity
+  and source-inventory checks. Internal boot and Windows recovery succeeded;
+  BF16 measured 143.23/133.64 TFLOPS at 8192²/4096². Default promotion followed
+  the physical test; Windows Boot Manager remains second for recovery.
+- Include sanitized BF16 samples and the measured benchmark with only local
+  fleet coupling and device UUID collection removed.
+
 ## Unreleased — harden GA106 observation and integrate the fifth profile
 
 - Preserve current GA104/GA102 profiles, LOCAL gates, ownership checks and TF32 tools

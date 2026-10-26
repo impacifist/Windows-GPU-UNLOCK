@@ -2,8 +2,9 @@
 
 **English** | [한국어](COMPATIBILITY.ko.md)
 
-The current source contains five exact-machine profiles with recorded hardware
-results: two internal headless configurations and three headless USB configurations.
+The current source contains six exact-machine profiles with recorded hardware
+results: two internal-only configurations, three USB-only configurations, and
+one Z690-I configuration with both routes recorded.
 The original B650M run was performed by the maintainer; B660M, X870 and B660-PLUS evidence
 comes from contributors ([PR #5](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/5),
 [PR #10](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/10),
@@ -20,6 +21,7 @@ other GPUs or platforms remain unsupported.
 | `x870-3090ti` | Gigabyte X870 AORUS ELITE WIFI7 BIOS F13d / Ryzen 7 9800X3D / ASUS RTX 3090 Ti | USB only; contributor report |
 | `b660plus-3060` | ASUS PRIME B660-PLUS D4 BIOS 3010 / i5-12600KF (no iGPU) / GA104 RTX 3060 12GB | USB only, two display children, CSM off; contributor report |
 | `h610m-3060` | Gigabyte H610M H BIOS FC / i5-14400 (iGPU enabled, no GOP) / Gigabyte GA106 RTX 3060 12GB | USB only, two display children; contributor report |
+| `z690i-3090ti` | ASUS ROG STRIX Z690-I GAMING WIFI BIOS 4601 / i9-12900KS (UHD 770 enabled) / RTX 3090 Ti | USB and internal ESP; [contributor evidence](../evidence/z690i-3090ti-usb/README.md) |
 
 The latest tag is the source-only pre-release v0.3.1; this source tree includes
 later work, including the USB route and X870 profile. Hardware reports describe

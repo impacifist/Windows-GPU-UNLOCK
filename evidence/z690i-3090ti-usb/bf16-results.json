@@ -1,0 +1,231 @@
+{
+  "format": 1,
+  "provenance": "Original measured script SHA retained; GPU UUID, lease ID, host paths and per-sample wall-clock timestamps removed. Numeric samples unchanged.",
+  "runs": [
+    {
+      "torch": "2.12.1+cu130",
+      "cuda": "13.0",
+      "source_sha256": "79a5b1a2a398e57b2ed91988982f15d76a15eb8ae49073ba4fe19050541e5f1f",
+      "input_dtype": "bfloat16",
+      "output_dtype": "float32",
+      "bf16_reduced_precision_reduction": false,
+      "complete": true,
+      "state": "locked",
+      "gpu": "NVIDIA GeForce RTX 3090 Ti",
+      "driver": "610.88",
+      "power_limit": "450.00 W",
+      "measurements": [
+        {
+          "n": 8192,
+          "warmup": 200,
+          "iterations_per_sample": 500,
+          "median_tflops": 85.18298014126682,
+          "checked_elements": 64,
+          "max_abs_error": 0.0,
+          "samples": [
+            {
+              "gemm_ms": 13.0909208984375,
+              "tflops": 83.9903958099109
+            },
+            {
+              "gemm_ms": 12.9034794921875,
+              "tflops": 85.21047585976378
+            },
+            {
+              "gemm_ms": 12.90764453125,
+              "tflops": 85.18298014126682
+            },
+            {
+              "gemm_ms": 12.8951279296875,
+              "tflops": 85.26566264183201
+            },
+            {
+              "gemm_ms": 13.0053896484375,
+              "tflops": 84.54276707565606
+            }
+          ]
+        },
+        {
+          "n": 4096,
+          "warmup": 200,
+          "iterations_per_sample": 500,
+          "median_tflops": 72.76748333406198,
+          "checked_elements": 64,
+          "max_abs_error": 0.0,
+          "samples": [
+            {
+              "gemm_ms": 1.861607177734375,
+              "tflops": 73.82811750826339
+            },
+            {
+              "gemm_ms": 1.8887413330078124,
+              "tflops": 72.76748333406198
+            },
+            {
+              "gemm_ms": 1.9095628662109374,
+              "tflops": 71.97403966317911
+            },
+            {
+              "gemm_ms": 1.9278663330078125,
+              "tflops": 71.29070678752448
+            },
+            {
+              "gemm_ms": 1.8669383544921876,
+              "tflops": 73.61729600835362
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "torch": "2.12.1+cu130",
+      "cuda": "13.0",
+      "source_sha256": "79a5b1a2a398e57b2ed91988982f15d76a15eb8ae49073ba4fe19050541e5f1f",
+      "input_dtype": "bfloat16",
+      "output_dtype": "float32",
+      "bf16_reduced_precision_reduction": false,
+      "complete": true,
+      "state": "usb-unlocked",
+      "gpu": "NVIDIA GeForce RTX 3090 Ti",
+      "driver": "610.88",
+      "power_limit": "450.00 W",
+      "measurements": [
+        {
+          "n": 8192,
+          "warmup": 200,
+          "iterations_per_sample": 500,
+          "median_tflops": 142.86996545978067,
+          "checked_elements": 64,
+          "max_abs_error": 0.0,
+          "samples": [
+            {
+              "gemm_ms": 7.6298095703125,
+              "tflops": 144.10734863609008
+            },
+            {
+              "gemm_ms": 7.67435791015625,
+              "tflops": 143.27083003529268
+            },
+            {
+              "gemm_ms": 7.695890625,
+              "tflops": 142.86996545978067
+            },
+            {
+              "gemm_ms": 7.6981962890625,
+              "tflops": 142.82717489786177
+            },
+            {
+              "gemm_ms": 7.70044873046875,
+              "tflops": 142.78539683349976
+            }
+          ]
+        },
+        {
+          "n": 4096,
+          "warmup": 200,
+          "iterations_per_sample": 500,
+          "median_tflops": 132.95228452554358,
+          "checked_elements": 64,
+          "max_abs_error": 0.0,
+          "samples": [
+            {
+              "gemm_ms": 1.0150440673828125,
+              "tflops": 135.40195730257537
+            },
+            {
+              "gemm_ms": 1.0646405029296875,
+              "tflops": 129.09423706292802
+            },
+            {
+              "gemm_ms": 1.05298486328125,
+              "tflops": 130.52319958685896
+            },
+            {
+              "gemm_ms": 1.0337464599609374,
+              "tflops": 132.95228452554358
+            },
+            {
+              "gemm_ms": 1.0260008544921875,
+              "tflops": 133.95598343826381
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "torch": "2.12.1+cu130",
+      "cuda": "13.0",
+      "source_sha256": "79a5b1a2a398e57b2ed91988982f15d76a15eb8ae49073ba4fe19050541e5f1f",
+      "input_dtype": "bfloat16",
+      "output_dtype": "float32",
+      "bf16_reduced_precision_reduction": false,
+      "complete": true,
+      "state": "internal-unlocked",
+      "gpu": "NVIDIA GeForce RTX 3090 Ti",
+      "driver": "610.88",
+      "power_limit": "450.00 W",
+      "measurements": [
+        {
+          "n": 8192,
+          "warmup": 200,
+          "iterations_per_sample": 500,
+          "median_tflops": 143.22765328710597,
+          "checked_elements": 64,
+          "max_abs_error": 0.0,
+          "samples": [
+            {
+              "gemm_ms": 7.64294970703125,
+              "tflops": 143.85959216302146
+            },
+            {
+              "gemm_ms": 7.65079931640625,
+              "tflops": 143.71199430342202
+            },
+            {
+              "gemm_ms": 7.70218212890625,
+              "tflops": 142.7532625656226
+            },
+            {
+              "gemm_ms": 7.67667138671875,
+              "tflops": 143.22765328710597
+            },
+            {
+              "gemm_ms": 7.6969453125,
+              "tflops": 142.85038845090534
+            }
+          ]
+        },
+        {
+          "n": 4096,
+          "warmup": 200,
+          "iterations_per_sample": 500,
+          "median_tflops": 133.63862148677802,
+          "checked_elements": 64,
+          "max_abs_error": 0.0,
+          "samples": [
+            {
+              "gemm_ms": 0.9996390380859375,
+              "tflops": 137.48858161358098
+            },
+            {
+              "gemm_ms": 1.0654739990234374,
+              "tflops": 128.9932495752782
+            },
+            {
+              "gemm_ms": 1.0537164306640625,
+              "tflops": 130.4325807896766
+            },
+            {
+              "gemm_ms": 1.0284373779296876,
+              "tflops": 133.63862148677802
+            },
+            {
+              "gemm_ms": 1.0039476318359375,
+              "tflops": 136.8985284826688
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -97,6 +97,13 @@ int main(int argc,char **argv) {
   UseInternalMedia=TRUE;HeadSetup(0);EFI_STATUS internal=run_app();UseInternalMedia=FALSE;
   CHECK(internal!=EFI_SUCCESS && !Gu.started && !fake.mmio_writes && !fake.master_enables && !fake.flrs);dispose_host_fixture();
   puts("PASS USB media: USB child volume accepted; internal-partition child volume refused");
+#else
+  HeadSetup(0);Media[24]^=1;EFI_STATUS wrong=run_app();
+  CHECK(wrong!=EFI_SUCCESS && !Gu.started && !fake.mmio_writes && !fake.master_enables && !fake.flrs);dispose_host_fixture();
+  HeadSetup(0);memset(Media,0,sizeof(Media));memcpy(Media,(UINT8[]){3,5,6,0,1,0,127,255,4,0},10);
+  EFI_STATUS usb=run_app();
+  CHECK(usb!=EFI_SUCCESS && !Gu.started && !fake.mmio_writes && !fake.master_enables && !fake.flrs);dispose_host_fixture();
+  puts("PASS internal media: pinned partition accepted; wrong GUID and USB refused before hardware effects");
 #endif
   puts("PASS headless real app/core: zero-GOP and virtual-only success; physical/invalid GOP, late input/log mutation, Esc, file warning/failure and owner warning blocked; console calls zero");return 0;
 }

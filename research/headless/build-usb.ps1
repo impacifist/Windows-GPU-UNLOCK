@@ -3,9 +3,10 @@
 # child accept only the USB device they were loaded from instead of a pinned internal
 # ESP GUID. Builds files only: no staging, boot entries or firmware settings change.
 param([Parameter(Mandatory)][guid]$WindowsEspGuid,[string]$Clang='clang',[string]$LldLink='lld-link',[string]$Python='python',
- [ValidateSet('b650m-3090fe','b660m-3070ti','x870-3090ti','b660plus-3060','h610m-3060','local')][string]$HardwareProfile='b650m-3090fe')
+ [ValidateSet('z690i-3090ti','b650m-3090fe','b660m-3070ti','x870-3090ti','b660plus-3060','h610m-3060','local')][string]$HardwareProfile='b650m-3090fe')
 $profiles=@{
  'b650m-3090fe'=@{Defines=@('-DGU_PROFILE_B650M_3090FE');Name='ASUS-TUF-B650M-PLUS-WIFI-3057-RTX3090-FE'}
+ 'z690i-3090ti'=@{Defines=@('-DGU_PROFILE_Z690I_3090TI');Name='ASUS-ROG-STRIX-Z690-I-4601-RTX3090TI'}
  'b660m-3070ti'=@{Defines=@('-DGU_PROFILE_B660M_3070TI');Name='ASUS-TUF-GAMING-B660M-E-D4-4003-RTX3070TI'}
  'x870-3090ti'=@{Defines=@('-DGU_PROFILE_X870_3090TI');Name='GIGABYTE-X870-AORUS-ELITE-WIFI7-F13d-RTX3090TI'}
  'h610m-3060'=@{Defines=@('-DGU_PROFILE_H610M_3060');Name='GIGABYTE-H610M-H-FC-RTX3060-12GB'}

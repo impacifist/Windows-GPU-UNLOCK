@@ -5,6 +5,8 @@ function Get-HeadlessInputInventory([string]$Repo,[switch]$WithContract){
  $paths=@(Get-ChildItem -LiteralPath $runtime -Recurse -File | Where-Object {$_.Extension -in '.c','.h','.ps1' -and $_.FullName.Substring($runtime.Length+1) -notmatch '(^|[\\/])build([\\/]|$)'})
  $paths+=Get-ChildItem -LiteralPath (Join-Path $base 'deps/edk2/MdePkg/Include') -Recurse -File -Filter '*.h'
  $paths+=Get-Item -LiteralPath (Join-Path $base 'internal-boot/local-config.json'),(Join-Path $base 'internal-boot/unlock/assets.json'),(Join-Path $base 'research/headless/build-unlock.ps1')
+ $crossBuilder=Join-Path $base 'research/profile/build_z690i.py'
+ if(Test-Path -LiteralPath $crossBuilder){$paths+=Get-Item -LiteralPath $crossBuilder}
  if($WithContract){$paths+=Get-Item -LiteralPath (Join-Path $base 'internal-boot/boot/build/headless/child-contract.h')}
  return @($paths | Sort-Object FullName -Unique | ForEach-Object {[ordered]@{Path=$_.FullName.Substring($base.Length+1).Replace([char]92,[char]47);Sha256=(Get-FileHash -LiteralPath $_.FullName).Hash.ToLowerInvariant()}})
 }
@@ -22,6 +24,7 @@ function Assert-HeadlessLocalConfig([string]$Repo){
 }
 function Get-HeadlessProfileIdentity([string]$Profile){
  switch($Profile){
+  'ASUS-ROG-STRIX-Z690-I-4601-RTX3090TI'{return @{Board='ROG STRIX Z690-I GAMING WIFI';Bios='4601'}}
   'ASUS-TUF-B650M-PLUS-WIFI-3057-RTX3090-FE'{return @{Board='TUF GAMING B650M-PLUS WIFI';Bios='3057'}}
   'ASUS-TUF-GAMING-B660M-E-D4-4003-RTX3070TI'{return @{Board='TUF GAMING B660M-E D4';Bios='4003'}}
  }
@@ -30,10 +33,12 @@ function Get-HeadlessProfileIdentity([string]$Profile){
 function Assert-HeadlessPackage([string]$Repo){
  $null=Assert-HeadlessLocalConfig $Repo
  $m=Get-Content -LiteralPath (Join-Path $Repo 'internal-boot/boot/build/headless/manifest.json') -Raw | ConvertFrom-Json
- if($m.Format -ne 2 -or $m.Mode -ne 'single-rtx-headless-unlock-then-windows' -or $m.CanUnlock -ne $true -or $m.RequiresHumanKey -ne $false -or $m.HardwareProfile -notin @('ASUS-TUF-B650M-PLUS-WIFI-3057-RTX3090-FE','ASUS-TUF-GAMING-B660M-E-D4-4003-RTX3070TI')){throw 'Unexpected headless package profile'}
+ if($m.Format -ne 2 -or $m.Mode -ne 'single-rtx-headless-unlock-then-windows' -or $m.CanUnlock -ne $true -or $m.RequiresHumanKey -ne $false -or $m.HardwareProfile -notin @('ASUS-ROG-STRIX-Z690-I-4601-RTX3090TI','ASUS-TUF-B650M-PLUS-WIFI-3057-RTX3090-FE','ASUS-TUF-GAMING-B660M-E-D4-4003-RTX3070TI')){throw 'Unexpected headless package profile'}
  $actual=Get-HeadlessInputInventory $Repo -WithContract
  if($actual.Count -ne $m.Inputs.Count){throw 'Build source set changed; rebuild the package'}
- for($i=0;$i -lt $actual.Count;$i++){if($actual[$i].Path -cne $m.Inputs[$i].Path -or $actual[$i].Sha256 -ne $m.Inputs[$i].Sha256){throw ('Build input changed; rebuild: '+$actual[$i].Path)}}
+ # Normalize manifest ordering from cross-platform builders; compare every path/hash.
+ $claimed=@($m.Inputs | Sort-Object Path)
+ for($i=0;$i -lt $actual.Count;$i++){if($actual[$i].Path -cne $claimed[$i].Path -or $actual[$i].Sha256 -ne $claimed[$i].Sha256){throw ('Build input changed; rebuild: '+$actual[$i].Path)}}
  $wrapper=Join-Path $Repo 'internal-boot/boot/build/headless/HEADLESS.EFI'
  $child=Join-Path $Repo 'internal-boot/unlock/build/experimental/entryLatchedSs1Full/internal/automatic/headless-research/RTX3090-EXPERIMENTAL-entryLatchedSs1Full-INTERNAL-AUTO-HEADLESS-RESEARCH.EFI'
  $cmFile=Join-Path (Split-Path $child) 'build-manifest.json';$cm=Get-Content -LiteralPath $cmFile -Raw | ConvertFrom-Json

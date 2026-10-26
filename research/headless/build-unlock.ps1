@@ -1,7 +1,7 @@
 # GPL-2.0-only. Isolated exact-platform headless unlock wrapper/child package.
-param([string]$Clang='clang',[string]$LldLink='lld-link',[string]$Python='python',[ValidateSet('b650m-3090fe','b660m-3070ti')][string]$HardwareProfile='b650m-3090fe')
-$hwDefine=if($HardwareProfile -eq 'b660m-3070ti'){'-DGU_PROFILE_B660M_3070TI'}else{'-DGU_PROFILE_B650M_3090FE'}
-$hwName=if($HardwareProfile -eq 'b660m-3070ti'){'ASUS-TUF-GAMING-B660M-E-D4-4003-RTX3070TI'}else{'ASUS-TUF-B650M-PLUS-WIFI-3057-RTX3090-FE'}
+param([string]$Clang='clang',[string]$LldLink='lld-link',[string]$Python='python',[ValidateSet('b650m-3090fe','b660m-3070ti','z690i-3090ti')][string]$HardwareProfile='b650m-3090fe')
+$hwDefine=if($HardwareProfile -eq 'z690i-3090ti'){'-DGU_PROFILE_Z690I_3090TI'}elseif($HardwareProfile -eq 'b660m-3070ti'){'-DGU_PROFILE_B660M_3070TI'}else{'-DGU_PROFILE_B650M_3090FE'}
+$hwName=if($HardwareProfile -eq 'z690i-3090ti'){'ASUS-ROG-STRIX-Z690-I-4601-RTX3090TI'}elseif($HardwareProfile -eq 'b660m-3070ti'){'ASUS-TUF-GAMING-B660M-E-D4-4003-RTX3070TI'}else{'ASUS-TUF-B650M-PLUS-WIFI-3057-RTX3090-FE'}
 $ErrorActionPreference='Stop'
 $repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 . (Join-Path $repo 'internal-boot/install/headless-package.ps1')

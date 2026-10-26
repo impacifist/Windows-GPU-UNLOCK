@@ -9,7 +9,7 @@ param(
  [switch]$HeadlessResearch,
  [switch]$UsbMedia,
  [ValidateSet('original03100062','observed03000062','entryLatchedSs1Preserve','entryLatchedSs1Full')][string]$StockProfile,
- [ValidateSet('b650m-3090fe','b660m-3070ti','x870-3090ti','b660plus-3060','h610m-3060','local')][string]$HardwareProfile='b650m-3090fe'
+ [ValidateSet('z690i-3090ti','b650m-3090fe','b660m-3070ti','x870-3090ti','b660plus-3060','h610m-3060','local')][string]$HardwareProfile='b650m-3090fe'
 )
 # Reviewed single-machine profiles; mirrors internal-boot/unlock/machine-profile.h.
 # A profile is fixed provenance: it selects constants compiled into the EFI,
@@ -17,6 +17,7 @@ param(
 # write-eligible only with matching passing evidence (local-profile.ps1).
 $hwTable=@{
  'b650m-3090fe'=[ordered]@{Define='-DGU_PROFILE_B650M_3090FE';Name='ASUS-TUF-B650M-PLUS-WIFI-3057-RTX3090-FE';TargetPci='220410de';Subsystem='145410de';Chip='0xb72000a1';Prom='8ea297373e9e5d3600ff41ad9fae88f2d14c98c017d100669f7333981da673b4';Memory='0x6000';HeadlessOnly=$false}
+ 'z690i-3090ti'=[ordered]@{Define='-DGU_PROFILE_Z690I_3090TI';Name='ASUS-ROG-STRIX-Z690-I-4601-RTX3090TI';TargetPci='220310de';Subsystem='161810de';Chip='0xb72000a1';Prom='586baad14e09c28019499c7270aa608b878f8a87c457de13490fa7a855cfb30a';Memory='0x5ff4';HeadlessOnly=$true;UsbOnly=$false}
  'b660m-3070ti'=[ordered]@{Define='-DGU_PROFILE_B660M_3070TI';Name='ASUS-TUF-GAMING-B660M-E-D4-4003-RTX3070TI';TargetPci='248210de';Subsystem='50521462';Chip='0xb74000a1';Prom='f429aa1d5f0f18d11ed9a19503683a674fe3541ae77e959df8e732652c2b4df0';Memory='0x2000';HeadlessOnly=$true}
  'h610m-3060'=[ordered]@{Define='-DGU_PROFILE_H610M_3060';Name='GIGABYTE-H610M-H-FC-RTX3060-12GB';TargetPci='250410de';Subsystem='40961458';Chip='0xb76000a1';Prom='727dd8332f028783d3de2f81a707e4d9448c3238db6180271f3a8e9c03a808c9';Memory='0x3000';HeadlessOnly=$true;UsbOnly=$true}
  'x870-3090ti'=[ordered]@{Define='-DGU_PROFILE_X870_3090TI';Name='GIGABYTE-X870-AORUS-ELITE-WIFI7-F13d-RTX3090TI';TargetPci='220310de';Subsystem='88701043';Chip='0xb72000a1';Prom='943565975885ee71a7e861265984c785f564f35272c32395ee7410b353d9bbc4';Memory='0x5ff4';HeadlessOnly=$true}
