@@ -24,13 +24,14 @@ function Get-HeadlessProfileIdentity([string]$Profile){
  switch($Profile){
   'ASUS-TUF-B650M-PLUS-WIFI-3057-RTX3090-FE'{return @{Board='TUF GAMING B650M-PLUS WIFI';Bios='3057'}}
   'ASUS-TUF-GAMING-B660M-E-D4-4003-RTX3070TI'{return @{Board='TUF GAMING B660M-E D4';Bios='4003'}}
+  'MAXSUN-MS-TERMINATOR-B760M-D4-H7.8G-RTX3080LHR'{return @{Board='MS-Terminator B760M D4';Bios='H7.8G'}}
  }
  throw ('Unknown hardware profile: '+$Profile)
 }
 function Assert-HeadlessPackage([string]$Repo){
  $null=Assert-HeadlessLocalConfig $Repo
  $m=Get-Content -LiteralPath (Join-Path $Repo 'internal-boot/boot/build/headless/manifest.json') -Raw | ConvertFrom-Json
- if($m.Format -ne 2 -or $m.Mode -ne 'single-rtx-headless-unlock-then-windows' -or $m.CanUnlock -ne $true -or $m.RequiresHumanKey -ne $false -or $m.HardwareProfile -notin @('ASUS-TUF-B650M-PLUS-WIFI-3057-RTX3090-FE','ASUS-TUF-GAMING-B660M-E-D4-4003-RTX3070TI')){throw 'Unexpected headless package profile'}
+ if($m.Format -ne 2 -or $m.Mode -ne 'single-rtx-headless-unlock-then-windows' -or $m.CanUnlock -ne $true -or $m.RequiresHumanKey -ne $false -or $m.HardwareProfile -notin @('ASUS-TUF-B650M-PLUS-WIFI-3057-RTX3090-FE','ASUS-TUF-GAMING-B660M-E-D4-4003-RTX3070TI','MAXSUN-MS-TERMINATOR-B760M-D4-H7.8G-RTX3080LHR')){throw 'Unexpected headless package profile'}
  $actual=Get-HeadlessInputInventory $Repo -WithContract
  if($actual.Count -ne $m.Inputs.Count){throw 'Build source set changed; rebuild the package'}
  for($i=0;$i -lt $actual.Count;$i++){if($actual[$i].Path -cne $m.Inputs[$i].Path -or $actual[$i].Sha256 -ne $m.Inputs[$i].Sha256){throw ('Build input changed; rebuild: '+$actual[$i].Path)}}

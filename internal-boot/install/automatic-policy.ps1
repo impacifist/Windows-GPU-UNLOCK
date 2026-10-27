@@ -5,7 +5,8 @@ function Resolve-NewBootCopy {
  if($new.Count -ne 1){throw 'Cannot attribute one new boot copy; inspect firmware backup'}
  $id=$new[0];$text=$AfterEntries[$id]
  if($text -notmatch ('(?m)^description\s+'+[regex]::Escape($Name)+'\s*$')){throw 'New entry description differs'}
- $strip='(?m)^(identifier|description)[^\r\n]*(\r?\n|$)'
+ $zh=[string]::Join('',@([char]0x6807,[char]0x8bc6,[char]0x7b26))
+ $strip="(?m)^((?:identifier|$zh)|description)[^\r\n]*(\r?\n|$)"
  if(($text -replace $strip,'') -cne ($Source -replace $strip,'')){throw 'New entry is not the expected boot-manager copy'}
  return $id
 }
