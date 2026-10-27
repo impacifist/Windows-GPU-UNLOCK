@@ -1,0 +1,37 @@
+/* GPL-2.0-only. Immutable hardware fingerprint metadata. No captured bytes. */
+#pragma once
+#define GU_NO_SEPARATE_EDID 1
+#define GU_TARGET_BUS 0x2dU
+#define GU_PROFILE_NAME "MSI-MPG-X570-GAMING-PLUS-AN0-ASUS-RTX3080TI-REPLAY"
+#define GU_BOARD_ID 0x220810deU
+#define GU_BOARD_SUBSYSTEM 0x88031043U
+#define GU_BAR0_BASE 0xfa000000ULL
+#define GU_BAR0_END 0xfaffffffULL
+#define GU_DEVICE_MEMORY_SIZE 0x3000U
+#define GU_CHIP_ID 0xb72000a1U
+#define GU_PROM_SHA256 "8e07ca66dd9221b4c5bc267e4568cae134d19dd964cf0d4bc2217ca0a13960e4"
+#define GU_ROOT_PORT_DEVICE 3U
+#define GU_ROOT_PORT_FUNCTION 1U
+#define GU_RTX_PATH_BYTES \
+  2,1,12,0,0xd0,0x41,3,10,0,0,0,0,1,1,6,0,1,3,1,1,6,0,0,0,2,3,8,0,112,3,1,128,127,255,4,0
+#define GU_CONSOLE_TEXT_SIZE 0x60c0U
+#define GU_CONSOLE_TEXT_STOP 0x1290U
+#define GU_CONSOLE_TEXT_VERSION 0x10U
+#define GU_CONSOLE_TEXT_BYTES 0x4e9aU
+#define GU_CONSOLE_TEXT_SHA256 "83c91023c8368e7ba713d9e6f31cba5c7fc3ec0cc378303551bc274e85d1f9dd"
+#define GU_CONSOLE_GFX_SIZE 0x39e0U
+#define GU_CONSOLE_GFX_STOP 0xa3cU
+#define GU_CONSOLE_GFX_VERSION 0x10U
+#define GU_CONSOLE_GFX_BYTES 0x1c70U
+#define GU_CONSOLE_GFX_SHA256 "5611b854c94d96dd18e511316d9702e1407895fd52ce1ab6c961891f78d1df95"
+#define GU_NVGOP_VERSION 0x6000aU
+#define GU_NVGOP_IMAGE_SIZE 0x2be40U
+#define GU_NVGOP_STOP 0x698U
+#define GU_NVGOP_TEXT_BYTES 0x24426U
+#define GU_NVGOP_TEXT_SHA256 "8924ba488419e5d82b524d10e8dd63bfe886f077026fae1a9cc03e25b920b276"
+/* No EDID driver exists in this profile. Sentinel metadata makes accidental
+ * calls fail closed; Profile also explicitly rejects the absent role. */
+#define GU_EDID_IMAGE_SIZE 0U
+#define GU_EDID_STOP 0U
+#define GU_EDID_TEXT_BYTES 0U
+#define GU_EDID_TEXT_SHA256 ""

@@ -5,7 +5,13 @@
  * This stage does NOT remove RTX GOP and must NEVER execute the unlock app.
  */
 #include "prepare-console.h"
+#include "../unlock/sha256.h"
+#ifdef GU_RELEASE_PILOT
+#include "../../research/msi-release-pilot/profile.h"
+#else
 #include "../unlock/machine-profile.h"
+#define GU_TARGET_BUS 1U
+#endif
 #include "media.h"
 #include <Protocol/GraphicsOutput.h>
 #include <Protocol/PciIo.h>
@@ -30,7 +36,7 @@
 #if defined(GU_HEADLESS_RESEARCH) && (!defined(GU_SINGLE_RTX_CONSOLE) || !defined(GU_FULL_UNLOCK) || !defined(GU_AUTOMATIC_BOOT) || defined(GU_DIAGNOSTIC_ONLY) || defined(GU_CONSOLE_PREPARE))
 #error Headless unlock requires an isolated automatic single RTX full build
 #endif
-#if defined(GU_SINGLE_RTX_CONSOLE) && !defined(GU_HEADLESS_RESEARCH) && (!defined(GU_DIAGNOSTIC_ONLY) || !defined(GU_CONSOLE_PREPARE) || defined(GU_FULL_UNLOCK) || defined(GU_AUTOMATIC_BOOT))
+#if defined(GU_SINGLE_RTX_CONSOLE) && !defined(GU_HEADLESS_RESEARCH) && !defined(GU_RELEASE_PILOT) && (!defined(GU_DIAGNOSTIC_ONLY) || !defined(GU_CONSOLE_PREPARE) || defined(GU_FULL_UNLOCK) || defined(GU_AUTOMATIC_BOOT))
 #error Single RTX console research must remain a separate non-unlock build
 #endif
 
@@ -220,7 +226,7 @@ static EFI_STATUS Displays(EFI_SYSTEM_TABLE *t,PLAN *p,BOOLEAN first) {
 #endif
     } else if(DisplayRoute(path,RtxPath) && !rtx) {
       rtx=handles[i];UINT32 cfg[16];EFI_HANDLE h=NULL;EFI_PCI_IO_PROTOCOL *io=NULL;
-      s=PciFor(bs,path,1,GU_BOARD_ID,GU_BOARD_SUBSYSTEM,&h,&io,cfg);
+      s=PciFor(bs,path,GU_TARGET_BUS,GU_BOARD_ID,GU_BOARD_SUBSYSTEM,&h,&io,cfg);
       if(s!=EFI_SUCCESS)break;
       if(first){p->RtxPci=h;p->RtxIo=io;for(UINTN j=0;j<16;j++)p->RtxConfig[j]=cfg[j];for(UINTN j=0;j<36;j++)p->RtxDisplayPath[j]=((UINT8 *)path)[j];}
       else if(p->RtxPci!=h || p->RtxIo!=io || !Bytes(cfg,p->RtxConfig,sizeof(cfg)) || !PathMatches(path,p->RtxDisplayPath))s=EFI_NOT_READY;
@@ -273,6 +279,14 @@ static EFI_STATUS Driver(EFI_BOOT_SERVICES *bs,EFI_HANDLE agent,const EFI_GUID *
   UINTN n=0;
   if(!GuInspectPath(im->FilePath,NULL,&n,NULL,NULL) || n!=24 || im->FilePath->Type!=MEDIA_DEVICE_PATH || im->FilePath->SubType!=MEDIA_PIWG_FW_FILE_DP ||
      im->FilePath->Length[0]!=20 || im->FilePath->Length[1] || !GuGuidEqual((UINT8 *)im->FilePath+4,file))return EFI_UNSUPPORTED;
+#ifdef GU_RELEASE_PILOT
+  BOOLEAN text=GuGuidEqual(file,&OutFile),gfx=GuGuidEqual(file,&GfxFile);
+  if(!text && !gfx)return EFI_UNSUPPORTED;
+  UINTN bytes=text?GU_CONSOLE_TEXT_BYTES:GU_CONSOLE_GFX_BYTES;
+  const char *hash=text?GU_CONSOLE_TEXT_SHA256:GU_CONSOLE_GFX_SHA256;
+  if(0x2a0U+bytes>im->ImageSize)return EFI_UNSUPPORTED;
+  if(!GuHashMatches((UINT8 *)im->ImageBase+0x2a0,bytes,hash))return EFI_CRC_ERROR;
+#endif
   return EFI_SUCCESS;
 }
 #if GU_CONSOLE_AGGREGATE

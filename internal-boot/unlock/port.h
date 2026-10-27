@@ -3,7 +3,12 @@
 #include <Protocol/PciIo.h>
 #include <Protocol/DevicePath.h>
 #include <stddef.h>
+#ifdef GU_RELEASE_PILOT
+#include "../../research/msi-release-pilot/profile.h"
+#else
 #include "machine-profile.h"
+#define GU_TARGET_BUS 1U
+#endif
 
 /* Secondary display adapter on the B650M profile (Raphael iGPU). The
    aggregate-console profile has no second adapter. */

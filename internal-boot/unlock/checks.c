@@ -26,7 +26,7 @@ BOOLEAN GuCheckConfig(const UINT32 Config[64], UINTN Segment, UINTN Bus,
 
   if (Out == NULL) return FALSE;
   *Out = Caps;
-  if (Config == NULL || Segment != 0 || Bus != 1 || Device != 0 || Function != 0)
+  if (Config == NULL || Segment != 0 || Bus != GU_TARGET_BUS || Device != 0 || Function != 0)
     return FALSE;
   if (Config[0] != GU_BOARD_ID || Config[0x2c / 4] != GU_BOARD_SUBSYSTEM ||
       ConfigByte(Config, 0x0b) != PCI_CLASS_DISPLAY ||
