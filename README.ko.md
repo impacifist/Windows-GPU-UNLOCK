@@ -12,6 +12,10 @@
 누구나 찾아보고 검토할 수 있도록 [GitHub 이슈](https://github.com/impacifist/Windows-GPU-UNLOCK/issues)와
 PR에 남겨주세요. [커뮤니티 룰 — English](docs/DISCORD-RULES.en.md)도 확인해 주세요.
 
+기여는 [공통 수정과 로컬 프로필 도구 개선](docs/CONTRIBUTION-POLICY.ko.md)을 우선합니다.
+장비 제보는 환영하며, 다른 보드의 상수만 추가하는 변경은 일반적으로 production 프로필에
+추가하지 않습니다.
+
 ## GPU별 지원 현황
 
 **성공 보고는 특정 카드와 장비 구성에 해당하며, 같은 GPU 모델 전체의 지원을 뜻하지 않습니다.**

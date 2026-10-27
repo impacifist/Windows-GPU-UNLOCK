@@ -14,6 +14,10 @@ and project decisions in [GitHub issues](https://github.com/impacifist/Windows-G
 and pull requests so everyone can find and review them. Please read the
 [community rules](docs/DISCORD-RULES.en.md).
 
+Contributions prioritize [shared fixes and local-profile tooling](docs/CONTRIBUTION-POLICY.en.md).
+Machine reports are welcome; adding another board's constants alone does not
+normally add a production profile.
+
 ## GPU support
 
 **Success reports apply to specific cards and systems, not every card of the same

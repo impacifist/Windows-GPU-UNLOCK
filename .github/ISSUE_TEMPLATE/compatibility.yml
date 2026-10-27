@@ -7,6 +7,7 @@ body:
       value: |
         Thank you for helping investigate portability. EFI support is restricted to the exact published machine profiles; a matching GPU model alone is insufficient.
         A report does not authorize unlock. Do not bypass checks or run a new experiment to complete this form.
+        A report is research input, not a promise of a dedicated profile or maintainer hardware testing. Reusable tool/core improvements are prioritized.
         Read docs/CONTRIBUTING.en.md. Review all content before posting publicly.
         Never attach firmware, PROM/VBIOS dumps, recovery keys, serials, UUIDs or personal paths.
   - type: dropdown

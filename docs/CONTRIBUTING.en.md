@@ -2,7 +2,16 @@
 
 **English** | [한국어](CONTRIBUTING.ko.md)
 
-Reports from other motherboard, CPU and GPU configurations help prioritize ports. **Submitting a report does not require booting the EFI, changing BIOS settings or running the unlock.** EFI support is restricted to the exact [published machine profiles](COMPATIBILITY.en.md); a matching GPU model alone is insufficient.
+Reports from other motherboard, CPU and GPU configurations help improve shared compatibility tools and identify reusable changes. **Submitting a report does not require booting the EFI, changing BIOS settings or running the unlock.** EFI support is restricted to the exact [published machine profiles](COMPATIBILITY.en.md); a matching GPU model alone is insufficient.
+
+## Before proposing a change
+
+Read the [contribution and review policy](CONTRIBUTION-POLICY.en.md).
+We prioritize reusable fixes, diagnostics and local-profile tools. A successful
+machine report or another board's constants do not by themselves require a new
+profile in main. Existing reference profiles remain; new fixed profiles are a
+documented maintainer exception. The local-profile workflow has a restricted
+reviewed envelope, so it must not be presented as universal support.
 
 ## Collect an inventory on Windows
 
