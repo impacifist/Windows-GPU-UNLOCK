@@ -7,9 +7,13 @@
   `0x438b4`, `0xea00` bytes).
 - This is **not hardware evidence**. No write boot exists for this profile. Its BIOS firmware template
   is new: nvgop `0x6000a` and the AMI console/EDID fingerprints have not released on any reviewed
-  machine. The 16 host jobs of `research/profile/test-b550-3060.ps1` plus an R2 replay of the real
-  captured console graph pass with simulated EFI/MMIO/DMA; they replace neither a supervised boot nor
-  recovery testing.
+  machine. The 19 host jobs of `research/profile/test-b550-3060.ps1` pass with simulated EFI/MMIO/DMA,
+  including an R2 replay of the real captured console graph and a replay of the whole driver release
+  (EDID stop, NVIDIA stop, IO/MEM decode restore, final verifier) on that graph with the captured
+  EDID and nvgop images. They replace neither a supervised boot nor recovery testing; the simulated
+  nvgop `Stop()` does not exercise the real driver's behavior.
+- `test_full.c` / `test_headless_full.c` now take the EDID and nvgop image size, stop and version from
+  the profile instead of constants, accept loaded-image dumps, and handle one or two display children.
 - The fixed-profile bus rule now also admits this profile's bus 06; every other fixed profile keeps 01.
 
 # Changes

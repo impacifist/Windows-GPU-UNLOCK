@@ -23,7 +23,8 @@ function Import-GuHostCompiler([string]$VcVars) {
 $fx=Join-Path $repo 'research/profile/local/fixtures'
 $prom=Join-Path $fx 'PROM.BIN';$probe=Join-Path $fx 'probe/REPORT.TXT';$cold=Join-Path $fx 'cold/REPORT.TXT'
 $console=Join-Path $fx 'console/DIAG.TXT'
-foreach($f in @($prom,$probe,$cold,$console)){if(!(Test-Path -LiteralPath $f)){throw "Missing fixture $f"}}
+$mouseImg=Join-Path $fx 'console/IMG07.BIN';$nvImg=Join-Path $fx 'console/IMG26.BIN'
+foreach($f in @($prom,$probe,$cold,$console,$mouseImg,$nvImg)){if(!(Test-Path -LiteralPath $f)){throw "Missing fixture $f"}}
 if((Get-FileHash -LiteralPath $prom).Hash.ToLowerInvariant() -ne '2fdefb4b02f64022e9ade1adf9f1aa3fd8aa4a2a609c59bdcb46c4e1f4292439'){throw 'PROM fixture is not this card'}
 foreach($a in (Get-Content -LiteralPath (Join-Path $repo 'internal-boot/unlock/assets.json') -Raw | ConvertFrom-Json)) {
  $p=Join-Path $Assets $a.Name
@@ -81,6 +82,15 @@ try {
  Run-Job 'r2 console replay (real graph)' ($d+$profile+@('test_r2.c','research-input.c','console-flow.c','-o','build/r2/test-r2-b550.exe')) @('./build/r2/test-r2-b550.exe')
  Run-Job 'r2 replay other profile (must reject)' ($d+@($foreign,'test_r2.c','research-input.c','console-flow.c','-o','build/r2/test-r2-other.exe')) @('./build/r2/test-r2-other.exe') 1
  Run-Job 'cold pre-check (read-only)' ($w+$profile+@('-DGU_HEADLESS_RESEARCH','-DGU_SINGLE_RTX_CONSOLE','-DGU_FULL_UNLOCK','-DGU_AUTOMATIC_BOOT','test_cold_precheck.c','console-flow.c','../unlock/checks.c','../unlock/sha256.c','-o','build/cold/test-cold-b660plus.exe')) @('./build/cold/test-cold-b660plus.exe')
+ # Full driver-release replay on the real graph: EDID stop, NVIDIA stop, IO/MEM decode restore, final verifier.
+ # IMG07.BIN is the AMI EDID/mouse driver and IMG26.BIN is nvgop, both loaded-image dumps from the probe.
+ $words=[regex]::Matches([IO.File]::ReadAllText($probe),'value=0x([0-9a-f]{1,8})') | ForEach-Object {[Convert]::ToUInt32($_.Groups[1].Value,16)}
+ if(@($words).Count -ne 64){throw 'The probe fixture does not hold 64 config dwords'}
+ $configImage=New-Object byte[] 256
+ for($k=0;$k -lt 64;$k++){[BitConverter]::GetBytes([uint32]@($words)[$k]).CopyTo($configImage,$k*4)}
+ [void][IO.Directory]::CreateDirectory((Join-Path $boot 'build/release'))
+ $configPath=Join-Path $boot 'build/release/config.bin';[IO.File]::WriteAllBytes($configPath,$configImage)
+ Run-Job 'release replay (real graph, EDID + nvgop)' ($w+$profile+@('-DGU_HEADLESS_RESEARCH','-DGU_SINGLE_RTX_CONSOLE','-DGU_FULL_UNLOCK','-DGU_AUTOMATIC_BOOT','test_headless_full.c','console-flow.c','../unlock/checks.c','../unlock/sha256.c','-o','build/release/test-release-b550.exe')) @('./build/release/test-release-b550.exe',$mouseImg,$nvImg,$prom,$configPath)
  Run-Job 'full flow gates' ($w+@('test_full_flow.c','full-flow.c','-o','build/cold/test-full-flow.exe')) @('./build/cold/test-full-flow.exe')
 } finally {Pop-Location}
 

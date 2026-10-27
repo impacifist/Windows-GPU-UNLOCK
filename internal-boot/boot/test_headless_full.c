@@ -62,15 +62,16 @@ int main(int argc,char **argv) {
 }
 #else
 int main(int argc,char **argv) {
-  Check(argc==5,"two PE code fixtures, PROM and full PCI fixture required");
-  LoadMapped(argv[1],MouseMemory,sizeof(MouseMemory));LoadMapped(argv[2],NvMemory,sizeof(NvMemory));
+  Check(argc==5,"two driver code fixtures (PE or loaded-image dump), PROM and full PCI fixture required");
+  LoadDriver(argv[1],MouseMemory,sizeof(MouseMemory));LoadDriver(argv[2],NvMemory,sizeof(NvMemory));
   FILE *f=fopen(argv[3],"rb");Check(f && fread(PromMemory,1,sizeof(PromMemory),f)==sizeof(PromMemory),"read pinned PROM");fclose(f);
   f=fopen(argv[4],"rb");Check(f && fread(InitialFullConfig,1,sizeof(InitialFullConfig),f)==sizeof(InitialFullConfig),"read exact full config");fclose(f);
   DecodeTests();
   Check(Run(31)!=EFI_SUCCESS && !Calls,"missing Reset rejected before any device detach");
-  Check(RunFull(0)==EFI_SUCCESS && Calls==5 && Full.EdidDetached==2 && EnableCalls==1 && ClaimCalls==1 && CloseCalls==1,"two EDID + NV stop and bounded IO/MEM-only restore");
+  const UINTN kids=FX_EdidChild?2:1;
+  Check(RunFull(0)==EFI_SUCCESS && Calls==3+kids && Full.EdidDetached==kids && EnableCalls==1 && ClaimCalls==1 && CloseCalls==1,"EDID stop per display child, NV stop and bounded IO/MEM-only restore");
   Check(GuVerifyReleased(LastTable,TRUE)==EFI_SUCCESS,"zero physical GOP and protected graph verified");
-  Check(Live.Count+8==sizeof(FixtureEdges)/sizeof(FixtureEdges[0]),"three console edges, two EDID edges, three NV edges removed only");
+  Check(Live.Count+3+kids+1+kids==sizeof(FixtureEdges)/sizeof(FixtureEdges[0]),"three console edges, the EDID edges, the NV PCI owner and one child path per display child removed only");
   for(int scenario=1;scenario<=20;scenario++) {
     Check(RunFull(scenario)!=EFI_SUCCESS,"partial failure/code/config/cold/graph/owner/log fault stops");
     if(scenario==8 || scenario==9 || scenario==10 || scenario==11 || scenario==12 || scenario==13)Check(EnableCalls==1,"failure after effect remains failure");
@@ -79,8 +80,8 @@ int main(int argc,char **argv) {
   }
   for(int scenario=23;scenario<=30;scenario++) {
     Check(RunFull(scenario)!=EFI_SUCCESS && !EnableCalls && !ClaimCalls,"extra child/consumer/path/code/missing EDID/warning/partial NV stop blocks decode and unlock");
-    if(scenario==25 || scenario==26)Check(Calls==4,"late second child/code mutation blocks recursive NV stop");
-    if(scenario==30)Check(Calls==5 && !Full.Released,"NV partial child cleanup error cannot be promoted to release success");
+    if(scenario==25 || scenario==26)Check(Calls==2+kids,"late second child/code mutation blocks recursive NV stop");
+    if(scenario==30)Check(Calls==3+kids && !Full.Released,"NV partial child cleanup error cannot be promoted to release success");
   }
   Check(RunFull(32)!=EFI_SUCCESS && Calls==3 && !EnableCalls && !ClaimCalls,"last cold-read GOP info mutation blocks next detach");
   Check(RunFull(0)==EFI_SUCCESS,"new release session");
