@@ -110,7 +110,11 @@ static BOOLEAN GuHeadlessCheckInner(VOID) {
   for(UINTN i=0;i<current.count;i++) {
     const GU_HEADLESS_EDGE *e=&current.edges[i];
     if(GuHeadlessOwn(e)){own++;continue;}
-    if(e->handle==Gu.handle)return FALSE; /* No driver/child may remain on GPU. */
+    /* Edges on any registered target GPU are volatile by design: drivers are
+       released and our exclusive claim comes and goes during the run. Their
+       exact pre/post state is enforced by the per-card ownership pipeline,
+       not by this global graph, so they are excluded from both snapshots. */
+    if(GuIsTargetHandle(e->handle))continue;
     if(GuHeadless.ready) {
       UINTN matches=0;for(UINTN j=0;j<GuHeadless.graph.count;j++)if(GuHeadlessSame(e,&GuHeadless.graph.edges[j]))matches++;
       if(matches!=1)return FALSE;

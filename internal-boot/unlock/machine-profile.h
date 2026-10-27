@@ -10,10 +10,10 @@
  */
 #pragma once
 
-#if (defined(GU_PROFILE_B650M_3090FE) + defined(GU_PROFILE_B660M_3070TI) + defined(GU_PROFILE_B660M_3090TI) + defined(GU_PROFILE_X870_3090TI) + defined(GU_PROFILE_B660PLUS_3060) + defined(GU_PROFILE_LOCAL) + defined(GU_PROFILE_H610M_3060) + defined(GU_PROFILE_PROBE_H610M_3060)) > 1
+#if (defined(GU_PROFILE_B650M_3090FE) + defined(GU_PROFILE_B660M_3070TI) + defined(GU_PROFILE_B660M_3090TI) + defined(GU_PROFILE_X870_3090TI) + defined(GU_PROFILE_B660PLUS_3060) + defined(GU_PROFILE_LOCAL) + defined(GU_PROFILE_H610M_3060) + defined(GU_PROFILE_PROBE_H610M_3060) + defined(GU_PROFILE_B660M_DUAL)) > 1
 #error Select exactly one machine profile
 #endif
-#if !defined(GU_PROFILE_B650M_3090FE) && !defined(GU_PROFILE_B660M_3070TI) && !defined(GU_PROFILE_B660M_3090TI) && !defined(GU_PROFILE_X870_3090TI) && !defined(GU_PROFILE_B660PLUS_3060) && !defined(GU_PROFILE_LOCAL) && !defined(GU_PROFILE_H610M_3060) && !defined(GU_PROFILE_PROBE_H610M_3060)
+#if !defined(GU_PROFILE_B650M_3090FE) && !defined(GU_PROFILE_B660M_3070TI) && !defined(GU_PROFILE_B660M_3090TI) && !defined(GU_PROFILE_X870_3090TI) && !defined(GU_PROFILE_B660PLUS_3060) && !defined(GU_PROFILE_LOCAL) && !defined(GU_PROFILE_H610M_3060) && !defined(GU_PROFILE_PROBE_H610M_3060) && !defined(GU_PROFILE_B660M_DUAL)
 #define GU_PROFILE_B650M_3090FE 1
 #endif
 
@@ -33,7 +33,7 @@
  * (aggregate GOP + text-out driver chain; verified on AMI boards without a
  * second display GPU). 0 = nvgop owns the console GOP on the target directly
  * (original verified B650M headless topology). */
-#if defined(GU_PROFILE_B660M_3070TI) || defined(GU_PROFILE_B660M_3090TI) || defined(GU_PROFILE_B660PLUS_3060)
+#if defined(GU_PROFILE_B660M_3070TI) || defined(GU_PROFILE_B660M_3090TI) || defined(GU_PROFILE_B660PLUS_3060) || defined(GU_PROFILE_B660M_DUAL)
 #define GU_CONSOLE_AGGREGATE 1
 #else
 #define GU_CONSOLE_AGGREGATE 0
@@ -195,7 +195,7 @@
 #define GU_NVGOP_TEXT_BYTES 0x20d33U
 #define GU_NVGOP_TEXT_SHA256 "615b37a708b1894e18d7fa60cfcdacaa4d8b598863a10b8103d231a595847b2b"
 
-#elif defined(GU_PROFILE_B660M_3090TI)
+#elif defined(GU_PROFILE_B660M_3090TI) || defined(GU_PROFILE_B660M_DUAL)
 
 /* ASUSTeK TUF GAMING B660M-E D4 BIOS 4003, i7-12700F (no iGPU),
  * Colorful RTX 3090 Ti 24GB (GA102, 10de:2203, subsystem 1301:7377):
@@ -205,7 +205,11 @@
  * probe capture DIAG03.TXT / PROM.BIN / IMG44.BIN (2026-10-27): the card
  * reports 0x5ff4 MiB usable like the X870 GA102 sibling, not the 3070
  * Ti 0x2000. Root port and the display device path are unchanged. */
+#if defined(GU_PROFILE_B660M_DUAL)
+#define GU_PROFILE_NAME "ASUS-TUF-GAMING-B660M-E-D4-4003-DUAL-RTX"
+#else
 #define GU_PROFILE_NAME "ASUS-TUF-GAMING-B660M-E-D4-4003-RTX3090TI"
+#endif
 #define GU_BOARD_ID 0x220310deU
 #define GU_BOARD_SUBSYSTEM 0x13017377U
 #define GU_BAR0_BASE 0x82000000ULL
@@ -364,4 +368,26 @@
 #define GU_EDID_STOP 0U
 #define GU_EDID_TEXT_BYTES 0U
 #define GU_EDID_TEXT_SHA256 ""
+#endif
+
+
+
+/* Multi-card adaptive target table. Every profile compiles into exactly
+ * this form: a table of reviewed card identities matched by PCI ID at
+ * enumeration time. Single-card profiles emit one entry; GU_PROFILE_B660M_DUAL
+ * emits both verified B660M-E D4 cards. Cards are located by PCI ID + subsystem
+ * wherever the firmware assigned them (any segment/bus), and the console card
+ * is unlocked last. BAR0, PROM hash, chip ID and VRAM size stay exact per
+ * entry; none are user-editable. */
+#if defined(GU_PROFILE_B660M_DUAL)
+#define GU_MULTI_TARGET 1
+#define GU_CARD_TABLE \
+  {0x220310deU,0x13017377U,0xb72000a1U,0x5ff4U,"22b77e844a215bf52d745e0b10c6698ec3d9479f8350e833247bd5d77430bf44","B660M-RTX3090TI-2203"},\
+  {0x248210deU,0x50521462U,0xb74000a1U,0x2000U,"f429aa1d5f0f18d11ed9a19503683a674fe3541ae77e959df8e732652c2b4df0","B660M-RTX3070TI-2482"}
+#define GU_MAX_TARGETS 4
+#define GU_PROFILE_NAME "ASUS-TUF-GAMING-B660M-E-D4-4003-DUAL-RTX"
+#else
+#define GU_MULTI_TARGET 0
+#define GU_CARD_TABLE {GU_BOARD_ID,GU_BOARD_SUBSYSTEM,GU_CHIP_ID,GU_DEVICE_MEMORY_SIZE,GU_PROM_SHA256,GU_PROFILE_NAME}
+#define GU_MAX_TARGETS 1
 #endif

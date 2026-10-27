@@ -75,12 +75,15 @@ EFI_STATUS GuFindReleaseOwner(EFI_SYSTEM_TABLE *Table,GU_RELEASE_OWNER *Owner,BO
   for(UINTN i=0;i<count;i++) {
     const EFI_OPEN_PROTOCOL_INFORMATION_ENTRY *e=&records[i].entry;
     if(Passive(e->Attributes))continue;
-    /* This release handles a single device driver only. DisconnectController
-       gathers children across every protocol, and physical console children
-       need not equal the System Table's virtual console handles. Refuse all
-       child relationships instead of assuming a route alone proves isolation. */
-    if(e->Attributes!=EFI_OPEN_PROTOCOL_BY_DRIVER || e->AgentHandle!=Owner->agent ||
-       e->ControllerHandle!=Gu.handle || e->OpenCount!=1) {
+    /* This release handles one device driver and, on multi-display cards,
+       that same agent display children it created. DisconnectController
+       tears the whole subtree down in one call; children owned by any other
+       agent or unrelated opens still refuse the release. */
+    BOOLEAN same_driver=e->Attributes==EFI_OPEN_PROTOCOL_BY_DRIVER &&
+      e->AgentHandle==Owner->agent && e->ControllerHandle==Gu.handle && e->OpenCount==1;
+    BOOLEAN child=e->Attributes==EFI_OPEN_PROTOCOL_BY_CHILD_CONTROLLER &&
+      e->AgentHandle==Owner->agent && e->ControllerHandle && e->OpenCount==1;
+    if(!same_driver && !child) {
       if(Log)GuLog("release refused: active child, different owner or unsupported open at record %u\n",(unsigned)i);
       return EFI_ACCESS_DENIED;
     }

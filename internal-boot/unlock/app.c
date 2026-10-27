@@ -25,7 +25,6 @@ static EFI_GUID PciGuid=EFI_PCI_IO_PROTOCOL_GUID,GopGuid=EFI_GRAPHICS_OUTPUT_PRO
   PathGuid=EFI_DEVICE_PATH_PROTOCOL_GUID,GlobalGuid=EFI_GLOBAL_VARIABLE;
 #endif
 static EFI_SYSTEM_TABLE *Table;
-static UINT32 InitialConfig[64];
 static const char *Stage;
 static GU_RELEASE_OWNER PendingOwner;
 static EFI_STATUS Step(EFI_STATUS Status) {
@@ -158,16 +157,22 @@ static EFI_STATUS ConfigCheck(BOOLEAN Save) {
   if(EFI_ERROR(status))return status;
   status=ReadConfig(config);if(EFI_ERROR(status))return status;
   BOOLEAN checked=GuCheckConfig(config,segment,bus,device,function,&caps);
+  /* BAR0 is discovered, not pinned: a 32-bit memory BAR is required, and the
+     recorded value must stay identical across every recheck of this card. */
+  UINT64 bar0=(UINT64)(config[0x10/4]&0xfffffff0U);
+  BOOLEAN bar_ok=!(config[0x10/4]&1U) && !(config[0x10/4]&0x8U) && bar0>0x1000000U &&
+    (Save || (bar0==Gu.bar_base && config[0x10/4]==(UINT32)Gu.bar_base));
   BOOLEAN valid=checked && config[2]==0x030000a1 && config[0xc8/4]==0x00050011 &&
-    config[0x10/4]==GU_BAR0_BASE && !(config[(caps.pcie+8)/4]&0x00200000U);
-  BOOLEAN same=Save || !memcmp(config,InitialConfig,sizeof(config));
+    bar_ok && !(config[(caps.pcie+8)/4]&0x00200000U);
+  BOOLEAN same=Save || !memcmp(config,Gu.initial_config,sizeof(config));
+  if(Save && bar_ok)Gu.bar_base=bar0;
   if(Save || !valid || !same)ConfigLog(config);
   GuLog("target BDF=%zu:%zu:%zu.%zu checks=%u pm=%#x pcie=%#x msi=%#x msix=%#x\n",
     (size_t)segment,(size_t)bus,(size_t)device,(size_t)function,checked,
     (unsigned)caps.pm,(unsigned)caps.pcie,(unsigned)caps.msi,(unsigned)caps.msix);
   if(!valid)return EFI_UNSUPPORTED;
   if(!same)return EFI_NOT_READY;
-  if(Save)memcpy(InitialConfig,config,sizeof(config));
+  if(Save)memcpy(Gu.initial_config,config,sizeof(config));
   Gu.pm_cap=caps.pm;Gu.pcie_cap=caps.pcie;Gu.pcie_version=caps.pcie_version;Gu.msi_cap=caps.msi;Gu.msix_cap=caps.msix;
   return EFI_SUCCESS;
 }
@@ -180,11 +185,11 @@ static EFI_STATUS RestoreDecode(VOID) {
   status=ReadConfig(current);if(EFI_ERROR(status))return status;
   GuLogText("config before decode restore (256 valid bytes):\n");ConfigLog(current);
   if(!GuTargetConfig(current,segment,bus,device,function))return EFI_UNSUPPORTED;
-  UINT32 missing=InitialConfig[1]&~current[1]&3U;
+  UINT32 missing=Gu.initial_config[1]&~current[1]&3U;
   memcpy(normalized,current,sizeof(normalized));normalized[1]|=missing;
   /* Restore only cleared, previously enabled IO/MEM bits. Every other bit,
      including BME, status, BAR, ROM and PM/capability state must be unchanged. */
-  if(memcmp(normalized,InitialConfig,sizeof(normalized))) {
+  if(memcmp(normalized,Gu.initial_config,sizeof(normalized))) {
     GuLogText("decode restore refused: config differs beyond cleared original IO/MEM bits\n");
     return EFI_UNSUPPORTED;
   }
@@ -200,7 +205,7 @@ static EFI_STATUS RestoreDecode(VOID) {
   GuLog("decode current attributes: status=%#llx mask=%#llx\n",(unsigned long long)status,(unsigned long long)attributes);
   if(EFI_ERROR(status))return status;
   GuLog("decode restore intent: saved_command=%#x current_command=%#x missing=%#x attributes=%#llx\n",
-    InitialConfig[1]&0xffff,current[1]&0xffff,missing,(unsigned long long)needed);
+    Gu.initial_config[1]&0xffff,current[1]&0xffff,missing,(unsigned long long)needed);
   if(!GuLogReady() || Gu.fault)return EFI_DEVICE_ERROR;
   /* Never use EFI_PCI_DEVICE_ENABLE: it would also enable bus mastering. */
   EFI_STATUS enabled=Gu.pci->Attributes(Gu.pci,EfiPciIoAttributeOperationEnable,needed,NULL);
@@ -212,27 +217,19 @@ static EFI_STATUS RestoreDecode(VOID) {
   BOOLEAN matched=FALSE;
   if(!EFI_ERROR(status)) {
     GuLogText("config after decode restore (256 valid bytes):\n");ConfigLog(after);
-    matched=!memcmp(after,InitialConfig,sizeof(after));GuLog("decode readback matched=%u\n",matched);
+    matched=!memcmp(after,Gu.initial_config,sizeof(after));GuLog("decode readback matched=%u\n",matched);
   }
   if(EFI_ERROR(enabled))return enabled;
   if(EFI_ERROR(status))return status;
   if(!GuLogReady() || Gu.fault)return EFI_DEVICE_ERROR;
   return matched?EFI_SUCCESS:EFI_COMPROMISED_DATA;
 }
-static EFI_STATUS FindTarget(VOID) {
-  EFI_HANDLE *handles=NULL;UINTN count=0,found=0;
-  EFI_STATUS status=Gu.bs->LocateHandleBuffer(ByProtocol,&PciGuid,NULL,&count,&handles);
-  GuLog("PCI enumeration: status=%#llx handles=%zu\n",(unsigned long long)status,(size_t)count);
-  if(EFI_ERROR(status) || !handles || !count || count>256){if(handles)GuFree(handles);return EFI_NOT_FOUND;}
-  for(UINTN i=0;i<count;i++) {
-    EFI_PCI_IO_PROTOCOL *pci=NULL;UINT32 id=0;
-    status=Gu.bs->HandleProtocol(handles[i],&PciGuid,(VOID **)&pci);
-    if(!EFI_ERROR(status) && pci)status=pci->Pci.Read(pci,EfiPciIoWidthUint32,0,1,&id);
-    if(EFI_ERROR(status) || !pci){GuLog("PCI scan failed: index=%zu status=%#llx\n",(size_t)i,(unsigned long long)status);status=EFI_DEVICE_ERROR;break;}
-    if(id==GU_BOARD_ID){found++;Gu.handle=handles[i];Gu.pci=pci;}
-  }
-  GuFree(handles);GuLog("PCI target matches=%zu status=%#llx\n",(size_t)found,(unsigned long long)status);
-  if(EFI_ERROR(status) || found!=1)return EFI_UNSUPPORTED;
+static EFI_STATUS BindTarget(UINTN Index) {
+  GuActivate(Index);
+  if(Gu.fault)return EFI_DEVICE_ERROR;
+  GuLog("card %zu active: %s id=%#x bdf=%zu:%02zu:%02zu.%zu\n",
+    (size_t)Index,Gu.card_name?Gu.card_name:"?",Gu.board_id,
+    (size_t)Gu.segment,(size_t)Gu.bus,(size_t)Gu.device,(size_t)Gu.function);
   return ConfigCheck(TRUE);
 }
 static EFI_STATUS BarCheck(VOID) {
@@ -245,10 +242,10 @@ static EFI_STATUS BarCheck(VOID) {
         (unsigned)r->ResType,(unsigned long long)r->AddrSpaceGranularity,(unsigned long long)r->AddrRangeMin,
         (unsigned long long)r->AddrRangeMax,(unsigned long long)r->AddrLen,(unsigned long long)r->AddrTranslationOffset);
     if(!r || r->Desc!=ACPI_ADDRESS_SPACE_DESCRIPTOR || r->Len!=sizeof(*r)-3 || r->ResType!=0 ||
-      r->AddrRangeMin!=GU_BAR0_BASE || r->AddrLen!=0x1000000 || r->AddrTranslationOffset ||
+      r->AddrRangeMin!=Gu.bar_base || r->AddrLen!=0x1000000 || r->AddrTranslationOffset ||
       /* UEFI describes an inclusive end; pinned EDK2 PciBusDxe instead returns
          PciBar.Alignment. Both representations describe this exact 16 MiB BAR. */
-      (r->AddrRangeMax!=GU_BAR0_END && r->AddrRangeMax!=0x00ffffff) ||
+      (r->AddrRangeMax!=Gu.bar_base+0xffffff && r->AddrRangeMax!=0x00ffffff) ||
       r->AddrSpaceGranularity!=32 || ((UINT8 *)(r+1))[0]!=ACPI_END_TAG_DESCRIPTOR)status=EFI_UNSUPPORTED;
     else {
       UINT8 *raw=(UINT8 *)r,sum=0;
@@ -269,13 +266,13 @@ static EFI_STATUS ColdCheck(VOID) {
     chip,plm,s.plm,s.boot,s.cpuctl,hi,ss0,ss1);
   UINT32 memory=GuRead32(0x1183a4);
 #if !defined(GU_EXPERIMENTAL_3090)
-  GuLog("DIAGNOSTIC PREFLIGHT ONLY: chip baseline=UNKNOWN SS0 baseline=UNKNOWN memory=%#x expected=%#x; cannot arm; no GPU writes/reset/DMA/driver release\n",memory,GU_DEVICE_MEMORY_SIZE);
+  GuLog("DIAGNOSTIC PREFLIGHT ONLY: chip baseline=UNKNOWN SS0 baseline=UNKNOWN memory=%#x expected=%#x; cannot arm; no GPU writes/reset/DMA/driver release\n",memory,Gu.expected_memory);
   return Gu.fault?EFI_DEVICE_ERROR:EFI_NOT_READY;
 #else
 #ifdef GU_ENTRY_LATCHED
   UINT32 entry0=0,entry1=0;BOOLEAN latched=GuGetEntrySelectors(&entry0,&entry1);
   GuLog("cold expected: profile=%s chip=%#x memory=%#x entry_latched=%u SS0=%#x SS1=%#x SS0target=0x88888888 SS1policy=%s entry=%#x target=0x8\n",
-    GU_STOCK_PROFILE_NAME,GU_CHIP_ID,GU_DEVICE_MEMORY_SIZE,latched,entry0,entry1,
+    GU_STOCK_PROFILE_NAME,Gu.expected_chip,Gu.expected_memory,latched,entry0,entry1,
 #ifdef GU_ENTRY_LATCHED_SS1_PRESERVE
     "preserve",
 #else
@@ -284,12 +281,12 @@ static EFI_STATUS ColdCheck(VOID) {
     entry1);
 #else
   GuLog("cold expected: profile=%s chip=%#x memory=%#x SS0=%#x SS1=%#x\n",
-    GU_STOCK_PROFILE_NAME,GU_CHIP_ID,GU_DEVICE_MEMORY_SIZE,GU_STOCK_PROFILE_SS0,6U);
+    GU_STOCK_PROFILE_NAME,Gu.expected_chip,Gu.expected_memory,GU_STOCK_PROFILE_SS0,6U);
 #endif
   GuLog("cold observed: profile=%s chip=%#x memory=%#x SS0=%#x SS1=%#x\n",
     GU_STOCK_PROFILE_NAME,chip,memory,ss0,ss1);
   if(Gu.fault)return EFI_DEVICE_ERROR;
-  if(chip!=GU_CHIP_ID || memory!=GU_DEVICE_MEMORY_SIZE ||
+  if(chip!=Gu.expected_chip || memory!=Gu.expected_memory ||
      gpu_unlock_gfw_assess(&s) || s.plm!=0x8b8f || s.boot!=0x3ff || s.cpuctl!=0x10 ||
      hi!=0 || plm!=0xffffff8f || !Gu.prom_verified)
     return EFI_NOT_READY;
@@ -327,8 +324,10 @@ static EFI_STATUS PromCheck(VOID) {
   Gu.profile_verified=FALSE;
   VOID *prom=GuAlloc(1048576);if(!prom)return EFI_OUT_OF_RESOURCES;
   GuCopyFromIo(prom,(VOID *)(UINTN)(Gu.bar_base+0x300000),1048576);
-  BOOLEAN good=!Gu.fault && GuHashMatches(prom,1048576,GU_PROM_SHA256);
-  GuFree(prom);Gu.prom_verified=good;GuLog("live PROM hash matched=%u\n",(unsigned)good);return good?EFI_SUCCESS:EFI_CRC_ERROR;
+  BOOLEAN good=!Gu.fault && GuHashMatches(prom,1048576,Gu.prom_sha256);
+  GuFree(prom);Gu.prom_verified=good;
+  GuLog("card %zu live PROM hash matched=%u\n",(size_t)Gu.card_index,(unsigned)good);
+  return good?EFI_SUCCESS:EFI_CRC_ERROR;
 }
 static EFI_STATUS Arm(VOID) {
 #if !defined(GU_EXPERIMENTAL_3090)
@@ -385,13 +384,13 @@ static VOID Halt(VOID) {
 /* Last file log can execute firmware callbacks. Revalidate without logging. */
 static BOOLEAN HeadlessFinalHardware(VOID) {
   UINT32 cfg[64],ss0=0,ss1=0;
-  if(ReadConfig(cfg)!=EFI_SUCCESS || memcmp(cfg,InitialConfig,sizeof(cfg)) ||
+  if(ReadConfig(cfg)!=EFI_SUCCESS || memcmp(cfg,Gu.initial_config,sizeof(cfg)) ||
      !Gu.profile_verified || !Gu.prom_verified || !Gu.owned || !GuGetEntrySelectors(&ss0,&ss1))return FALSE;
   struct gpu_unlock_gfw_sample sample={.config_ok=true,.plm=GuRead32(GU_GFW_PLM_OFFSET),
     .boot=GuRead32(GU_GFW_BOOT_OFFSET),.cpuctl=GuRead32(GU_GFW_CPUCTL_OFFSET)};
   return !gpu_unlock_gfw_assess(&sample) && sample.plm==0x8b8f && sample.boot==0x3ff && sample.cpuctl==0x10 &&
-    GuRead32(0)==GU_CHIP_ID && GuRead32(0x1fa828)==0 && GuRead32(GU_FEAT_PLM_OFFSET)==0xffffff8f &&
-    GuRead32(0x1183a4)==GU_DEVICE_MEMORY_SIZE && GuRead32(GU_FEAT_SS0_OFFSET)==ss0 && GuRead32(GU_FEAT_SS1_OFFSET)==ss1 && !Gu.fault;
+    GuRead32(0)==Gu.expected_chip && GuRead32(0x1fa828)==0 && GuRead32(GU_FEAT_PLM_OFFSET)==0xffffff8f &&
+    GuRead32(0x1183a4)==Gu.expected_memory && GuRead32(GU_FEAT_SS0_OFFSET)==ss0 && GuRead32(GU_FEAT_SS1_OFFSET)==ss1 && !Gu.fault;
 }
 #endif
 static VOID LogContainment(VOID) {
@@ -412,6 +411,100 @@ static VOID ReleaseHalt(EFI_STATUS Status,BOOLEAN Attempted) {
     (unsigned long long)Status,Stage,Attempted,(unsigned long long)contained,(unsigned)(Gu.pci!=NULL));
   Halt();
 }
+/* Run the full checked pipeline on the active card. Stages are identical
+ * to the single-card flow; every function reads the active Gu context. On
+ * success the card is left unlocked and quiesced with no open protocol. */
+static EFI_STATUS RunCard(UINTN Index,EFI_SYSTEM_TABLE *St,BOOLEAN *Attempted,BOOLEAN *ReleaseAttempted) {
+  EFI_STATUS status=BindTarget(Index);if(EFI_ERROR(status))return status;
+  Stage="display";Gu.display_ok=DisplayCheck();status=Step(Gu.display_ok?EFI_SUCCESS:EFI_UNSUPPORTED);
+  if(EFI_ERROR(status))return status;
+  /* Read-only validation precedes ownership, asset loading and manual input. */
+  Stage="bar0";status=Step(BarCheck());if(EFI_ERROR(status))return status;
+  Stage="prom";status=Step(PromCheck());if(EFI_ERROR(status))return status;
+  Stage="diagnostic-cold-state";status=Step(ColdCheck());
+#if !defined(GU_EXPERIMENTAL_3090)
+  return status;
+#else
+  if(EFI_ERROR(status))return status;
+#endif
+  Stage="ownership";status=GuClaimController();
+  if(status==EFI_ACCESS_DENIED) {
+    status=GuFindReleaseOwner(St,&PendingOwner,TRUE);
+    if(!EFI_ERROR(status))GuLogText("Exclusive ownership deferred until the guarded driver release.\n");
+  }
+  status=Step(status);if(EFI_ERROR(status))return status;
+  Stage="config-recheck";status=Step(ConfigCheck(FALSE));if(EFI_ERROR(status))return status;
+  Stage="bar0";status=Step(BarCheck());if(EFI_ERROR(status))return status;
+  Stage="prom";status=Step(PromCheck());if(EFI_ERROR(status))return status;
+  Stage="cold-state";status=Step(ColdCheck());if(EFI_ERROR(status))return status;
+  Stage="assets";status=Step(GuLoadAssets());if(EFI_ERROR(status))return status;
+  Stage="arming";status=Step(Arm());if(EFI_ERROR(status))return status;
+  Stage="armed-config";status=Step(ConfigCheck(FALSE));if(EFI_ERROR(status))return status;
+  Stage="armed-display";Gu.display_ok=DisplayCheck();status=Step(Gu.display_ok?EFI_SUCCESS:EFI_UNSUPPORTED);if(EFI_ERROR(status))return status;
+  Stage="armed-cold-state";status=Step(ColdCheck());if(EFI_ERROR(status))return status;
+  if(PendingOwner.agent) {
+    GU_RELEASE_OWNER current;
+    Stage="owner-recheck";
+    GuLogText("Manual U confirmed: release RTX firmware driver once, then revalidate.\n");
+    if(!GuLogReady())return EFI_DEVICE_ERROR;
+    /* Durable intent precedes the last owner snapshot. No file IO between a
+       successful final comparison and DisconnectController. */
+    status=GuFindReleaseOwner(St,&current,FALSE);
+    if(!EFI_ERROR(status) && !GuSameReleaseOwner(&PendingOwner,&current))status=EFI_ABORTED;
+    if(EFI_ERROR(status)){status=Step(status);return status;}
+    EFI_PCI_IO_PROTOCOL *prior=Gu.pci;
+    Stage="driver-release";*ReleaseAttempted=TRUE;Gu.armed=TRUE;Gu.pci=NULL;
+    EFI_STATUS released=Gu.bs->DisconnectController(Gu.handle,current.agent,NULL);
+    EFI_TPL refresh_tpl=Gu.bs->RaiseTPL(TPL_NOTIFY);
+    EFI_STATUS refreshed=GuRefreshTargetPci();
+    Gu.bs->RestoreTPL(refresh_tpl);
+    GuLog("driver release: status=%#llx refresh=%#llx same_pci=%u\n",
+      (unsigned long long)released,(unsigned long long)refreshed,(unsigned)(Gu.pci==prior));
+    status=Step(EFI_ERROR(released)?released:EFI_ERROR(refreshed)?refreshed:Gu.pci!=prior?EFI_COMPROMISED_DATA:EFI_SUCCESS);
+    if(EFI_ERROR(status))return status;
+    Stage="ownership-after-release";status=Step(GuClaimController());if(EFI_ERROR(status))return status;
+    Stage="display-after-release";Gu.display_ok=DisplayCheck();status=Step(Gu.display_ok?EFI_SUCCESS:EFI_UNSUPPORTED);if(EFI_ERROR(status))return status;
+    Stage="decode-after-release";status=Step(RestoreDecode());if(EFI_ERROR(status))return status;
+    Stage="config-after-release";status=Step(ConfigCheck(FALSE));if(EFI_ERROR(status))return status;
+    Stage="bar0-after-release";status=Step(BarCheck());if(EFI_ERROR(status))return status;
+    Stage="prom-after-release";status=Step(PromCheck());if(EFI_ERROR(status))return status;
+    Stage="cold-after-release";status=Step(ColdCheck());if(EFI_ERROR(status))return status;
+    memset(&PendingOwner,0,sizeof(PendingOwner));
+  }
+  Stage="final-prom";status=Step(PromCheck());if(EFI_ERROR(status))return status;
+  Stage="final-cold";status=Step(ColdCheck());if(EFI_ERROR(status))return status;
+  if(!Gu.profile_verified || Gu.fault)return EFI_ACCESS_DENIED;
+  GuLog("ARMED card %zu: one transaction is starting. Do not reset or remove the USB.\n",(size_t)Gu.card_index);
+  if(!GuLogReady())return EFI_DEVICE_ERROR;
+#ifdef GU_HEADLESS_RESEARCH
+  /* File callbacks may change devices; no log/output between this gate and core. */
+  if(!HeadlessFinalHardware() || !GuHeadlessCheck())return EFI_NOT_READY;
+#endif
+  Stage="transaction";Gu.armed=TRUE;*Attempted=TRUE;
+  UINT64 mask=0xffffffffULL;
+  struct pci_dev device={.dev={.dma_mask=&mask,.coherent_dma_mask=0xffffffffULL},.pm_cap=Gu.pm_cap,.refs=1};
+  static struct gpu_unlock_610_shared shared;
+  int result=0;
+  if(!shared.gsp)result=gpu_unlock_610_load_shared(&device,&shared);
+  if(!result)result=gpu_unlock_610_unlock(&device,&shared);
+  /* Also covers failures before GuStarted, including BME-enable readback. */
+  EFI_STATUS contained=GuClearMaster();
+  LogContainment();
+  GuLog("transaction result=%d containment=%#llx started=%u quiesced=%u fault=%u retained=%u maps=%u FLR=%u\n",
+    result,(unsigned long long)contained,Gu.started,Gu.quiesced,Gu.fault,Gu.retained,Gu.dma_count,Gu.flrs);
+  if(EFI_ERROR(contained) || !GuSafeToReturn() || Gu.allocations || (Gu.started && result))Halt();
+  Gu.armed=FALSE;
+  if(result)return EFI_DEVICE_ERROR;
+  /* Release the exclusive PCI open now; the card is unlocked and quiesced. */
+  if(Gu.owned) {
+    EFI_STATUS closed=Gu.bs->CloseProtocol(Gu.handle,&PciGuid,Gu.image,NULL);
+    if(EFI_ERROR(closed))return closed;
+    Gu.owned=FALSE;
+  }
+  Gu.complete=TRUE;
+  return EFI_SUCCESS;
+}
+
 EFI_STATUS EFIAPI efi_main(EFI_HANDLE Image,EFI_SYSTEM_TABLE *St) {
   if(!St || !St->BootServices || !St->RuntimeServices)return EFI_INVALID_PARAMETER;
   Table=St;GuInit(St->BootServices,NULL);Gu.image=Image;Gu.display_check=DisplayCheck;
@@ -422,7 +515,7 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE Image,EFI_SYSTEM_TABLE *St) {
   Stage="usb-log";EFI_STATUS status=GuIoOpen(Image,St);BOOLEAN attempted=FALSE,release_attempted=FALSE;
   if(EFI_ERROR(status))goto finish;
 #if defined(GU_AUTOMATIC_BOOT)
-  GuLog("BUILD MODE: AUTOMATIC INTERNAL UNLOCK; profile=%s; Esc cancellation; all hardware gates retained.\n",GU_STOCK_PROFILE_NAME);
+  GuLog("BUILD MODE: AUTOMATIC INTERNAL UNLOCK; profile=%s; targets=%s; Esc cancellation; all hardware gates retained.\n",GU_STOCK_PROFILE_NAME,GU_PROFILE_NAME);
 #elif defined(GU_EXPERIMENTAL_3090)
   GuLog("BUILD MODE: EXPERIMENTAL MANUAL UNLOCK; compile-time profile=%s. The shared I/O preflight banner above is superseded: exact-card checks and manual U can authorize one stock transaction.\n",GU_STOCK_PROFILE_NAME);
 #endif
@@ -432,85 +525,16 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE Image,EFI_SYSTEM_TABLE *St) {
   if(EFI_ERROR(status) || bytes!=1 || secure){status=EFI_SECURITY_VIOLATION;goto finish;}
   status=Step(status);if(EFI_ERROR(status))goto finish;
   Stage="watchdog";status=Step(Gu.bs->SetWatchdogTimer(0,0,0,NULL));if(EFI_ERROR(status))goto finish;
-  Stage="target";status=Step(FindTarget());if(EFI_ERROR(status))goto finish;
-  Stage="display";Gu.display_ok=DisplayCheck();status=Step(Gu.display_ok?EFI_SUCCESS:EFI_UNSUPPORTED);if(EFI_ERROR(status))goto finish;
-  /* Read-only validation precedes ownership, asset loading and manual input. */
-  Stage="bar0";status=Step(BarCheck());if(EFI_ERROR(status))goto finish;
-  Stage="prom";status=Step(PromCheck());if(EFI_ERROR(status))goto finish;
-  Stage="diagnostic-cold-state";status=Step(ColdCheck());
-#if !defined(GU_EXPERIMENTAL_3090)
-  goto finish;
-#else
-  if(EFI_ERROR(status))goto finish;
-#endif
-  Stage="ownership";status=GuClaimController();
-#ifndef GU_AUTOMATIC_BOOT
-  if(status==EFI_ACCESS_DENIED) {
-    status=GuFindReleaseOwner(St,&PendingOwner,TRUE);
-    if(!EFI_ERROR(status))GuLogText("Exclusive ownership deferred until manual U and explicit driver release.\n");
-  }
-#endif
-  status=Step(status);if(EFI_ERROR(status))goto finish;
-  Stage="config-recheck";status=Step(ConfigCheck(FALSE));if(EFI_ERROR(status))goto finish;
-  Stage="bar0";status=Step(BarCheck());if(EFI_ERROR(status))goto finish;
-  Stage="prom";status=Step(PromCheck());if(EFI_ERROR(status))goto finish;
-  Stage="cold-state";status=Step(ColdCheck());if(EFI_ERROR(status))goto finish;
-  Stage="assets";status=Step(GuLoadAssets());if(EFI_ERROR(status))goto finish;
-  Stage="arming";status=Step(Arm());if(EFI_ERROR(status))goto finish;
-  Stage="armed-config";status=Step(ConfigCheck(FALSE));if(EFI_ERROR(status))goto finish;
-  Stage="armed-display";Gu.display_ok=DisplayCheck();status=Step(Gu.display_ok?EFI_SUCCESS:EFI_UNSUPPORTED);if(EFI_ERROR(status))goto finish;
-  Stage="armed-cold-state";status=Step(ColdCheck());if(EFI_ERROR(status))goto finish;
-  if(PendingOwner.agent) {
-    GU_RELEASE_OWNER current;
-    Stage="owner-recheck";
-    GuLogText("Manual U confirmed: release RTX firmware driver once, then revalidate.\n");
-    if(!GuLogReady()){status=EFI_DEVICE_ERROR;goto finish;}
-    /* Durable intent precedes the last owner snapshot. No file IO between a
-       successful final comparison and DisconnectController. */
-    status=GuFindReleaseOwner(St,&current,FALSE);
-    if(!EFI_ERROR(status) && !GuSameReleaseOwner(&PendingOwner,&current))status=EFI_ABORTED;
-    if(EFI_ERROR(status)){status=Step(status);goto finish;}
-    EFI_PCI_IO_PROTOCOL *prior=Gu.pci;
-    Stage="driver-release";release_attempted=TRUE;Gu.armed=TRUE;Gu.pci=NULL;
-    EFI_STATUS released=Gu.bs->DisconnectController(Gu.handle,current.agent,NULL);
-    EFI_TPL refresh_tpl=Gu.bs->RaiseTPL(TPL_NOTIFY);
-    EFI_STATUS refreshed=GuRefreshTargetPci();
-    Gu.bs->RestoreTPL(refresh_tpl);
-    GuLog("driver release: status=%#llx refresh=%#llx same_pci=%u\n",
-      (unsigned long long)released,(unsigned long long)refreshed,(unsigned)(Gu.pci==prior));
-    status=Step(EFI_ERROR(released)?released:EFI_ERROR(refreshed)?refreshed:Gu.pci!=prior?EFI_COMPROMISED_DATA:EFI_SUCCESS);
-    if(EFI_ERROR(status))goto finish;
-    Stage="ownership-after-release";status=Step(GuClaimController());if(EFI_ERROR(status))goto finish;
-    Stage="display-after-release";Gu.display_ok=DisplayCheck();status=Step(Gu.display_ok?EFI_SUCCESS:EFI_UNSUPPORTED);if(EFI_ERROR(status))goto finish;
-    Stage="decode-after-release";status=Step(RestoreDecode());if(EFI_ERROR(status))goto finish;
-    Stage="config-after-release";status=Step(ConfigCheck(FALSE));if(EFI_ERROR(status))goto finish;
-    Stage="bar0-after-release";status=Step(BarCheck());if(EFI_ERROR(status))goto finish;
-    Stage="prom-after-release";status=Step(PromCheck());if(EFI_ERROR(status))goto finish;
-    Stage="cold-after-release";status=Step(ColdCheck());if(EFI_ERROR(status))goto finish;
-  }
-  Stage="final-prom";status=Step(PromCheck());if(EFI_ERROR(status))goto finish;
-  Stage="final-cold";status=Step(ColdCheck());if(EFI_ERROR(status))goto finish;
-  if(!Gu.profile_verified || Gu.fault){status=EFI_ACCESS_DENIED;goto finish;}
-  GuLogText("ARMED: one transaction is starting. Do not reset or remove the USB.\n");
-  if(!GuLogReady()){status=EFI_DEVICE_ERROR;goto finish;}
+  Stage="targets";status=Step(GuDiscoverTargets());if(EFI_ERROR(status))goto finish;
 #ifdef GU_HEADLESS_RESEARCH
-  /* File callbacks may change devices; no log/output between this gate and core. */
-  if(!HeadlessFinalHardware() || !GuHeadlessCheck()){status=EFI_NOT_READY;goto finish;}
+  /* Baseline capture happens before the first card activates. */
+  if(!GuHeadlessCheck()){status=EFI_NOT_READY;goto finish;}
 #endif
-  Stage="transaction";Gu.armed=TRUE;attempted=TRUE;
-  UINT64 mask=0xffffffffULL;
-  struct pci_dev device={.dev={.dma_mask=&mask,.coherent_dma_mask=0xffffffffULL},.pm_cap=Gu.pm_cap,.refs=1};
-  struct gpu_unlock_610_shared shared={0};
-  int result=gpu_unlock_610_load_shared(&device,&shared);
-  if(!result)result=gpu_unlock_610_unlock(&device,&shared);
-  /* Also covers failures before GuStarted, including BME-enable readback. */
-  EFI_STATUS contained=GuClearMaster();
-  LogContainment();
-  GuLog("transaction result=%d containment=%#llx started=%u quiesced=%u fault=%u retained=%u maps=%u FLR=%u\n",
-    result,(unsigned long long)contained,Gu.started,Gu.quiesced,Gu.fault,Gu.retained,Gu.dma_count,Gu.flrs);
-  if(EFI_ERROR(contained) || !GuSafeToReturn() || Gu.allocations || (Gu.started && result))Halt();
-  gpu_unlock_610_release_shared(&shared);Gu.armed=FALSE;
-  status=result?EFI_DEVICE_ERROR:EFI_SUCCESS;
+  for(UINTN card=0;card<GuTargetCount();card++) {
+    Stage="card";status=RunCard(card,St,&attempted,&release_attempted);
+    GuLog("card %zu finished: status=%#llx stage=%s\n",(size_t)card,(unsigned long long)status,Stage);
+    if(EFI_ERROR(status))goto finish;
+  }
  finish:
   if(release_attempted && (EFI_ERROR(status) || Gu.fault))ReleaseHalt(status,attempted);
   if(attempted && !GuSafeToReturn())Halt();
@@ -519,14 +543,15 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE Image,EFI_SYSTEM_TABLE *St) {
   else GuConsole("Preflight or logging failed; no new attempt will start.\n");
   if(!GuLogReady()){status=EFI_DEVICE_ERROR;if(release_attempted)ReleaseHalt(status,attempted);if(Gu.started)Halt();}
   if(attempted && !GuSafeToReturn())Halt();
-  EFI_STATUS closed=GuIoClose();
-  if(EFI_ERROR(closed)){if(release_attempted)ReleaseHalt(closed,attempted);if(Gu.started)Halt();status=closed;}
+  /* Close any protocol still owned by the active card, then assets and I/O. */
   if(Gu.owned) {
-    closed=Gu.bs->CloseProtocol(Gu.handle,&PciGuid,Image,NULL);
+    EFI_STATUS closed=Gu.bs->CloseProtocol(Gu.handle,&PciGuid,Image,NULL);
     if(EFI_ERROR(closed)){if(release_attempted)ReleaseHalt(closed,attempted);if(Gu.started)Halt();status=closed;}else Gu.owned=FALSE;
   }
+  EFI_STATUS closed=GuIoClose();
+  if(EFI_ERROR(closed)){if(release_attempted)ReleaseHalt(closed,attempted);if(Gu.started)Halt();status=closed;}
   GuReleaseAssets();
-  if(!EFI_ERROR(status))GuConsole("UEFI transaction completed and cleaned up. Returning to firmware; Windows validation is pending.\n");
+  if(!EFI_ERROR(status))GuConsole("UEFI transactions completed and cleaned up. Returning to firmware; Windows validation is pending.\n");
   else GuConsole("Attempt cancelled or rejected. Returning without another attempt.\n");
   return status;
 }

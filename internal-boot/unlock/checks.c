@@ -1,6 +1,11 @@
 /* Modified 2026-10-19/20 for Windows GPU UNLOCK; changes documented in CHANGES.md. */ #include "checks.h"
 #include <IndustryStandard/Pci.h>
 
+/* The boot wrapper compiles this file without port.c; it always validates
+   the console card, which is the compile-time GU_BOARD_ID/GU_TARGET_BUS. */
+#ifndef GU_UEFI_PORT
+GU_PLATFORM Gu;
+#endif
 #define GU_CONFIG_BYTES 256U
 #define GU_CAP_START 0x40U
 #define GU_CAP_LAST 0xfcU
@@ -26,9 +31,16 @@ BOOLEAN GuCheckConfig(const UINT32 Config[64], UINTN Segment, UINTN Bus,
 
   if (Out == NULL) return FALSE;
   *Out = Caps;
-  if (Config == NULL || Segment != 0 || Bus != GU_TARGET_BUS || Device != 0 || Function != 0)
+  /* Unlock app compares against the active card context; the boot
+     wrapper never populates Gu, so it falls back to the console card. */
+  UINTN exBus = Gu.board_id ? Gu.bus : GU_TARGET_BUS;
+  UINT32 exId = Gu.board_id ? Gu.board_id : GU_BOARD_ID;
+  UINT32 exSub = Gu.board_id ? Gu.board_subsystem : GU_BOARD_SUBSYSTEM;
+  if (Config == NULL || Segment != (Gu.board_id ? Gu.segment : 0) ||
+      Bus != exBus || Device != (Gu.board_id ? Gu.device : 0) ||
+      Function != (Gu.board_id ? Gu.function : 0))
     return FALSE;
-  if (Config[0] != GU_BOARD_ID || Config[0x2c / 4] != GU_BOARD_SUBSYSTEM ||
+  if (Config[0] != exId || Config[0x2c / 4] != exSub ||
       ConfigByte(Config, 0x0b) != PCI_CLASS_DISPLAY ||
       (ConfigByte(Config, PCI_HEADER_TYPE_OFFSET) & 0x7fU) != HEADER_TYPE_DEVICE)
     return FALSE;

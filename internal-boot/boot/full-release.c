@@ -34,6 +34,7 @@ typedef struct {
 #endif
 } FULL;
 static FULL Full;
+static UINT64 GuPeekBar0Base;
 static BOOLEAN OwnRecord(EFI_HANDLE h,const EFI_OPEN_PROTOCOL_INFORMATION_ENTRY *e) {
   return Full.Owned && h==PreparedPlan.RtxPci && e->AgentHandle==Full.Image && !e->ControllerHandle &&
     e->Attributes==EFI_OPEN_PROTOCOL_EXCLUSIVE && e->OpenCount==1;
@@ -63,14 +64,18 @@ static EFI_STATUS ReadConfigFull(UINT32 *cfg) {
   s=io->GetLocation(io,&seg,&bus,&dev,&fun);
   if(s!=EFI_SUCCESS || seg || bus!=GU_TARGET_BUS || dev || fun)return EFI_UNSUPPORTED;
   s=io->Pci.Read(io,EfiPciIoWidthUint32,0,64,cfg);
-  if(s==EFI_SUCCESS && (cfg[0]!=GU_BOARD_ID || cfg[11]!=GU_BOARD_SUBSYSTEM || cfg[2]!=0x030000a1 || cfg[4]!=(UINT32)GU_BAR0_BASE || (cfg[1]&4)))s=EFI_UNSUPPORTED;
+  if(s==EFI_SUCCESS && (cfg[0]!=GU_BOARD_ID || cfg[11]!=GU_BOARD_SUBSYSTEM || cfg[2]!=0x030000a1 || cfg[4]!=(UINT32)GuPeekBar0Base || (cfg[1]&4)))s=EFI_UNSUPPORTED;
   return s;
 }
 /* Shared descriptor policy for both pre-release reads and the later permit. */
+/* The BAR0 base is the value the firmware actually assigned this boot;
+   it may shift when a second adapter is installed. Shape, length and
+   self-consistency still pin it to a 16 MiB 32-bit window. */
+static UINT64 GuPeekBar0Base;
 static EFI_STATUS BarDescription(const EFI_ACPI_ADDRESS_SPACE_DESCRIPTOR *d) {
   if(!d || d->Desc!=ACPI_ADDRESS_SPACE_DESCRIPTOR || d->Len!=sizeof(*d)-3 || d->ResType || d->AddrSpaceGranularity!=32 ||
-     d->AddrRangeMin!=GU_BAR0_BASE || d->AddrLen!=0x1000000 || d->AddrTranslationOffset ||
-     (d->AddrRangeMax!=GU_BAR0_END && d->AddrRangeMax!=0x00ffffff) || ((const UINT8 *)(d+1))[0]!=ACPI_END_TAG_DESCRIPTOR)return EFI_UNSUPPORTED;
+     d->AddrRangeMin!=GuPeekBar0Base || d->AddrLen!=0x1000000 || d->AddrTranslationOffset ||
+     (d->AddrRangeMax!=GuPeekBar0Base+0xffffff && d->AddrRangeMax!=0x00ffffff) || ((const UINT8 *)(d+1))[0]!=ACPI_END_TAG_DESCRIPTOR)return EFI_UNSUPPORTED;
   UINT8 sum=0;for(UINTN i=0;i<sizeof(*d)+2;i++)sum=(UINT8)(sum+((const UINT8 *)d)[i]);
   return ((const UINT8 *)d)[sizeof(*d)+1] && sum?EFI_CRC_ERROR:EFI_SUCCESS;
 }
@@ -150,7 +155,8 @@ EFI_STATUS GuPeekCold(EFI_SYSTEM_TABLE *t,UINT32 *values) {
   /* Require memory decode, no bus mastering and the exact 32-bit memory BAR
    * before asking for its descriptor, then recheck after allocation/free calls.
    * Firmware callbacks are not atomic; this guards service-return boundaries. */
-  if((targetConfig[1]&6U)!=2U || targetConfig[4]!=(UINT32)GU_BAR0_BASE)return EFI_UNSUPPORTED;
+  if((targetConfig[1]&6U)!=2U || (targetConfig[4]&1U) || !(targetConfig[4]&0xfffffff0U))return EFI_UNSUPPORTED;
+  GuPeekBar0Base=(UINT64)(targetConfig[4]&0xfffffff0U);
   s=PeekConfig(bs,targetHandle,target,targetConfig);
   if(s==EFI_SUCCESS)s=PeekBar(bs,target);
   if(s==EFI_SUCCESS)s=PeekConfig(bs,targetHandle,target,targetConfig);
@@ -530,7 +536,7 @@ static EFI_STATUS AmdOnly(VOID) {
 }
 static EFI_STATUS CapturePermit(VOID) {
   GU_CAPS caps;EFI_STATUS s=ReadConfigFull(Full.Config);
-  if(s==EFI_SUCCESS && (!GuCheckConfig(Full.Config,0,GU_TARGET_BUS,0,0,&caps) || Full.Config[4]!=(UINT32)GU_BAR0_BASE || Full.Config[2]!=0x030000a1))s=EFI_UNSUPPORTED;
+  if(s==EFI_SUCCESS && (!GuCheckConfig(Full.Config,0,GU_TARGET_BUS,0,0,&caps) || Full.Config[4]!=(UINT32)GuPeekBar0Base || Full.Config[2]!=0x030000a1))s=EFI_UNSUPPORTED;
   s=Note("capture-pci-config256",s);if(s!=EFI_SUCCESS)return s;
   s=LogConfig("pre-nv-pci",Full.Config);if(s!=EFI_SUCCESS)return s;
   s=Note("capture-bar0",CheckBar(TRUE));if(s!=EFI_SUCCESS)return s;

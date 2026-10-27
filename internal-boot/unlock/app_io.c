@@ -136,6 +136,8 @@ EFI_STATUS GuIoOpen(EFI_HANDLE Image,EFI_SYSTEM_TABLE *St) {
   return EFI_VOLUME_FULL;
 }
 EFI_STATUS GuLoadAssets(VOID) {
+  /* Firmware images are card-independent; load once for the whole run. */
+  if(GuAssets[0].name)return EFI_SUCCESS;
   for(UINTN i=0;i<5;i++) {
     EFI_FILE_PROTOCOL *file=NULL;const ASSET_SPEC *spec=&Specs[i];
     EFI_STATUS status=Parent->Open(Parent,&file,spec->file,EFI_FILE_MODE_READ,0);

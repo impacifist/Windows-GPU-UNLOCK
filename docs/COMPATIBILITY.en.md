@@ -59,6 +59,34 @@ still contains an iGPU; BIOS disablement is not established by a missing GOP.
 The B650M profile was not re-verified after the profile split; its code path
 is preserved behind the same build-time checks.
 
+## Profile 3: ASUS TUF B660M-E D4 / RTX 3090 Ti + RTX 3070 Ti (dual, aggregate console)
+
+Multi-card profile built with `-HardwareProfile b660m-dual`. The firmware
+table contains both reviewed cards on this machine: the Colorful RTX 3090 Ti
+(`10de:2203`, subsystem `1301:7377`, chip `0xb72000a1`, 0x5ff4 MiB, PROM
+`22b77e84…`) and the MSI RTX 3070 Ti (`10de:2482`, subsystem `1462:5052`,
+chip `0xb74000a1`, 0x2000 MiB, PROM `f429aa1d…`). The console GPU is the
+RTX 3090 Ti in the PEG slot, so the wrapper fingerprints match the
+B660M_3090TI entry.
+
+Adaptive behaviour versus the single-card profiles:
+
+- Cards are found by PCI enumeration and matched to the table by device ID;
+  the bus number is recorded, no longer required to be 1.
+- BAR0 is read from PCI configuration, not a fixed address.
+- The card with BY_CHILD_CONTROLLER display children (the console GPU) is
+  always unlocked last; every other card runs the full pipeline first.
+- Each card keeps its own ownership/DMA/latch state; a card that completes
+  is left unlocked and quiesced while later cards are processed.
+- Per-card PROM SHA256, chip ID and VRAM size stay exact — unknown cards
+  are skipped, never targeted.
+
+Select with `internal-boot/unlock/build.ps1 -HardwareProfile b660m-dual`
+plus the usual headless flags, or `research/headless/build-unlock.ps1
+-HardwareProfile b660m-dual` for the wrapper package. Hardware validation
+of the two-card sequence is still pending; treat the first run like any
+new profile port (read the report, confirm both transactions).
+
 ## Profile 2: ASUS TUF B660M-E D4 / RTX 3070 Ti (aggregate console)
 
 A contributor-reported successful internal headless profile
@@ -177,7 +205,8 @@ of the later hardened integration. [Evidence and limits](../evidence/h610m-3060-
 | Another RTX 3090, even a Founders Edition in another PC | Unverified; exact checks may reject |
 | Another ASUS BIOS, AMD board/CPU or Intel host | Unverified; separate profile and validation required |
 | CPU without iGPU (Intel host, aggregate console) | One contributor-reported profile above; still not generalized |
-| Multiple discrete GPUs, laptop/hybrid setup | Unverified |
+| Multiple discrete GPUs | `GU_PROFILE_B660M_DUAL` build exists; cards are matched by PCI ID anywhere on segment 0, non-console cards unlock first; still needs on-hardware validation |
+| laptop/hybrid setup | Unverified |
 | Other NVIDIA models/architectures | Separate GPU port and validation required |
 | AMD Radeon / Intel discrete unlock target | No unlock implementation here |
 | Games, ComfyUI, sleep/hibernate resume, long-term stability | Not established by GEMM/boot evidence |
