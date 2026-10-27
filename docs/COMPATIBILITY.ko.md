@@ -2,13 +2,15 @@
 
 [English](COMPATIBILITY.en.md) | **한국어**
 
-현재 소스에는 실기기 결과가 기록된 정확한 장비 프로필 다섯 개가 있습니다.
-내부 headless 두 구성과 headless USB 세 구성입니다. 최초 B650M은 유지관리자가
+현재 소스에는 실기기 결과가 기록된 정확한 장비 프로필 여섯 개가 있습니다.
+내부 headless 세 구성과 headless USB 세 구성입니다. 최초 B650M은 유지관리자가
 시험했고, B660M·X870·B660-PLUS의 근거는 기여자의 보고입니다
 ([PR #5](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/5),
 [PR #10](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/10),
 [PR #24](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/24),
 [PR #30](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/30)).
+B760M / RTX 3080 LHR 결과는
+[issue #28](https://github.com/impacifist/Windows-GPU-UNLOCK/issues/28)에 기록되어 있습니다.
 빌드는 [internal-boot/unlock/machine-profile.h](../internal-boot/unlock/machine-profile.h)에서
 빌드 시점에 선택된 하나의 검토된 프로필 전용이며, 다른 GPU·플랫폼은 지원하지 않습니다.
 
@@ -19,6 +21,7 @@
 | `x870-3090ti` | Gigabyte X870 AORUS ELITE WIFI7 BIOS F13d / Ryzen 7 9800X3D / ASUS RTX 3090 Ti | USB 전용; 기여자 보고 |
 | `b660plus-3060` | ASUS PRIME B660-PLUS D4 BIOS 3010 / iGPU 없는 i5-12600KF / GA104 RTX 3060 12GB | USB 전용, 디스플레이 child 두 개, CSM 끔; 기여자 보고 |
 | `h610m-3060` | Gigabyte H610M H BIOS FC / i5-14400(iGPU 켜짐, GOP 없음) / Gigabyte GA106 RTX 3060 12GB | USB 전용, 디스플레이 child 두 개; 기여자 보고 |
+| `b760m-3080lhr` | Maxsun MS-Terminator B760M D4 BIOS H7.8G / iGPU 없는 i5-12490F / Maxsun RTX 3080 10GB LHR | 내부; 기여자 보고(issue #28) |
 
 최신 태그 v0.3.1은 소스 전용 사전 릴리스이며, 현재 소스에는 그 이후의 USB 경로와
 X870 프로필 등이 포함됩니다. 실기기 보고는 각 기록의 빌드에 해당합니다. 현재 cold
@@ -54,7 +57,7 @@ capability·PROM·cold 상태·드라이버 코드·소유권·DMA 정리·실�
 Headless 시험에서는 모든 모니터를 RTX에 연결했고 활성 AMD GOP가 없었습니다.
 7800X3D 자체에는 iGPU가 있으며, GOP가 없다는 사실만으로 BIOS에서 iGPU를 비활성화했다고
 단정하지 않습니다. 이 B650M 시험으로 모든 펌웨어의 iGPU 구현과 독립적으로
-동작한다고 주장하지 않습니다. iGPU 없는 Intel 호스트의 별도 사례는 프로필 2입니다.
+동작한다고 주장하지 않습니다. iGPU 없는 Intel 호스트의 별도 사례는 프로필 2·6입니다.
 
 ## 프로필 2: ASUS TUF B660M-E D4 / RTX 3070 Ti(aggregate console)
 
@@ -160,6 +163,40 @@ FP32 9.58 → 9.34 TFLOPS입니다. 저장소의 cuBLAS n=4096과는 다른 측�
 실기기 보고와 해시는 원 기여 `4b748f5`에 해당하며 이후 보강한 통합본의 실기기 시험이
 아닙니다. [근거와 한계](../evidence/h610m-3060-usb/README.md)를 참고하세요.
 
+## 프로필 6: Maxsun MS-Terminator B760M D4 / RTX 3080 LHR(aggregate console)
+
+[issue #28](https://github.com/impacifist/Windows-GPU-UNLOCK/issues/28)의 내부
+headless 실기기 결과 한 건입니다. Maxsun MS-Terminator B760M D4 BIOS H7.8G,
+iGPU 없는 i5-12490F, RTX 3080 10GB LHR(GA102) 구성입니다. 펌웨어가 nvgop
+디스플레이 child를 비표준 open attribute로 노출하고 AMI DevicePath consumer가
+조건부로 붙으며, `GU_TOPO_B760M` 허용 범위가 그 차이를 처리합니다. 이 프로필은
+exact-machine 전용입니다.
+
+| 공통 GPU·플랫폼 항목 | 검증한 값 |
+|---|---|
+| 카드 | Maxsun RTX 3080 10 GiB LHR(GA102) |
+| PCI 신원 | `10de:2216`, subsystem `7377:2000` |
+| GPU BDF | `0000:01:00.0` |
+| Chip / VRAM 레지스터 | `0xb72000a1` / `0x2800` MiB |
+| BAR0 | `0x80000000`, 16 MiB |
+| PROM SHA256 | `88a6bce1bd790d3e4c542cccafbbd88a7ef73e2e0bef34310d7e8ed780e56d25` |
+| 메인보드 / BIOS | Maxsun MS-Terminator B760M D4 / H7.8G |
+| CPU | Intel Core i5-12490F (no iGPU) |
+| 기록한 Windows / 드라이버 | Windows 11 IoT Enterprise LTSC 26100 / NVIDIA 617.14 |
+| UEFI / Secure Boot | x64 / 꺼짐 |
+| Selector 프로필 | `entryLatchedSs1Full`; SS0 목표 `0x88888888`, SS1 목표 `0x8` |
+
+검증 실행은 언락 트랜잭션 1회, Windows 직접 시작, 화면 복귀를 기록했습니다.
+설치된 wrapper `64D887E4…`와 child `1265F152…`는 이 소스의 clean rebuild와
+일치합니다. 빌드는 고정된 20.1.8 대신 clang/lld-link 23.1.4를 사용했습니다.
+cuBLAS GEMM n=4096, FP32 accumulation, 3회 중앙값은 FP16 109.8, BF16 113.2
+TFLOPS(locked 56.4/59.9)이고 FP32는 변화가 없었습니다. 한 번의 부팅과 한 쌍의
+before/after이며 S3/resume, 반복 자동 콜드 부팅, 게임/ComfyUI, 장기 안정성과
+다른 RTX 3080은 미검증입니다.
+
+`research/headless/build-unlock.ps1 -HardwareProfile b760m-3080lhr`과
+`internal-boot/Configure.ps1 -HardwareProfile b760m-3080lhr`로 선택합니다.
+
 ## 기록된 구성 밖의 범위
 
 | 다른 구성·검증 범위 | 상태 |
@@ -167,8 +204,9 @@ FP32 9.58 → 9.34 TFLOPS입니다. 저장소의 cuBLAS n=4096과는 다른 측�
 | 최초 B650M, F8에서 선택한 내부 headless 자동 child | 2026-10-24 언락·Windows 화면 복귀·Tensor 측정 1회 검증 |
 | 기본 자동 항목으로 반복 콜드 부팅 | 제한된 감독하 실행으로 입증되지 않음 |
 | 다른 RTX 3090, 같은 FE를 다른 PC에 설치한 경우 포함 | 미검증. 고정 검사에서 거부될 수 있음 |
+| 다른 RTX 3080, 같은 `10de:2216`이라도 subsystem/VBIOS/PROM/보드가 다르면 | 미검증. 별도 프로필·검증 필요 |
 | 다른 ASUS BIOS·AMD 보드/CPU·Intel 호스트 | 미검증. 별도 프로필·검증 필요 |
-| iGPU 없는 CPU | 위 프로필 2의 기여자 보고 한 건. 일반화하지 않음 |
+| iGPU 없는 CPU | 위 프로필 2·6의 기여자 보고 두 건. 일반화하지 않음 |
 | 복수 외장 GPU·노트북/hybrid | 미검증 |
 | 다른 NVIDIA 모델·아키텍처 | 별도 GPU 포팅과 검증 필요 |
 | AMD Radeon·Intel 외장 GPU 언락 | 구현 없음 |

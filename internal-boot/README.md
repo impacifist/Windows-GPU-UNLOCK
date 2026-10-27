@@ -5,8 +5,9 @@ Read the [Korean walkthrough](../docs/INTERNAL-BOOT.ko.md) or
 
 This tree is separate from the legacy USB source. Scope: reviewed
 single-machine profiles only (internal-boot/unlock/machine-profile.h): the
-original RTX 3090 FE / TUF B650M BIOS 3057 build and the RTX 3070 Ti /
-TUF B660M-E D4 BIOS 4003 aggregate-console headless build. Manual direct
+original RTX 3090 FE / TUF B650M BIOS 3057 build, the RTX 3070 Ti /
+TUF B660M-E D4 BIOS 4003 aggregate-console headless build, and the Maxsun
+B760M D4 / RTX 3080 10 GB LHR aggregate-console headless build. Manual direct
 handoff is hardware verified; automatic firmware boot and the public
 registration/promotion adapter remain experimental.
 

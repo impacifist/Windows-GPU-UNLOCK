@@ -1,5 +1,31 @@
 # Changes
 
+## 2026-10-27 — Maxsun B760M / RTX 3080 LHR hardware-verified profile
+
+- Added compile-time profile `b760m-3080lhr` for Maxsun MS-Terminator B760M D4
+  BIOS H7.8G, i5-12490F (no iGPU) and RTX 3080 10 GB LHR (GA102, subsystem
+  `7377:2000`). PCI/subsystem, BAR0, chip/VRAM, PROM, root-port, display path
+  and all EFI driver fingerprints remain build-time constants; a user-editable
+  file still cannot select a profile. The profile uses the default
+  `GU_TARGET_BUS 1U` and keeps its AMI EDID runtime.
+- Added `GU_TOPO_B760M` aggregate-console allowances: nvgop's display child
+  uses open attribute `0x8`; the AMI EDID runtime binds through the NVIDIA
+  private protocol; an optional AMI DevicePath consumer is detached at stage 4;
+  the console text-out driver is identified by FFS GUID+size+version because
+  its Stop offsets vary per boot. Existing profiles and their build hashes are
+  unchanged.
+- One cold boot on 2026-10-26 completed the unlock and direct Windows handoff
+  with display recovery. Installed wrapper `64D887E4…` and child `1265F152…`
+  match a clean rebuild from this source (clang/lld-link 23.1.4, not the
+  pinned 20.1.8).
+- Measured cuBLAS GEMM n=4096, FP32 accumulate: FP16 109.8 and BF16 113.2
+  TFLOPS (locked 56.4/59.9); FP32 unchanged. One boot and one before/after
+  pair; S3/resume, repeated automatic cold boots, games/ComfyUI and long-term
+  stability remain unverified. This is not general RTX 3080 support.
+- Added `tests/test_hardware_profiles.py` and source documentation. The
+  Chinese-locale BCD parser and the local observation-registration script are
+  separate/local and not part of this profile change.
+
 ## Unreleased — offline compatibility reports and comparison
 
 - Add a Python-only, read-only checker for existing probe captures. Reuse the
