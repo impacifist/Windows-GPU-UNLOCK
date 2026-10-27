@@ -19,6 +19,26 @@ git checkout --detach 0ebdb1c6308b6a2072be5bf04513472942541956
 make inputs firmware PYTHON=python3.14 INPUTS="$PWD/inputs" ASSETS="$PWD/assets"
 ```
 
+### Windows without WSL
+
+The same pinned scripts also run on Windows with Python 3.14 (for example `py -3.14` or a uv-managed
+3.14). `make` and an external `zstd` binary are not needed. In a new working directory:
+
+```powershell
+git clone https://github.com/Zagitta/gpu-unlock.git gpu-unlock-firmware-source
+cd gpu-unlock-firmware-source
+git checkout --detach 0ebdb1c6308b6a2072be5bf04513472942541956
+py -3.14 -I firmware\fetch_artifacts.py "$PWD\inputs"
+New-Item -ItemType Directory assets.src,assets | Out-Null
+tar -xf inputs\NVIDIA-kernel-module-source-610.43.03.tar.xz -C assets.src
+py -3.14 -I <this repo>\tools\generate_v67_windows.py "$PWD" "$PWD\inputs\nvidia-utils-610.43.03-1-x86_64_v3.pkg.tar.zst" "$PWD\assets"
+py -3.14 -I firmware\extract_boot_assets.py "$PWD\assets.src\NVIDIA-kernel-module-source-610.43.03" "$PWD\assets"
+```
+
+`tools/generate_v67_windows.py` only replaces upstream's `zstd -dc` pipe with Python's built-in zstd
+reader. All of upstream's input, payload and license hash checks still run. This route produced all five files with
+the expected sizes and hashes on Windows 11 (2026-10-27, `b550-aorus-3090-usb` evidence).
+
 The upstream `fetch_artifacts.py` checks pinned NVIDIA source and nvidia-utils inputs by SHA-256; generation also verifies output hashes. Copy these five `.bin` files from the generated `assets/` directory into this repository's local `assets/`:
 
 ```text

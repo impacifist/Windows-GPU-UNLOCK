@@ -68,7 +68,15 @@ below. Passing this check is not proof of hardware compatibility.
 ## Steps
 
 Needs: LLVM (`clang`, `lld-link`), MSVC build tools, Python 3.10+, the five firmware assets
-(`docs/ASSETS.en.md`) and a FAT32 USB stick. Fast Startup off.
+(`docs/ASSETS.en.md`) and a FAT32 USB stick. Fast Startup off. **CSM disabled** in the BIOS: with
+CSM on, AMI CsmVideo (`29CF55F8-B675-4F5D-8F2F-B87A3ECFD063`) owns the RTX instead of `nvgop-ga1xx`
+and firmware may leave bus mastering on. The probe then refuses the deep read
+(`probe-unreviewed-envelope`, PCI command `0x0007`). See
+[evidence/b550-aorus-3090-usb](../evidence/b550-aorus-3090-usb/README.md).
+
+Run the scripts in **Windows PowerShell 5.1** (`powershell.exe`). PowerShell 7 reads JSON integers
+as `Int64`, and the local evidence checks (`-isnot [int]`) then refuse a valid
+`profile.json` with "Generated profile report identity is invalid".
 
 ```powershell
 # Windows ESP GUID: Get-Partition | Where-Object IsSystem | Select Guid
