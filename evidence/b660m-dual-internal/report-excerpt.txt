@@ -1,0 +1,36 @@
+# Excerpts from U:\RTX3090-UNLOCK\AUTO000030\REPORT.TXT (2026-10-28)
+# Multi-target discovery, both cards identified by PCI ID, console-last order:
+
+PCI enumeration: status=0 handles=22
+target[0]: B660M-RTX3090TI-2203 id=0x220310de sub=0x13017377 bdf=0:01:00.0 console=0
+target[1]: B660M-RTX3070TI-2482 id=0x248210de sub=0x50521462 bdf=0:02:00.0 console=0
+PCI targets registered=2 status=0
+
+# Card 0 (3090 Ti): exclusive claim without a release; transaction clean:
+
+ARMED card 0: one transaction is starting. Do not reset or remove the USB.
+post-FLR SEC2 reset released, GSP halted, BME=0 pending=0 WPR2=1ffffe00:00000000 SS0=88888888 SS1=00000008
+transaction result=0 containment=0 started=1 quiesced=1 fault=0 retained=0 maps=0 FLR=1
+card 0 finished: status=0 stage=transaction
+
+# Card 1 (3070 Ti): firmware nvgop released through the guarded path:
+
+Exclusive ownership deferred until the guarded driver release.
+driver release: status=0 refresh=0 same_pci=1
+CHECK stage=ownership-after-release status=0
+ARMED card 1: one transaction is starting. Do not reset or remove the USB.
+transaction result=0 containment=0 started=1 quiesced=1 fault=0 retained=0 maps=0 FLR=1
+card 1 finished: status=0 stage=transaction
+FINAL status=0 stage=transaction attempted=1 driver_release=1 clean=1
+
+# Wrapper handoff (HLS000044.TXT): fingerprinted release tolerated, Windows started:
+
+full-preparation-result status=0x0000000000000000
+original-unlock-return status=0x0000000000000000
+windows-preclose-verify-begin status=0x0000000000000000
+verify-complete status=0x0000000000000000
+windows-close-files-next-then-final-verify-and-StartImage status=0x0000000000000000
+
+# Windows: nvidia-smi --query-gpu=name,memory.total --format=csv
+# NVIDIA GeForce RTX 3090 Ti, 24564 MiB
+# NVIDIA GeForce RTX 3070 Ti, 8192 MiB

@@ -1,0 +1,60 @@
+{
+  "profile": "b660m-dual",
+  "evidence_source": "contributor-reported; two hardware runs on the internal-ESP route, the second complete",
+  "integrated_build_hardware_tested": true,
+  "hardware": {
+    "board": "ASUS TUF GAMING B660M-E D4",
+    "bios": "4003",
+    "cpu": "Intel Core i7-12700F (no iGPU)",
+    "gpu0": "Colorful RTX 3090 Ti 24 GiB (GA102) 10de:2203 / 1301:7377, BAR0 0x84000000",
+    "gpu1": "MSI RTX 3070 Ti 8 GiB (GA104) 10de:2482 / 5052:1462, BAR0 0x82000000",
+    "display": "all monitors on the AMI aggregate console (same topology as B660M_3070TI)"
+  },
+  "software": {
+    "windows": "Windows 11 Pro build 22000",
+    "nvidia_driver": "616.92"
+  },
+  "route": "internal dedicated ESP (GU_INTERNAL_BOOT); firmware bootsequence",
+  "efi": {
+    "child_sha256": "5f7f5a61483c2b85516793e36939fb18f2439d649df7aafb67b56ed1192426c7",
+    "wrapper_sha256": "d0ecac52839b7901ae64c0aad66f48dd16d11edd1643d8a377d186e3c11fc77d",
+    "reproducible": "research/headless/build-unlock.ps1 -HardwareProfile b660m-dual rebuilds child and wrapper; the wrapper embeds the builder's Windows ESP GUID so its hash differs on other machines"
+  },
+  "derivation": {
+    "machine_fingerprints": "console text-out, graphics console, combo, EDID and nvgop drivers byte-identical to the B660M_3070TI/B660M_3090TI profiles",
+    "gpu_constants": "card0 10de:2203/1301:7377 chip 0xb72000a1 mem 0x5ff4; card1 10de:2482/5052:1462 chip 0xb74000a1 mem 0x2000"
+  },
+  "runs": [
+    {
+      "log": "AUTO000029",
+      "boot": "full shutdown",
+      "cards": 2,
+      "card0": "transaction result=0 (exclusive claim, no bound driver)",
+      "card1": "transaction result=0 (guarded nvgop DisconnectController release, re-claimed)",
+      "final": "status=0 clean=1",
+      "windows": "blocked: pre-tolerance graph match stopped handoff (fixed in this revision)"
+    },
+    {
+      "log": "AUTO000030",
+      "boot": "full shutdown",
+      "cards": 2,
+      "card0": "transaction result=0",
+      "card1": "transaction result=0",
+      "final": "status=0 clean=1",
+      "windows": "verify-complete then bootmgfw StartImage; nvidia-smi lists both GPUs"
+    }
+  ],
+  "selectors_after": {
+    "ss0": "0x88888888",
+    "ss1": "0x8",
+    "per_card": true
+  },
+  "not_established": [
+    "repeated cold-boot reliability",
+    "reversed slot order (3070 Ti as card 0)",
+    "single-card boots under the dual profile",
+    "sleep/hibernate resume",
+    "long-term stability, games/applications",
+    "a controlled locked baseline and post-unlock TFLOPS"
+  ]
+}
