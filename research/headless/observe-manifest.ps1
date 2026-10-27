@@ -18,7 +18,7 @@ function Assert-ObservationManifest([string]$Repo,$Manifest,[string]$Mode,[strin
  }
  if($Manifest.UsbMedia -isnot [bool] -or !$Manifest.UsbMedia -or $Manifest.DumpsProm -isnot [bool]){throw 'Invalid observation USB/PROM flags'}
  $profiles=@{'b650m-3090fe'=@();'b660m-3070ti'=@('-DGU_PROFILE_B660M_3070TI');'x870-3090ti'=@('-DGU_PROFILE_X870_3090TI');
-  'b660plus-3060'=@('-DGU_PROFILE_B660PLUS_3060');'h610m-3060'=@('-DGU_PROFILE_H610M_3060');'probe-h610m-3060'=@('-DGU_PROFILE_PROBE_H610M_3060')}
+  'b660plus-3060'=@('-DGU_PROFILE_B660PLUS_3060');'h610m-3060'=@('-DGU_PROFILE_H610M_3060');'probe-h610m-3060'=@('-DGU_PROFILE_PROBE_H610M_3060');'probe-b550-3060'=@('-DGU_PROFILE_PROBE_B550_3060')}
  if($Manifest.HardwareProfile -isnot [string] -or @($profiles.Keys) -cnotcontains $Manifest.HardwareProfile){throw 'Unknown observation hardware profile'}
  $defines=@($profiles[$Manifest.HardwareProfile])+@('-DGU_USB_MEDIA')
  if($Manifest.DumpsProm){$defines+='-DGU_PROBE_DUMP_PROM'}

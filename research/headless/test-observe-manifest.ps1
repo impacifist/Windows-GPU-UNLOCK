@@ -56,7 +56,7 @@ foreach($path in @('internal-boot/efi_runtime.c','deps/edk2/MdePkg/Include/Uefi.
  Put $path $original
 }
 $profiles=@{'b650m-3090fe'=@();'b660m-3070ti'=@('-DGU_PROFILE_B660M_3070TI');'x870-3090ti'=@('-DGU_PROFILE_X870_3090TI');
- 'b660plus-3060'=@('-DGU_PROFILE_B660PLUS_3060');'h610m-3060'=@('-DGU_PROFILE_H610M_3060');'probe-h610m-3060'=@('-DGU_PROFILE_PROBE_H610M_3060')}
+ 'b660plus-3060'=@('-DGU_PROFILE_B660PLUS_3060');'h610m-3060'=@('-DGU_PROFILE_H610M_3060');'probe-h610m-3060'=@('-DGU_PROFILE_PROBE_H610M_3060');'probe-b550-3060'=@('-DGU_PROFILE_PROBE_B550_3060')}
 foreach($name in $profiles.Keys) {
  Check ('valid '+$name) {param($m) $m.HardwareProfile=$name;$m.Defines=@($profiles[$name])+@('-DGU_USB_MEDIA','-DGU_PROBE_DUMP_PROM')} $true
 }

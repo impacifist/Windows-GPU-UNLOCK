@@ -3,7 +3,7 @@
 # probe, then Windows Boot Manager from the pinned Windows ESP. No internal ESP is
 # needed, and nothing is installed, staged or registered here.
 param([Parameter(Mandatory)][guid]$WindowsEspGuid,[string]$Clang='clang',[string]$LldLink='lld-link',[string]$Python='python',
- [ValidateSet('b650m-3090fe','b660m-3070ti','x870-3090ti','b660plus-3060','h610m-3060','probe-h610m-3060')][string]$HardwareProfile='probe-h610m-3060',[switch]$DumpProm)
+ [ValidateSet('b650m-3090fe','b660m-3070ti','x870-3090ti','b660plus-3060','h610m-3060','probe-h610m-3060','probe-b550-3060')][string]$HardwareProfile='probe-h610m-3060',[switch]$DumpProm)
 $ErrorActionPreference='Stop'
 $repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 $boot=Join-Path $repo 'internal-boot/boot'

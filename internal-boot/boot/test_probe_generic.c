@@ -182,7 +182,7 @@ int main(void) {
   Check(RootOpens==0 && Dumps==0,"capture without root creates no dump");
   Check(GuCaptureGraph(&Table,&LogFile)==EFI_NOT_READY,"legacy graph API cannot inherit the last root");
   Check(RootOpens==0,"legacy API uses no stale root");
-#if defined(GU_PROBE_DUMP_PROM) || defined(GU_PROFILE_H610M_3060) || defined(GU_PROFILE_PROBE_H610M_3060)
+#if defined(GU_PROBE_DUMP_PROM) || defined(GU_PROFILE_H610M_3060) || defined(GU_PROFILE_PROBE_H610M_3060) || defined(GU_PROFILE_PROBE_B550_3060)
   Check(GenericRun(G_EXISTING_IMG,TRUE)==EFI_NOT_READY,"existing image capture invalidates new capture");
   Check(ExistingWriteAttempts==0,"existing image capture is never opened for write");
   Check(GenericRun(G_DUMP_READ_ERROR,TRUE)==EFI_NOT_READY,"unreadable capture file fails closed");

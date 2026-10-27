@@ -14,22 +14,22 @@
 #error GPU family and firmware must be derived from the selected machine profile
 #endif
 
-#if (defined(GU_PROFILE_B650M_3090FE) + defined(GU_PROFILE_B660M_3070TI) + defined(GU_PROFILE_B660M_3090TI) + defined(GU_PROFILE_X870_3090TI) + defined(GU_PROFILE_B660PLUS_3060) + defined(GU_PROFILE_LOCAL) + defined(GU_PROFILE_H610M_3060) + defined(GU_PROFILE_PROBE_H610M_3060)) > 1
+#if (defined(GU_PROFILE_B650M_3090FE) + defined(GU_PROFILE_B660M_3070TI) + defined(GU_PROFILE_B660M_3090TI) + defined(GU_PROFILE_X870_3090TI) + defined(GU_PROFILE_B660PLUS_3060) + defined(GU_PROFILE_LOCAL) + defined(GU_PROFILE_H610M_3060) + defined(GU_PROFILE_PROBE_H610M_3060) + defined(GU_PROFILE_PROBE_B550_3060)) > 1
 #error Select exactly one machine profile
 #endif
-#if !defined(GU_PROFILE_B650M_3090FE) && !defined(GU_PROFILE_B660M_3070TI) && !defined(GU_PROFILE_B660M_3090TI) && !defined(GU_PROFILE_X870_3090TI) && !defined(GU_PROFILE_B660PLUS_3060) && !defined(GU_PROFILE_LOCAL) && !defined(GU_PROFILE_H610M_3060) && !defined(GU_PROFILE_PROBE_H610M_3060)
+#if !defined(GU_PROFILE_B650M_3090FE) && !defined(GU_PROFILE_B660M_3070TI) && !defined(GU_PROFILE_B660M_3090TI) && !defined(GU_PROFILE_X870_3090TI) && !defined(GU_PROFILE_B660PLUS_3060) && !defined(GU_PROFILE_LOCAL) && !defined(GU_PROFILE_H610M_3060) && !defined(GU_PROFILE_PROBE_H610M_3060) && !defined(GU_PROFILE_PROBE_B550_3060)
 #define GU_PROFILE_B650M_3090FE 1
 #endif
 
 /* Probe-only identity: never a write profile. It selects the read-only probe
  * target and nothing else, so any build that could arm, release a driver or
  * unlock must fail to compile with it. */
-#if defined(GU_PROFILE_PROBE_H610M_3060)
+#if defined(GU_PROFILE_PROBE_H610M_3060) || defined(GU_PROFILE_PROBE_B550_3060)
 #if !defined(GU_DIAGNOSTIC_PROBE) || (!defined(GU_DIAGNOSTIC_ONLY) && !defined(GU_PROBE_HOST_TEST))
-#error GU_PROFILE_PROBE_H610M_3060 is for the read-only diagnostic probe only
+#error Identity-only probe profile is for the read-only diagnostic probe only
 #endif
 #if defined(GU_FULL_UNLOCK) || defined(GU_EXPERIMENTAL_3090) || defined(GU_UEFI_PORT) || defined(GU_INTERNAL_BOOT) || defined(GU_CONSOLE_PREPARE) || defined(GU_AUTOMATIC_BOOT) || defined(GU_HEADLESS_RESEARCH)
-#error GU_PROFILE_PROBE_H610M_3060 must not be combined with release or unlock builds
+#error Identity-only probe profile must not be combined with release or unlock builds
 #endif
 #endif
 
@@ -76,6 +76,21 @@
 #define GU_PROFILE_NAME "PROBE-ONLY-GIGABYTE-H610M-H-FC-RTX3060-12GB"
 #define GU_BOARD_ID 0x250410deU
 #define GU_BOARD_SUBSYSTEM 0x40961458U
+
+#elif defined(GU_PROFILE_PROBE_B550_3060)
+
+/* Gigabyte B550 AORUS ELITE V2 BIOS F13 (AMI), Ryzen 7 3700X (no iGPU), NVIDIA
+ * reference-subsystem RTX 3060 12GB (GA104 10de:2487, VBIOS 94.04.71.00.a5):
+ * UNREVIEWED, probe only. Only the PCI identity and the Windows-reported bus are
+ * known (0000:06:00.0 behind AMD root port 1022:1483, single RTX, CSM off).
+ * BAR0, chip ID, PROM hash, root port, display paths and driver fingerprints are
+ * what the probe collects. Deliberately defines none of them. */
+#define GU_PROFILE_NAME "PROBE-ONLY-GIGABYTE-B550-AORUS-ELITE-V2-F13-RTX3060-12GB"
+#define GU_BOARD_ID 0x248710deU
+#define GU_BOARD_SUBSYSTEM 0x248710deU
+#ifndef GU_PROBE_BUS
+#define GU_PROBE_BUS 6U
+#endif
 
 #elif defined(GU_PROFILE_H610M_3060)
 
@@ -215,7 +230,7 @@
 /* The transaction/layout code is shared; family traits and exact firmware
  * fingerprints are separate from the board/card pins above. Identity-only
  * probes deliberately receive neither chip traits nor firmware defaults. */
-#if !defined(GU_PROFILE_PROBE_H610M_3060)
+#if !defined(GU_PROFILE_PROBE_H610M_3060) && !defined(GU_PROFILE_PROBE_B550_3060)
 #include "gpu-family.h"
 #if !defined(GU_PROFILE_LOCAL)
 #include "firmware-profile.h"

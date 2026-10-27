@@ -3,7 +3,7 @@
  * console firmware. LOCAL always keeps its own captured values, never defaults.
  */
 #pragma once
-#if defined(GU_PROFILE_LOCAL) || defined(GU_PROFILE_PROBE_H610M_3060)
+#if defined(GU_PROFILE_LOCAL) || defined(GU_PROFILE_PROBE_H610M_3060) || defined(GU_PROFILE_PROBE_B550_3060)
 #error Captured local and identity-only probe profiles must not inherit firmware templates
 #endif
 #if defined(GU_FIRMWARE_AMI_B650M_3057) || defined(GU_FIRMWARE_AMI_B660M_4003) || defined(GU_FIRMWARE_AMI_X870_F13D) || defined(GU_FIRMWARE_AMI_H610M_FC)

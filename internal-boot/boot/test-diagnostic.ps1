@@ -19,7 +19,7 @@ try {
   if($LASTEXITCODE -ne 0){throw "Probe tests failed: $profile"}
  }
  # Both new identities use the guarded MMIO fixture, with and without PROM output.
- foreach($profile in @('GU_PROFILE_H610M_3060','GU_PROFILE_PROBE_H610M_3060')) {
+ foreach($profile in @('GU_PROFILE_H610M_3060','GU_PROFILE_PROBE_H610M_3060','GU_PROFILE_PROBE_B550_3060')) {
   foreach($prom in @($false,$true)) {
    $extra=@();if($prom){$extra+='-DGU_PROBE_DUMP_PROM'}
    $dest="build/diagnostic/test-checked-$profile-$prom.exe"
@@ -32,17 +32,21 @@ try {
  # The probe-only profile must never compile into a write-side unit. These compiles
  # are expected to fail; PowerShell 5.1 would turn their stderr into a terminating error.
  $ErrorActionPreference='Continue'
+ foreach($probeProfile in @('GU_PROFILE_PROBE_H610M_3060','GU_PROFILE_PROBE_B550_3060')) {
  foreach($bad in @('-DGU_FULL_UNLOCK','-DGU_UEFI_PORT','-DGU_HEADLESS_RESEARCH','-DGU_EXPERIMENTAL_3090','-DGU_INTERNAL_BOOT','-DGU_CONSOLE_PREPARE','-DGU_AUTOMATIC_BOOT')) {
-  $out=& $Clang -target x86_64-pc-windows-msvc -std=c11 -ffreestanding -fsyntax-only -DGU_DIAGNOSTIC_ONLY -DGU_DIAGNOSTIC_PROBE -DGU_PROFILE_PROBE_H610M_3060 $bad -I ../../deps/edk2/MdePkg/Include -I ../../deps/edk2/MdePkg/Include/X64 probe.c 2>&1 | Out-String
-  if($LASTEXITCODE -eq 0 -or $out -notmatch 'must not be combined with release or unlock builds'){throw "Probe-only profile not rejected by its guard with $bad"}
+  $out=& $Clang -target x86_64-pc-windows-msvc -std=c11 -ffreestanding -fsyntax-only -DGU_DIAGNOSTIC_ONLY -DGU_DIAGNOSTIC_PROBE "-D$probeProfile" $bad -I ../../deps/edk2/MdePkg/Include -I ../../deps/edk2/MdePkg/Include/X64 probe.c 2>&1 | Out-String
+  if($LASTEXITCODE -eq 0 -or $out -notmatch 'must not be combined with release or unlock builds'){throw "Probe-only profile $probeProfile not rejected by its guard with $bad"}
  }
- $out=& $Clang -target x86_64-pc-windows-msvc -std=c11 -ffreestanding -fsyntax-only -DGU_DIAGNOSTIC_PROBE -DGU_PROFILE_PROBE_H610M_3060 -I ../../deps/edk2/MdePkg/Include -I ../../deps/edk2/MdePkg/Include/X64 probe.c 2>&1 | Out-String
- if($LASTEXITCODE -eq 0 -or $out -notmatch 'is for the read-only diagnostic probe only'){throw 'Probe-only profile not rejected outside a diagnostic-only build'}
+ $out=& $Clang -target x86_64-pc-windows-msvc -std=c11 -ffreestanding -fsyntax-only -DGU_DIAGNOSTIC_PROBE "-D$probeProfile" -I ../../deps/edk2/MdePkg/Include -I ../../deps/edk2/MdePkg/Include/X64 probe.c 2>&1 | Out-String
+ if($LASTEXITCODE -eq 0 -or $out -notmatch 'is for the read-only diagnostic probe only'){throw "Probe-only profile $probeProfile not rejected outside a diagnostic-only build"}
+}
  $out=& $Clang -target x86_64-pc-windows-msvc -std=c11 -ffreestanding -fsyntax-only -DGU_DIAGNOSTIC_PROBE -DGU_PROBE_DUMP_PROM -I ../../deps/edk2/MdePkg/Include -I ../../deps/edk2/MdePkg/Include/X64 probe.c 2>&1 | Out-String
  if($LASTEXITCODE -eq 0 -or $out -notmatch 'only for the observation-only diagnostic image'){throw 'PROM dump not rejected outside a diagnostic-only build'}
  $ErrorActionPreference='Stop'
  & $Clang -target x86_64-pc-windows-msvc -std=c11 -ffreestanding -fshort-wchar -fsyntax-only -Wall -Wextra -Werror -DGU_DIAGNOSTIC_ONLY -DGU_DIAGNOSTIC_PROBE -DGU_USB_MEDIA -DGU_PROBE_DUMP_PROM -DGU_PROFILE_PROBE_H610M_3060 -I ../../deps/edk2/MdePkg/Include -I ../../deps/edk2/MdePkg/Include/X64 probe.c
  if($LASTEXITCODE -ne 0){throw 'PROM dump probe does not compile'}
+ & $Clang -target x86_64-pc-windows-msvc -std=c11 -ffreestanding -fshort-wchar -fsyntax-only -Wall -Wextra -Werror -DGU_DIAGNOSTIC_ONLY -DGU_DIAGNOSTIC_PROBE -DGU_USB_MEDIA -DGU_PROBE_DUMP_PROM -DGU_PROFILE_PROBE_B550_3060 -I ../../deps/edk2/MdePkg/Include -I ../../deps/edk2/MdePkg/Include/X64 probe.c
+ if($LASTEXITCODE -ne 0){throw 'B550 PROM dump probe does not compile'}
  'PASS probe-only profile rejected by write-side and non-diagnostic builds'
  & $Clang -std=c11 -O1 -Wall -Wextra -Werror -D_CRT_SECURE_NO_WARNINGS -DGU_DIAGNOSTIC_ONLY -DGU_DIAGNOSTIC_PROBE -DGU_PROBE_GENERIC -I ../../deps/edk2/MdePkg/Include -I ../../deps/edk2/MdePkg/Include/X64 test_probe_generic.c probe.c ../unlock/sha256.c -o build/diagnostic/test-probe-generic.exe
  if($LASTEXITCODE -ne 0){throw 'Generic probe tests compile failed'}
