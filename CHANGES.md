@@ -1,5 +1,18 @@
 # Changes
 
+## Unreleased — Gigabyte B550 / RTX 3090 contributor evidence
+
+- Add [evidence/b550-aorus-3090-usb](evidence/b550-aorus-3090-usb/README.md): a second no-iGPU
+  B550 machine. Gigabyte B550 AORUS ELITE AX V2 (BIOS FF), Ryzen 7 5800X, NVIDIA-subsystem RTX
+  3090 (`10de:147d`) at `0000:07:00.0`, nvgop `0x60009`. Unlike `b550m-3090-usb`, the AMI EDID
+  driver is bound, so stage 3 ran (two display children). One cold-boot run: `FINAL status=0
+  clean=1`. Locked to unlocked at n=8192: FP16 68.5 to 110.9, BF16 70.0 to 113.9 TFLOPS, FP32
+  unchanged. It was built from a `5c98f11`-based branch with an equivalent of #49; current `main` needs a
+  re-capture with the current probe. No code, profile or envelope change.
+- Document that CSM must be off (CsmVideo owns the RTX and bus mastering is left on), and that the
+  local-profile scripts need Windows PowerShell 5.1.
+- Add `tools/generate_v67_windows.py` and a Windows-without-WSL section to the asset guide.
+
 ## Unreleased — RTX 3080 display-routing observations
 
 - Integrate PR #39's contributor research and bounded read-only Windows

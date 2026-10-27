@@ -1,0 +1,88 @@
+# Selected lines, AUTO000000 (cold boot after a full shutdown). Addresses and raw graphs omitted.
+
+## Wrapper (HLS000000.TXT): stage results
+
+internal-handoff-v1 status=0x0000000000000000
+pre-release-cold-check status=0x0000000000000000
+pre-release-cold-wpr2-hi status=0x0000000000000000
+pre-release-cold-ss0 status=0x0000000055464163
+console-prepare-preflight status=0x0000000000000000
+detach-rtx-textout-intent status=0x0000000000000000
+detach-rtx-textout-return status=0x0000000000000000
+detach-textout-verified status=0x0000000000000000
+detach-rtx-graphics-console-intent status=0x0000000000000000
+detach-rtx-graphics-console-return status=0x0000000000000000
+detach-graphics-console-verified status=0x0000000000000000
+stage2a-success-no-unlock-no-gop-removal status=0x0000000000000000
+headless-console-pre-release-verification status=0x0000000000000000
+headless-display-child-consumers-preflight status=0x0000000000000000
+ami-runtime-code-profile status=0x0000000000000000
+nvidia-code-profile status=0x0000000000000000
+capture-pci-config256 status=0x0000000000000000
+capture-bar0 status=0x0000000000000000
+capture-prom status=0x0000000000000000
+capture-cold status=0x0000000000000000
+full-release-preflight status=0x0000000000000000
+detach-rtx-edid-intent-shared-pointer-pauses status=0x0000000000000000
+detach-edid-return status=0x0000000000000000
+edid-detach-verified status=0x0000000000000000
+detach-rtx-edid-intent-shared-pointer-pauses status=0x0000000000000000
+detach-edid-return status=0x0000000000000000
+edid-detach-verified status=0x0000000000000000
+detach-nvidia-gop-intent status=0x0000000000000000
+detach-nvidia-return status=0x0000000000000000
+nvidia-detach-verified status=0x0000000000000000
+pci-decode-restore-intent-io-mem-only status=0x0000000000000000
+pci-decode-restore-result status=0x0000000000000000
+full-release-ready-for-original-unlock status=0x0000000000000000
+full-preparation-result status=0x0000000000000000
+automatic-unlock-start-Esc-cancels status=0x0000000000000000
+original-unlock-return status=0x0000000000000000
+full-windows-start status=0x0000000000000000
+windows-preclose-verify-begin status=0x0000000000000000
+verify-complete status=0x0000000000000000
+windows-close-files-next-then-final-verify-and-StartImage status=0x0000000000000000
+
+## Child (AUTO000000\REPORT.TXT)
+
+BUILD MODE: AUTOMATIC INTERNAL UNLOCK; profile=entryLatchedSs1Full; Esc cancellation; all hardware gates retained.
+CHECK stage=secure-boot status=0
+CHECK stage=watchdog status=0
+target BDF=0:7:0.0 checks=1 pm=0x60 pcie=0x78 msi=0x68 msix=0
+CHECK stage=target status=0
+CHECK stage=display status=0
+CHECK stage=bar0 status=0
+CHECK stage=prom status=0
+cold state: chip=0xb72000a1 plm=0xffffff8f gfw=0x8b8f/0x3ff/0x10 WPR2_HI=0 SS0=0x55464163 SS1=0x5
+cold observed: profile=entryLatchedSs1Full chip=0xb72000a1 memory=0x6000 SS0=0x55464163 SS1=0x5
+entry selectors: latched_once=1 SS0=0x55464163 SS1=0x5 SS0target=0x88888888 SS1policy=full SS1target=0x8
+EXPERIMENTAL exact-card profile entryLatchedSs1Full verified; SS0target=0x88888888 SS1policy=full entry=0x5 target=0x8; hardware untested.
+CHECK stage=diagnostic-cold-state status=0
+ownership: records=6 exclusive=1 status=0
+CHECK stage=ownership status=0
+CHECK stage=config-recheck status=0
+CHECK stage=cold-state status=0
+asset verified: gpu-unlock/610.43.03/booter_load_ga102.bin bytes=61256 sha256=056cbc064a888f80717726c54d7f64fcd68044d123870c95a74f37f4975dcaa4
+asset verified: gpu-unlock/610.43.03/v67-ga102-610.43.03.bin bytes=64000 sha256=2a0aa1f86d0b6afff5214d641d87d46dc98ef06ed908ff05d0ddbad5ffb7e197
+asset verified: gpu-unlock/610.43.03/gsp_ga10x.bin bytes=84277400 sha256=572373620a37418f24dc16b5031c39338778c3257e48e8408de9a57291b24f3a
+asset verified: gpu-unlock/610.43.03/gsp_boot_ga102.bin bytes=24576 sha256=3df651acb174fd5f5561a1996965b192f50c5d763168446ed0d4ead19d895768
+asset verified: gpu-unlock/610.43.03/gsp_boot_desc_ga102.bin bytes=84 sha256=cc5a3fc1f4c47f2fe107b1b68f0176d8a448e6dec84b575e5560ccef5262bf15
+CHECK stage=assets status=0
+CHECK stage=arming status=0
+CHECK stage=armed-config status=0
+CHECK stage=armed-display status=0
+CHECK stage=armed-cold-state status=0
+CHECK stage=final-prom status=0
+CHECK stage=final-cold status=0
+ARMED: one transaction is starting. Do not reset or remove the USB.
+selector intent: SS0target=0x88888888 SS1entry=0x5 SS1target=0x8 (one SS1 write)
+pre-FLR selectors: ss0=0x88888888 expected=0x88888888 ss1=0x8 expected=0x8
+PCIe FLR begin: BME=0 DMA retained, chip=0xb72000a1
+PCIe FLR returned: result=0
+post-FLR BAR ready: chip=0xb72000a1
+post-FLR GFW result: error=0 pci=0x220410de plm=0x8b8f boot=0x3ff cpuctl=0x10 budget_us=2050000
+post-FLR SEC2 reset released, GSP halted, BME=0 pending=0 WPR2=1ffffe00:00000000 SS0=88888888 SS1=00000008
+restore PCI command: actual=0x3 original=0x3 mask=0x6
+BME containment: attribute_status=0 hardware_status=0 command=0x3 cached=0x300 pending=0
+transaction result=0 containment=0 started=1 quiesced=1 fault=0 retained=0 maps=0 FLR=1
+FINAL status=0 stage=transaction attempted=1 driver_release=0 clean=1
