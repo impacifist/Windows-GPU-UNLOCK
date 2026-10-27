@@ -43,7 +43,7 @@ class ProfileTests(unittest.TestCase):
         result, default = macros()
         self.assertEqual(result.returncode, 0)
         self.assertIn('B650M', default['GU_PROFILE_NAME'])
-        for profile in ('B650M_3090FE', 'B660M_3070TI', 'X870_3090TI', 'B660PLUS_3060', 'H610M_3060', 'PROBE_H610M_3060', 'PROBE_B550_3060', 'LOCAL'):
+        for profile in ('B650M_3090FE', 'B660M_3070TI', 'X870_3090TI', 'B660PLUS_3060', 'H610M_3060', 'PROBE_H610M_3060', 'PROBE_B550_3060', 'B550_3060', 'LOCAL'):
             with self.subTest(profile=profile):
                 result, _ = macros('-DGU_PROFILE_B660M_3090TI', '-DGU_PROFILE_' + profile)
                 self.assertNotEqual(result.returncode, 0)

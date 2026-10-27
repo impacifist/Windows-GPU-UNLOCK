@@ -14,10 +14,10 @@
 #error GPU family and firmware must be derived from the selected machine profile
 #endif
 
-#if (defined(GU_PROFILE_B650M_3090FE) + defined(GU_PROFILE_B660M_3070TI) + defined(GU_PROFILE_B660M_3090TI) + defined(GU_PROFILE_X870_3090TI) + defined(GU_PROFILE_B660PLUS_3060) + defined(GU_PROFILE_LOCAL) + defined(GU_PROFILE_H610M_3060) + defined(GU_PROFILE_PROBE_H610M_3060) + defined(GU_PROFILE_PROBE_B550_3060)) > 1
+#if (defined(GU_PROFILE_B650M_3090FE) + defined(GU_PROFILE_B660M_3070TI) + defined(GU_PROFILE_B660M_3090TI) + defined(GU_PROFILE_X870_3090TI) + defined(GU_PROFILE_B660PLUS_3060) + defined(GU_PROFILE_LOCAL) + defined(GU_PROFILE_H610M_3060) + defined(GU_PROFILE_PROBE_H610M_3060) + defined(GU_PROFILE_PROBE_B550_3060) + defined(GU_PROFILE_B550_3060)) > 1
 #error Select exactly one machine profile
 #endif
-#if !defined(GU_PROFILE_B650M_3090FE) && !defined(GU_PROFILE_B660M_3070TI) && !defined(GU_PROFILE_B660M_3090TI) && !defined(GU_PROFILE_X870_3090TI) && !defined(GU_PROFILE_B660PLUS_3060) && !defined(GU_PROFILE_LOCAL) && !defined(GU_PROFILE_H610M_3060) && !defined(GU_PROFILE_PROBE_H610M_3060) && !defined(GU_PROFILE_PROBE_B550_3060)
+#if !defined(GU_PROFILE_B650M_3090FE) && !defined(GU_PROFILE_B660M_3070TI) && !defined(GU_PROFILE_B660M_3090TI) && !defined(GU_PROFILE_X870_3090TI) && !defined(GU_PROFILE_B660PLUS_3060) && !defined(GU_PROFILE_LOCAL) && !defined(GU_PROFILE_H610M_3060) && !defined(GU_PROFILE_PROBE_H610M_3060) && !defined(GU_PROFILE_PROBE_B550_3060) && !defined(GU_PROFILE_B550_3060)
 #define GU_PROFILE_B650M_3090FE 1
 #endif
 
@@ -113,6 +113,31 @@
 /* 36-byte display device path: ACPI root, PciRoot(0), Pci(1,0), Pci(0,0), ADR. */
 #define GU_RTX_PATH_BYTES   2,1,12,0,0xd0,0x41,3,10,0,0,0,0,1,1,6,0,0,1,1,1,6,0,0,0,2,3,8,0,0x30,3,1,128,127,255,4,0
 #define GU_FIRMWARE_PROFILE GU_FIRMWARE_AMI_H610M_FC
+
+#elif defined(GU_PROFILE_B550_3060)
+
+/* Gigabyte B550 AORUS ELITE V2 BIOS F13 (AMI), Ryzen 7 3700X (no iGPU), NVIDIA
+ * reference-subsystem RTX 3060 12GB (GA104 10de:2487, subsystem 10de:2487, VBIOS
+ * 94.04.71.00.a5): UNVERIFIED on hardware. Values come from three identical
+ * read-only probe captures (2026-10-28, single RTX, CSM off, one monitor on the card):
+ * DIAG00.TXT / PROM.BIN. No hardware result exists for this profile and its nvgop
+ * (0x6000a) has not released on any reviewed machine. Single-RTX non-aggregate
+ * console, one nvgop display child (ADR 0x80010370) behind root port 00:03.1; the RTX
+ * is on bus 06 (CPU x16 slot), unlike every other fixed profile. */
+#define GU_PROFILE_NAME "GIGABYTE-B550-AORUS-ELITE-V2-F13-RTX3060-12GB"
+#define GU_BOARD_ID 0x248710deU
+#define GU_BOARD_SUBSYSTEM 0x248710deU
+#define GU_BAR0_BASE 0xfb000000ULL
+#define GU_BAR0_END 0xfbffffffULL
+#define GU_DEVICE_MEMORY_SIZE 0x3000U
+#define GU_GPU_FAMILY GU_GPU_FAMILY_GA104
+#define GU_PROM_SHA256 "2fdefb4b02f64022e9ade1adf9f1aa3fd8aa4a2a609c59bdcb46c4e1f4292439"
+#define GU_TARGET_BUS 6U
+#define GU_ROOT_PORT_DEVICE 3U
+#define GU_ROOT_PORT_FUNCTION 1U
+/* 36-byte display device path: ACPI root, PciRoot(0), Pci(3,1), Pci(0,0), ADR 0x80010370. */
+#define GU_RTX_PATH_BYTES   2,1,12,0,0xd0,0x41,3,10,0,0,0,0,1,1,6,0,1,3,1,1,6,0,0,0,2,3,8,0,0x70,3,1,128,127,255,4,0
+#define GU_FIRMWARE_PROFILE GU_FIRMWARE_AMI_B550_F13
 
 #elif defined(GU_PROFILE_X870_3090TI)
 
@@ -237,17 +262,17 @@
 #endif
 #endif
 
-/* PCI bus of the RTX (segment 0, device 0, function 0). Every reviewed profile sits at
- * 01:00.0. Only a generated local profile (profile-local.h defines it first) may differ,
- * after its own captures and host tests pass; reviewed profiles keep 1. */
+/* PCI bus of the RTX (segment 0, device 0, function 0). Reviewed profiles sit at 01:00.0;
+ * only the B550 profile (bus 06, its own captures) and a generated local profile
+ * (profile-local.h defines it first, after its own host tests pass) may differ. */
 #ifndef GU_TARGET_BUS
 #define GU_TARGET_BUS 1U
 #endif
 #if GU_TARGET_BUS < 1 || GU_TARGET_BUS > 255
 #error GU_TARGET_BUS must be in 1..255
 #endif
-#if GU_TARGET_BUS != 1U && !defined(GU_PROFILE_LOCAL)
-#error A non-default GU_TARGET_BUS is only for a generated local profile
+#if GU_TARGET_BUS != 1U && !defined(GU_PROFILE_LOCAL) && !defined(GU_PROFILE_B550_3060)
+#error A non-default GU_TARGET_BUS is only for a generated local profile or the B550 profile
 #endif
 
 /* 1 when this firmware binds no EDID/mouse driver to the RTX display handles. Then there is no

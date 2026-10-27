@@ -24,7 +24,8 @@ class FamilyTests(unittest.TestCase):
                  ('B660M_3090TI', 102, 0xb72000a1, 0x5ff4),
                  ('B660M_3070TI', 104, 0xb74000a1, 0x2000),
                  ('B660PLUS_3060', 104, 0xb74000a1, 0x3000),
-                 ('H610M_3060', 106, 0xb76000a1, 0x3000)]
+                 ('H610M_3060', 106, 0xb76000a1, 0x3000),
+                 ('B550_3060', 104, 0xb74000a1, 0x3000)]
         for profile, family, chip, memory in cases:
             with self.subTest(profile=profile):
                 source = ('#include "machine-profile.h"\n'

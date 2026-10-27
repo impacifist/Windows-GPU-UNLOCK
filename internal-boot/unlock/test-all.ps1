@@ -11,7 +11,7 @@ param(
  [switch]$InternalBoot,
  [ValidateSet('original03100062','observed03000062','entryLatchedSs1Preserve','entryLatchedSs1Full')][string]$StockProfile,
  # Machine profile for every host job; mirrors build.ps1. Default keeps the original behaviour.
- [ValidateSet('b650m-3090fe','b660m-3070ti','x870-3090ti','b660plus-3060','h610m-3060')][string]$HardwareProfile='b650m-3090fe',
+ [ValidateSet('b650m-3090fe','b660m-3070ti','x870-3090ti','b660plus-3060','h610m-3060','b550-3060')][string]$HardwareProfile='b650m-3090fe',
  # Headless-only profiles have no manual/internal EFI; pass the built child (without extension) to PE-check instead.
  [string]$PeBase
 )
@@ -35,7 +35,7 @@ try {
  foreach($line in $environment){if($line -match '^([^=]+)=(.*)$'){[Environment]::SetEnvironmentVariable($matches[1],$matches[2],'Process')}}
  $flags=@('-std=c11','-O1','-Wall','-Wextra','-Werror','-Wno-unused-parameter','-Wno-unused-function','-D_CRT_SECURE_NO_WARNINGS','-Icompat','-I../../deps/edk2/MdePkg/Include','-I../../deps/edk2/MdePkg/Include/X64')
  $core=@('port.c','compat.c','vendor/unlock_610.c','vendor/prep_610.c','vendor/layout_610.c','vendor/vbios_610.c','vendor/gfw_eval.c')
- $hwTargets=@{'b650m-3090fe'=@('','220410de');'b660m-3070ti'=@('-DGU_PROFILE_B660M_3070TI','248210de');'x870-3090ti'=@('-DGU_PROFILE_X870_3090TI','220310de');'b660plus-3060'=@('-DGU_PROFILE_B660PLUS_3060','248710de');'h610m-3060'=@('-DGU_PROFILE_H610M_3060','250410de')}
+ $hwTargets=@{'b650m-3090fe'=@('','220410de');'b660m-3070ti'=@('-DGU_PROFILE_B660M_3070TI','248210de');'x870-3090ti'=@('-DGU_PROFILE_X870_3090TI','220310de');'b660plus-3060'=@('-DGU_PROFILE_B660PLUS_3060','248710de');'h610m-3060'=@('-DGU_PROFILE_H610M_3060','250410de');'b550-3060'=@('-DGU_PROFILE_B550_3060','248710de')}
  $hwDefine=$hwTargets[$HardwareProfile][0]
  if($hwDefine){$flags+=$hwDefine}
  $defs=@('-D__KERNEL__','-DGU_UEFI_PORT',"-DGU_TARGET_PCI_ID=0x$($hwTargets[$HardwareProfile][1])U")
