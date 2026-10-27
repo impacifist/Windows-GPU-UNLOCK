@@ -186,9 +186,13 @@ exact-machine 전용입니다.
 | UEFI / Secure Boot | x64 / 꺼짐 |
 | Selector 프로필 | `entryLatchedSs1Full`; SS0 목표 `0x88888888`, SS1 목표 `0x8` |
 
-검증 실행은 언락 트랜잭션 1회, Windows 직접 시작, 화면 복귀를 기록했습니다.
-설치된 wrapper `64D887E4…`와 child `1265F152…`는 이 소스의 clean rebuild와
-일치합니다. 빌드는 고정된 20.1.8 대신 clang/lld-link 23.1.4를 사용했습니다.
+최초 검증 실행은 언락 트랜잭션 1회, Windows 직접 시작, 화면 복귀를 기록했고
+wrapper `64D887E4…`와 child `1265F152…`를 사용했습니다. 현재 main으로 rebase한
+뒤 child hash는 그대로이고, wrapper는 upstream의 `handoff.c` 변경(cold pre-check,
+USB hand-back) 때문에 `942EDCF3…`로 다시 빌드됩니다. B760M의 디스플레이/해제
+로직은 바뀌지 않았지만, rebase된 wrapper는 자체 hash를 검증됐다고 표시하기 전에
+새 실기기 시험이 필요합니다. 빌드는 고정된 20.1.8 대신 clang/lld-link 23.1.4를
+사용했습니다.
 cuBLAS GEMM n=4096, FP32 accumulation, 3회 중앙값은 FP16 109.8, BF16 113.2
 TFLOPS(locked 56.4/59.9)이고 FP32는 변화가 없었습니다. 한 번의 부팅과 한 쌍의
 before/after이며 S3/resume, 반복 자동 콜드 부팅, 게임/ComfyUI, 장기 안정성과

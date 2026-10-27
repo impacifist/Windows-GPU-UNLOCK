@@ -15,9 +15,12 @@
   its Stop offsets vary per boot. Existing profiles and their build hashes are
   unchanged.
 - One cold boot on 2026-10-26 completed the unlock and direct Windows handoff
-  with display recovery. Installed wrapper `64D887E4…` and child `1265F152…`
-  match a clean rebuild from this source (clang/lld-link 23.1.4, not the
-  pinned 20.1.8).
+  with display recovery using wrapper `64D887E4…` and child `1265F152…`.
+  After rebasing onto current main the child hash is unchanged; the wrapper
+  rebuilds as `942EDCF3…` because upstream changed `handoff.c`. The profile's
+  display/release logic is unchanged, but the rebased wrapper needs a new
+  hardware run before its hash is treated as verified. The build used
+  clang/lld-link 23.1.4 instead of the pinned 20.1.8.
 - Measured cuBLAS GEMM n=4096, FP32 accumulate: FP16 109.8 and BF16 113.2
   TFLOPS (locked 56.4/59.9); FP32 unchanged. One boot and one before/after
   pair; S3/resume, repeated automatic cold boots, games/ComfyUI and long-term

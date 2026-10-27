@@ -194,12 +194,16 @@ differences. The profile remains exact-machine only.
 | UEFI / Secure Boot | x64 / disabled |
 | Selector profile | `entryLatchedSs1Full`; targets SS0 `0x88888888`, SS1 `0x8` |
 
-The verified run recorded one unlock transaction, a direct Windows handoff and
-display recovery. Installed wrapper SHA-256
+The original verified run recorded one unlock transaction, a direct Windows
+handoff and display recovery. It used wrapper SHA-256
 `64D887E4B8AD6BED5DABF2856C28AECADBB5E086B1FEAD791F178661EF381296`
-and child `1265F152BDBD1A65F94F19CD0433082F245A5C0340EF3A09968AC75F7ADD00AB`
-match a clean rebuild of the source. The build used clang/lld-link 23.1.4
-instead of the pinned 20.1.8.
+and child `1265F152BDBD1A65F94F19CD0433082F245A5C0340EF3A09968AC75F7ADD00AB`.
+After rebasing onto current main, the child hash is unchanged; the wrapper
+rebuilds as `942EDCF3F8F7EBEEE6F4430E45624B55B14BB7F4D157156902530B4E837DD01CF`
+because upstream changed `handoff.c` (cold pre-check and USB hand-back). The
+B760M display/release logic is unchanged, but the rebased wrapper still needs
+its own hardware run before its hash is treated as verified. The build used
+clang/lld-link 23.1.4 instead of the pinned 20.1.8.
 
 Measured on the same cuBLAS GEMM protocol (n=4096, FP32 accumulation, three-run
 medians): FP16 109.8 TFLOPS and BF16 113.2 TFLOPS (locked 56.4/59.9); FP32 was

@@ -303,9 +303,13 @@ static EFI_STATUS FullChoice(VOID *Context,BOOLEAN *Skip) {
   return EFI_SUCCESS;
 }
 static EFI_STATUS FullCapture(VOID *Context) {(void)Context;return GuCaptureGraphOnVolume(Table,Log,Root);}
+#if defined(GU_FULL_UNLOCK) && defined(GU_USB_MEDIA)
 static BOOLEAN ReleaseStarted;
+#endif
 static EFI_STATUS FullRelease(VOID *Context) {
+#if defined(GU_FULL_UNLOCK) && defined(GU_USB_MEDIA)
   ReleaseStarted=TRUE;
+#endif
 #ifdef GU_HEADLESS_RESEARCH
   ResearchOutputDisabled=TRUE;
 #endif
