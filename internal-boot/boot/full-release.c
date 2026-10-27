@@ -43,6 +43,51 @@ static const UINT32 ColdOffsets[]={0,0x118128,0x118234,0x110100,0x1fa828,0x82380
 static EFI_STATUS Note(const char *event,EFI_STATUS s) {
   EFI_STATUS written=Full.Log(Full.Context,event,s);return s==EFI_SUCCESS?written:s;
 }
+static BOOLEAN CodeRange(UINTN base,UINT64 size,UINTN rva,UINTN bytes,UINTN stop);
+#if GU_MULTI_TARGET && defined(GU_HEADLESS_RESEARCH) && GU_CONSOLE_AGGREGATE
+#define GU_RELEASE_AGENT_WINDOW 1
+#else
+#define GU_RELEASE_AGENT_WINDOW 0
+#endif
+/* A baseline BY_DRIVER edge may legitimately be absent after the child ran
+   when its agent is the fingerprinted nvgop-ga1xx image bound to a non-console
+   GPU: the child's exact-card unlock releases that driver itself. Any other
+   removal, any attribute/count drift, or an agent that fails the byte-exact
+   nvgop fingerprint still fails the graph comparison. */
+static EFI_STATUS NvgopAgent(EFI_BOOT_SERVICES *bs,EFI_HANDLE agent) {
+#if GU_RELEASE_AGENT_WINDOW
+  EFI_DRIVER_BINDING_PROTOCOL *d=NULL;EFI_LOADED_IMAGE_PROTOCOL *im=NULL;
+  EFI_STATUS s=Interface(bs,agent,&BindingGuid,(VOID **)&d);
+  if(s!=EFI_SUCCESS || !d || !d->Stop || d->DriverBindingHandle!=agent || d->Version!=GU_NVGOP_VERSION || !d->ImageHandle)return EFI_UNSUPPORTED;
+  s=Interface(bs,d->ImageHandle,&ImageGuid,(VOID **)&im);
+  if(s!=EFI_SUCCESS || !im || !im->ImageBase || im->ImageSize!=GU_NVGOP_IMAGE_SIZE ||
+     im->ImageCodeType!=EfiBootServicesCode || (UINTN)d->Stop!=(UINTN)im->ImageBase+GU_NVGOP_STOP || !im->FilePath)return EFI_UNSUPPORTED;
+  VOID *pci=NULL;
+  if(!im->DeviceHandle || Interface(bs,im->DeviceHandle,&PciGuid,&pci)!=EFI_SUCCESS || !pci ||
+     im->DeviceHandle==PreparedPlan.RtxPci)return EFI_UNSUPPORTED;
+  UINTN n=0;const CHAR16 name[]=L"nvgop-ga1xx";
+  if(!GuInspectPath(im->FilePath,NULL,&n,NULL,NULL) || n!=4+sizeof(name)+4 ||
+     im->FilePath->Type!=MEDIA_DEVICE_PATH || im->FilePath->SubType!=MEDIA_FILEPATH_DP ||
+     im->FilePath->Length[0]!=4+sizeof(name) || im->FilePath->Length[1] ||
+     !Bytes((UINT8 *)im->FilePath+4,name,sizeof(name)))return EFI_UNSUPPORTED;
+  UINTN base=(UINTN)im->ImageBase;
+  if(!CodeRange(base,im->ImageSize,0x280,GU_NVGOP_TEXT_BYTES,GU_NVGOP_STOP) ||
+     d->Stop!=(EFI_DRIVER_BINDING_STOP)(base+GU_NVGOP_STOP))return EFI_UNSUPPORTED;
+  return GuHashMatches((UINT8 *)base+0x280,GU_NVGOP_TEXT_BYTES,GU_NVGOP_TEXT_SHA256)?EFI_SUCCESS:EFI_CRC_ERROR;
+#else
+  (void)bs;(void)agent;return EFI_UNSUPPORTED;
+#endif
+}
+static BOOLEAN ReleasedEdge(const EDGE *e) {
+#if GU_RELEASE_AGENT_WINDOW
+  if(e->Attributes!=EFI_OPEN_PROTOCOL_BY_DRIVER || e->Count!=1 || !e->Agent || !e->Controller)return FALSE;
+  static EFI_HANDLE cached;static BOOLEAN cachedOk;
+  if(e->Agent!=cached){cached=e->Agent;cachedOk=!EFI_ERROR(NvgopAgent(Full.Table->BootServices,e->Agent));}
+  return cachedOk;
+#else
+  (void)e;return FALSE;
+#endif
+}
 static EFI_STATUS LogConfig(const char *label,const UINT32 *cfg) {
   for(UINTN row=0;row<16;row++) {
     char event[100];UINTN n=0;
@@ -71,7 +116,6 @@ static EFI_STATUS ReadConfigFull(UINT32 *cfg) {
 /* The BAR0 base is the value the firmware actually assigned this boot;
    it may shift when a second adapter is installed. Shape, length and
    self-consistency still pin it to a 16 MiB 32-bit window. */
-static UINT64 GuPeekBar0Base;
 static EFI_STATUS BarDescription(const EFI_ACPI_ADDRESS_SPACE_DESCRIPTOR *d) {
   if(!d || d->Desc!=ACPI_ADDRESS_SPACE_DESCRIPTOR || d->Len!=sizeof(*d)-3 || d->ResType || d->AddrSpaceGranularity!=32 ||
      d->AddrRangeMin!=GuPeekBar0Base || d->AddrLen!=0x1000000 || d->AddrTranslationOffset ||
@@ -437,6 +481,7 @@ static BOOLEAN FullExpected(const GRAPH *g,UINTN stage) {
     const EDGE *e=&PreparedGraph->Edges[i];UINTN cls=EdgeClass(e,stage);UINTN found=0;
     if(cls==2)continue;
     for(UINTN j=0;j<g->Count;j++)if(SameEdge(e,&g->Edges[j]))found++;
+    if(!found && ReleasedEdge(e))continue;
     if(cls==0 && found!=1)return FALSE;
     if(cls==1 && found>1)return FALSE;
     wanted+=found;
