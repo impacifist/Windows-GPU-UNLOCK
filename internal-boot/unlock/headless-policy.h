@@ -129,7 +129,8 @@ static BOOLEAN GuHeadlessCheckInner(VOID) {
       const GU_HEADLESS_EDGE *e=&GuHeadless.graph.edges[i];
       if(!GuIsVolatileHandle(e->handle) && !GuIsVolatileHandle(e->agent) && !GuIsVolatileHandle(e->controller))baseCount++;
     }
-    if(curCount!=baseCount+own)return FALSE;
+    /* curCount already excludes the own claim edge; compare like-for-like. */
+    if(curCount!=baseCount)return FALSE;
     for(UINTN i=0;i<GuHeadless.graph.count;i++) {
       const GU_HEADLESS_EDGE *e=&GuHeadless.graph.edges[i];
       if(GuIsVolatileHandle(e->handle) || GuIsVolatileHandle(e->agent) || GuIsVolatileHandle(e->controller))continue;
