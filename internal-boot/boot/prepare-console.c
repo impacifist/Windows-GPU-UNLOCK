@@ -58,6 +58,7 @@ typedef struct {
 #endif
   EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL *AmdText,*ConsoleText,*ErrorText;
   EFI_SIMPLE_TEXT_INPUT_PROTOCOL *Keys;
+  EFI_HANDLE ExtraAgent;
   EFI_PCI_IO_PROTOCOL *AmdIo,*RtxIo;
   UINT32 AmdConfig[16],RtxConfig[16];
   UINT8 AmdDisplayPath[36],RtxDisplayPath[36];
@@ -82,6 +83,21 @@ static const EFI_GUID GfxFile={0x43e7abdd,0xe352,0x4cfb,{0xa2,0x30,0x4c,0xdc,0x1
 static EFI_GUID EdidFoundGuid=EFI_EDID_DISCOVERED_PROTOCOL_GUID;
 static const EFI_GUID EdidFile={0xc7a7030c,0xc3d8,0x45ee,{0xbe,0xd9,0x5d,0x9e,0x76,0x76,0x29,0x53}};
 static const EFI_GUID ComboFile={0x55987e62,0x1df6,0x41d1,{0x90,0x62,0x33,0x4f,0xca,0xc3,0xe5,0x4d}};
+#ifndef EFI_OPEN_PROTOCOL_BY_DRIVER_EXCLUSIVE
+/* UEFI: BY_DRIVER_EXCLUSIVE == BY_DRIVER | GET_PROTOCOL. The trimmed EDK2
+ * headers in deps/ do not carry the macro. */
+#define EFI_OPEN_PROTOCOL_BY_DRIVER_EXCLUSIVE 0x00000030
+#endif
+#if GU_TOPO_B760M
+/* NVIDIA GA10x private protocol the AMI EDID runtime binds through on this
+ * firmware (captured 2026-10-25; nvgop installs it on the display child). */
+static EFI_GUID NvChildPrivateGuid={0x1c0c34f6,0xd380,0x41fa,{0xa0,0x49,0x8a,0xd0,0x6c,0x1a,0x66,0xaa}};
+/* The AMI display-adjacent driver keeps multi-count BY_DRIVER_EXCLUSIVE
+ * DevicePath opens on both GPU handles; pinned by binding fingerprint. */
+#define GU_B760M_EXTRA_VERSION 0x1bU
+#define GU_B760M_EXTRA_IMAGE_SIZE 0x3d200U
+#define GU_B760M_EXTRA_ATTR 0x8u
+#endif
 #endif
 static const UINT8 AmdPath[]={2,1,12,0,0xd0,0x41,3,10,0,0,0,0,1,1,6,0,1,8,1,1,6,0,0,0,2,3,8,0,0,3,1,128,127,255,4,0};
 static const UINT8 RtxPath[]={GU_RTX_PATH_BYTES};
@@ -147,7 +163,7 @@ static EFI_STATUS PciFor(EFI_BOOT_SERVICES *bs,EFI_DEVICE_PATH_PROTOCOL *path,UI
   if(s!=EFI_SUCCESS || config[0]!=id || config[11]!=subsystem || (config[2]>>24)!=3)return EFI_UNSUPPORTED;
   return EFI_SUCCESS;
 }
-static EFI_STATUS Driver(EFI_BOOT_SERVICES *bs,EFI_HANDLE agent,const EFI_GUID *file,UINTN size,UINTN stop,UINT32 version,UINT8 codetype);
+static EFI_STATUS Driver(EFI_BOOT_SERVICES *bs,EFI_HANDLE agent,const EFI_GUID *file,UINTN size,UINTN stop,UINT32 version,UINT8 codetype,BOOLEAN checkStop);
 #if GU_CONSOLE_AGGREGATE
 /* The only pathless zero-FB GOP this topology accepts is the AMI combo
  * splitter aggregate. Its single BY_DRIVER opener must be the fingerprinted
@@ -173,6 +189,21 @@ static EFI_STATUS AggGopAgent(EFI_BOOT_SERVICES *bs,EFI_HANDLE h,EFI_HANDLE *age
   return s;
 }
 #endif
+#if GU_TOPO_B760M
+/* Displays logging: identifies the refusing branch in one boot. The first
+ * pass logs as disp1-*, the GuVerifyPreparedConsole recheck as disp2-*. */
+static GU_PREPARE_LOG DispLog;
+static VOID *DispCtx;
+static BOOLEAN DispSecond;
+static VOID DispNote(const char *event,EFI_STATUS s) {
+  if(!DispLog)return;
+  char b[128];UINTN n=0;
+  const char *pre=DispSecond?"disp2-":"disp1-";
+  while(pre[n]){b[n]=pre[n];n++;}
+  while(*event && n<118)b[n++]=*event++;
+  b[n]=0;DispLog(DispCtx,b,s);
+}
+#endif
 static EFI_STATUS Displays(EFI_SYSTEM_TABLE *t,PLAN *p,BOOLEAN first) {
   EFI_BOOT_SERVICES *bs=t->BootServices;EFI_HANDLE *handles=NULL,amd=NULL,rtx=NULL;UINTN count=0;
   EFI_STATUS s=bs->LocateHandleBuffer(ByProtocol,&GopGuid,NULL,&count,&handles);
@@ -183,6 +214,9 @@ static EFI_STATUS Displays(EFI_SYSTEM_TABLE *t,PLAN *p,BOOLEAN first) {
      count<2 || count>3
 #endif
      ))s=EFI_UNSUPPORTED;
+#if GU_TOPO_B760M
+  if(DispLog){char b[16];UINTN n=0;const char *pre="disp-count-";while(pre[n]){b[n]=pre[n];n++;}b[n++]=(char)('0'+(count&0xf));b[n]=0;DispNote(b,s);}
+#endif
   for(UINTN i=0;s==EFI_SUCCESS && i<count;i++) {
     EFI_DEVICE_PATH_PROTOCOL *path=NULL;EFI_GRAPHICS_OUTPUT_PROTOCOL *gop=NULL;
     s=Interface(bs,handles[i],&GopGuid,(VOID **)&gop);if(s!=EFI_SUCCESS)break;
@@ -195,8 +229,14 @@ static EFI_STATUS Displays(EFI_SYSTEM_TABLE *t,PLAN *p,BOOLEAN first) {
       if(first){if(p->AggCandidate){s=EFI_UNSUPPORTED;break;}}
       else if(handles[i]!=p->Agg){s=EFI_UNSUPPORTED;break;}
       s=AggGopAgent(bs,handles[i],&agent);
+#if GU_TOPO_B760M
+      if(DispLog)DispNote("disp-agg-agent",s);
+#endif
       if(s!=EFI_SUCCESS)break;
-      if(agent){s=Driver(bs,agent,&GfxFile,GU_CONSOLE_GFX_SIZE,GU_CONSOLE_GFX_STOP,GU_CONSOLE_GFX_VERSION,EfiBootServicesCode);if(s!=EFI_SUCCESS)break;}
+      if(agent){s=Driver(bs,agent,&GfxFile,GU_CONSOLE_GFX_SIZE,GU_CONSOLE_GFX_STOP,GU_CONSOLE_GFX_VERSION,EfiBootServicesCode,1);if(s!=EFI_SUCCESS)break;}
+#if GU_TOPO_B760M
+      if(DispLog)DispNote("disp-agg-gfxfile",EFI_SUCCESS);
+#endif
       if(first){p->AggCandidate=handles[i];p->AggDriver=agent;}
       continue;
     }
@@ -205,11 +245,36 @@ static EFI_STATUS Displays(EFI_SYSTEM_TABLE *t,PLAN *p,BOOLEAN first) {
 #endif
     if(ps!=EFI_SUCCESS || !path){s=EFI_UNSUPPORTED;break;}
     EFI_GRAPHICS_OUTPUT_PROTOCOL_MODE *m=gop->Mode;
+#if GU_TOPO_B760M
+    if(DispLog){
+      UINTN bl=0;BOOLEAN insp=GuInspectPath(path,NULL,&bl,NULL,NULL);
+      BOOLEAN b28=insp&&Bytes(path,RtxPath,28);
+      BOOLEAN b4=insp&&Bytes((const UINT8 *)path+32,RtxPath+32,4);
+      char b[104];UINTN n=0;const char *q="disp-dc-";
+      while(q[n]){b[n]=q[n];n++;}
+      b[n++]=(char)('0'+(insp?1:0));
+      b[n++]=(char)('0'+(bl==36?1:0));
+      b[n++]=(char)('0'+(b28?1:0));
+      b[n++]=(char)('0'+(b4?1:0));
+      b[n++]='-';b[n++]='h';
+      for(int k=7;k>=0;k--)b[n++]="0123456789abcdef"[(((UINTN)handles[i]>>((k)*4))&0xf)];
+      b[n++]='-';
+      const UINT8 *pb=(const UINT8 *)path;
+      for(int k=0;k<36;k++){b[n++]="0123456789abcdef"[(pb[k]>>4)&0xf];b[n++]="0123456789abcdef"[pb[k]&0xf];}
+      b[n]=0;DispNote(b,EFI_SUCCESS);
+      char c[16];UINTN m2=0;const char *r="disp-pf-";
+      while(r[m2]){c[m2]=r[m2];m2++;}
+      c[m2++]=(char)("0123456789abcdef"[(m->Info?m->Info->PixelFormat:0xf)&0xf]);c[m2]=0;DispNote(c,EFI_SUCCESS);
+    }
+#endif
     if(!m->Info || m->SizeOfInfo<sizeof(*m->Info) || !m->FrameBufferBase || !m->FrameBufferSize || m->Mode>=m->MaxMode ||
        m->Info->PixelFormat>PixelBlueGreenRedReserved8BitPerColor || !m->Info->HorizontalResolution || !m->Info->VerticalResolution ||
        m->Info->PixelsPerScanLine<m->Info->HorizontalResolution || (UINT64)m->Info->PixelsPerScanLine*m->Info->VerticalResolution>m->FrameBufferSize/4){s=EFI_UNSUPPORTED;break;}
     if(DisplayRoute(path,AmdPath) && !amd) {
 #ifdef GU_SINGLE_RTX_CONSOLE
+#if GU_TOPO_B760M
+      if(DispLog)DispNote("disp-amd-route-on-rtx",EFI_UNSUPPORTED);
+#endif
       s=EFI_UNSUPPORTED;break; /* Sole physical GOP must be this RTX. */
 #else
       amd=handles[i];UINT32 cfg[16];EFI_HANDLE h=NULL;EFI_PCI_IO_PROTOCOL *io=NULL;
@@ -219,8 +284,14 @@ static EFI_STATUS Displays(EFI_SYSTEM_TABLE *t,PLAN *p,BOOLEAN first) {
       else if(p->AmdPci!=h || p->AmdIo!=io || !Bytes(cfg,p->AmdConfig,sizeof(cfg)) || !PathMatches(path,p->AmdDisplayPath))s=EFI_NOT_READY;
 #endif
     } else if(DisplayRoute(path,RtxPath) && !rtx) {
+#if GU_TOPO_B760M
+      if(DispLog)DispNote("disp-rtx-route",EFI_SUCCESS);
+#endif
       rtx=handles[i];UINT32 cfg[16];EFI_HANDLE h=NULL;EFI_PCI_IO_PROTOCOL *io=NULL;
       s=PciFor(bs,path,GU_TARGET_BUS,GU_BOARD_ID,GU_BOARD_SUBSYSTEM,&h,&io,cfg);
+#if GU_TOPO_B760M
+      if(DispLog)DispNote("disp-rtx-pcifor",s);
+#endif
       if(s!=EFI_SUCCESS)break;
       if(first){p->RtxPci=h;p->RtxIo=io;for(UINTN j=0;j<16;j++)p->RtxConfig[j]=cfg[j];for(UINTN j=0;j<36;j++)p->RtxDisplayPath[j]=((UINT8 *)path)[j];}
       else if(p->RtxPci!=h || p->RtxIo!=io || !Bytes(cfg,p->RtxConfig,sizeof(cfg)) || !PathMatches(path,p->RtxDisplayPath))s=EFI_NOT_READY;
@@ -228,7 +299,12 @@ static EFI_STATUS Displays(EFI_SYSTEM_TABLE *t,PLAN *p,BOOLEAN first) {
       if(first){p->Gop=gop;p->Mode=m;p->ModeCopy=*m;p->Info=m->Info;p->InfoCopy=*m->Info;}
       else if(p->Gop!=gop || p->Mode!=m || p->Info!=m->Info || !Bytes(&p->ModeCopy,m,sizeof(*m)) || !Bytes(&p->InfoCopy,m->Info,sizeof(*m->Info)))s=EFI_NOT_READY;
 #endif
-    } else s=EFI_UNSUPPORTED;
+    } else {
+#if GU_TOPO_B760M
+      if(DispLog)DispNote("disp-unmatched-gop",EFI_UNSUPPORTED);
+#endif
+      s=EFI_UNSUPPORTED;
+    }
   }
   if(handles && bs->FreePool(handles)!=EFI_SUCCESS)s=EFI_DEVICE_ERROR;
 #ifdef GU_SINGLE_RTX_CONSOLE
@@ -263,13 +339,15 @@ static BOOLEAN ExpectedGraph(const PLAN *p,const GRAPH *original,const GRAPH *cu
   }
   return current->Count==wanted;
 }
-static EFI_STATUS Driver(EFI_BOOT_SERVICES *bs,EFI_HANDLE agent,const EFI_GUID *file,UINTN size,UINTN stop,UINT32 version,UINT8 codetype) {
+static EFI_STATUS Driver(EFI_BOOT_SERVICES *bs,EFI_HANDLE agent,const EFI_GUID *file,UINTN size,UINTN stop,UINT32 version,UINT8 codetype,BOOLEAN checkStop) {
   EFI_DRIVER_BINDING_PROTOCOL *d=NULL;EFI_LOADED_IMAGE_PROTOCOL *im=NULL;
   EFI_STATUS s=Interface(bs,agent,&BindingGuid,(VOID **)&d);
   if(s!=EFI_SUCCESS || !d || !d->Stop || d->DriverBindingHandle!=agent || d->Version!=version || !d->ImageHandle)return EFI_UNSUPPORTED;
   s=Interface(bs,d->ImageHandle,&ImageGuid,(VOID **)&im);
+  /* The B760M console text-out driver installs several bindings whose Stop
+   * offsets differ per boot; identity stays pinned by FFS GUID+size+version. */
   if(s!=EFI_SUCCESS || !im || !im->ImageBase || im->ImageCodeType!=codetype || im->ImageSize!=size ||
-     (UINTN)d->Stop!=(UINTN)im->ImageBase+stop || !im->FilePath)return EFI_UNSUPPORTED;
+     (checkStop && (UINTN)d->Stop!=(UINTN)im->ImageBase+stop) || !im->FilePath)return EFI_UNSUPPORTED;
   UINTN n=0;
   if(!GuInspectPath(im->FilePath,NULL,&n,NULL,NULL) || n!=24 || im->FilePath->Type!=MEDIA_DEVICE_PATH || im->FilePath->SubType!=MEDIA_PIWG_FW_FILE_DP ||
      im->FilePath->Length[0]!=20 || im->FilePath->Length[1] || !GuGuidEqual((UINT8 *)im->FilePath+4,file))return EFI_UNSUPPORTED;
@@ -285,9 +363,22 @@ static EFI_STATUS Consumers(EFI_SYSTEM_TABLE *t,PLAN *p,const GRAPH *g) {
   EFI_HANDLE nv=NULL,childGopAgent=NULL,conOutAgent=NULL;
   (void)t;
   UINTN owners=0,children=0,edid=0,combo=0,gfx=0,out=0,conChild=0;
+#if GU_TOPO_B760M
+  EFI_HANDLE extra=NULL;UINTN extraPci=0,extraGop=0;
+#endif
   for(UINTN i=0;i<g->Count;i++) {
     const EDGE *e=&g->Edges[i];
     if(e->Handle==p->RtxPci) {
+#if GU_TOPO_B760M
+      if(e->Attributes==EFI_OPEN_PROTOCOL_BY_DRIVER_EXCLUSIVE && GuGuidEqual(&e->Protocol,&PathGuid)) {
+        if(!extra)extra=e->Agent;else if(e->Agent!=extra)return EFI_ACCESS_DENIED;
+        extraPci++;continue;
+      }
+      if(GuGuidEqual(&e->Protocol,&PathGuid) && e->Attributes==GU_B760M_EXTRA_ATTR && e->Controller==p->Rtx) {
+        if(e->Count!=1 || !e->Agent)return EFI_ACCESS_DENIED;
+        children++;p->NvChildAgent=e->Agent;continue;
+      }
+#endif
       if(e->Count!=1 || !e->Agent)return EFI_ACCESS_DENIED;
       if(GuGuidEqual(&e->Protocol,&PathGuid) && e->Attributes==EFI_OPEN_PROTOCOL_BY_CHILD_CONTROLLER) {
 #if GU_CONSOLE_MULTI_CHILD
@@ -320,6 +411,21 @@ static EFI_STATUS Consumers(EFI_SYSTEM_TABLE *t,PLAN *p,const GRAPH *g) {
   for(UINTN i=0;i<g->Count;i++) {
     const EDGE *e=&g->Edges[i];
     if(e->Handle!=p->Rtx)continue;
+#if GU_TOPO_B760M
+    if(e->Attributes==EFI_OPEN_PROTOCOL_BY_DRIVER_EXCLUSIVE && GuGuidEqual(&e->Protocol,&PathGuid)) {
+      if(e->Agent!=extra)return EFI_ACCESS_DENIED;
+      extraGop++;continue;
+    }
+    if(GuGuidEqual(&e->Protocol,&NvChildPrivateGuid) && e->Attributes==EFI_OPEN_PROTOCOL_BY_DRIVER && e->Controller==p->Rtx) {
+      if(e->Count!=1 || !e->Agent)return EFI_ACCESS_DENIED;
+      if(!p->EdidAgent)p->EdidAgent=e->Agent;else if(p->EdidAgent!=e->Agent)return EFI_ACCESS_DENIED;
+      edid++;continue;
+    }
+    if(GuGuidEqual(&e->Protocol,&GopGuid) && e->Attributes==GU_B760M_EXTRA_ATTR && e->Controller==p->AggCandidate) {
+      if(e->Count!=1 || !e->Agent)return EFI_ACCESS_DENIED;
+      p->Agg=e->Controller;p->ComboAgent=e->Agent;continue;
+    }
+#endif
     if(e->Count!=1 || !e->Agent)return EFI_ACCESS_DENIED;
     if(GuGuidEqual(&e->Protocol,&EdidFoundGuid) && e->Attributes==EFI_OPEN_PROTOCOL_BY_DRIVER && e->Controller==p->Rtx){p->EdidAgent=e->Agent;edid++;}
     else if(GuGuidEqual(&e->Protocol,&GopGuid) && e->Attributes==EFI_OPEN_PROTOCOL_BY_DRIVER && e->Controller==p->Rtx){combo++;childGopAgent=e->Agent;}
@@ -364,6 +470,12 @@ static EFI_STATUS Consumers(EFI_SYSTEM_TABLE *t,PLAN *p,const GRAPH *g) {
   for(UINTN i=0;i<g->Count;i++) {
     const EDGE *e=&g->Edges[i];
     if(e->Handle!=p->Agg)continue;
+#if GU_TOPO_B760M
+    if(GuGuidEqual(&e->Protocol,&TextGuid) && e->Attributes==GU_B760M_EXTRA_ATTR && e->Controller==p->Console) {
+      if(e->Count!=1 || !e->Agent)return EFI_ACCESS_DENIED;
+      conChild++;continue;
+    }
+#endif
     if(e->Count!=1 || !e->Agent)return EFI_ACCESS_DENIED;
     if(GuGuidEqual(&e->Protocol,&GopGuid) && e->Attributes==EFI_OPEN_PROTOCOL_BY_DRIVER && e->Controller==p->Agg){p->GfxAgent=e->Agent;gfx++;}
     else if(GuGuidEqual(&e->Protocol,&TextGuid) && e->Attributes==EFI_OPEN_PROTOCOL_BY_DRIVER && e->Controller==p->Agg){conOutAgent=e->Agent;out++;}
@@ -377,10 +489,28 @@ static EFI_STATUS Consumers(EFI_SYSTEM_TABLE *t,PLAN *p,const GRAPH *g) {
     const EDGE *e=&g->Edges[i];
     if((e->Agent==nv || e->Agent==p->ComboAgent) && e->Handle!=p->RtxPci && e->Handle!=p->Rtx && e->Handle!=p->Agg)return EFI_ACCESS_DENIED;
   }
-  EFI_STATUS s=Driver(t->BootServices,p->EdidAgent,&EdidFile,GU_EDID_IMAGE_SIZE,GU_EDID_STOP,1,EfiRuntimeServicesCode);
-  if(s==EFI_SUCCESS)s=Driver(t->BootServices,p->ComboAgent,&ComboFile,GU_COMBO_SIZE,GU_COMBO_STOP,GU_COMBO_VERSION,EfiBootServicesCode);
-  if(s==EFI_SUCCESS)s=Driver(t->BootServices,p->GfxAgent,&GfxFile,GU_CONSOLE_GFX_SIZE,GU_CONSOLE_GFX_STOP,GU_CONSOLE_GFX_VERSION,EfiBootServicesCode);
-  if(s==EFI_SUCCESS)s=Driver(t->BootServices,p->OutAgent,&OutFile,GU_CONSOLE_TEXT_SIZE,GU_CONSOLE_TEXT_STOP,GU_CONSOLE_TEXT_VERSION,EfiBootServicesCode);
+#if GU_TOPO_B760M
+  /* The AMI DevicePath consumer attaches conditionally: require its opens on
+   * both GPU handles only when this boot actually has them. */
+  if(extra){
+    if(!extraPci || !extraGop || extra==nv || extra==p->ComboAgent || extra==p->EdidAgent ||
+       extra==p->GfxAgent || extra==p->OutAgent || extra==p->Agg)return EFI_ACCESS_DENIED;
+    {
+      EFI_DRIVER_BINDING_PROTOCOL *d=NULL;EFI_LOADED_IMAGE_PROTOCOL *im=NULL;
+      EFI_STATUS s=Interface(t->BootServices,extra,&BindingGuid,(VOID **)&d);
+      if(s==EFI_SUCCESS)s=(d && d->ImageHandle && d->Version==GU_B760M_EXTRA_VERSION)?EFI_SUCCESS:EFI_UNSUPPORTED;
+      if(s==EFI_SUCCESS)s=Interface(t->BootServices,d->ImageHandle,&ImageGuid,(VOID **)&im);
+      if(s==EFI_SUCCESS)s=(im && im->ImageSize==GU_B760M_EXTRA_IMAGE_SIZE && im->ImageCodeType==EfiBootServicesCode)?EFI_SUCCESS:EFI_UNSUPPORTED;
+      if(s!=EFI_SUCCESS)return s;
+      p->ExtraAgent=extra;
+    }
+  }else if(extraPci || extraGop)return EFI_ACCESS_DENIED;
+  else p->ExtraAgent=NULL;
+#endif
+  EFI_STATUS s=Driver(t->BootServices,p->EdidAgent,&EdidFile,GU_EDID_IMAGE_SIZE,GU_EDID_STOP,1,EfiRuntimeServicesCode,TRUE);
+  if(s==EFI_SUCCESS)s=Driver(t->BootServices,p->ComboAgent,&ComboFile,GU_COMBO_SIZE,GU_COMBO_STOP,GU_COMBO_VERSION,EfiBootServicesCode,TRUE);
+  if(s==EFI_SUCCESS)s=Driver(t->BootServices,p->GfxAgent,&GfxFile,GU_CONSOLE_GFX_SIZE,GU_CONSOLE_GFX_STOP,GU_CONSOLE_GFX_VERSION,EfiBootServicesCode,TRUE);
+  if(s==EFI_SUCCESS)s=Driver(t->BootServices,p->OutAgent,&OutFile,GU_CONSOLE_TEXT_SIZE,GU_CONSOLE_TEXT_STOP,GU_CONSOLE_TEXT_VERSION,EfiBootServicesCode,GU_TOPO_B760M?0:1);
   return s;
 }
 #else
@@ -425,8 +555,8 @@ static EFI_STATUS Consumers(EFI_SYSTEM_TABLE *t,PLAN *p,const GRAPH *g) {
   }
   if(amdOut!=1 || amdChild!=1 || amdGfx!=1)return EFI_ACCESS_DENIED;
 #endif
-  EFI_STATUS s=Driver(t->BootServices,p->OutAgent,&OutFile,GU_CONSOLE_TEXT_SIZE,GU_CONSOLE_TEXT_STOP,GU_CONSOLE_TEXT_VERSION,EfiBootServicesCode);
-  if(s==EFI_SUCCESS)s=Driver(t->BootServices,p->GfxAgent,&GfxFile,GU_CONSOLE_GFX_SIZE,GU_CONSOLE_GFX_STOP,GU_CONSOLE_GFX_VERSION,EfiBootServicesCode);
+  EFI_STATUS s=Driver(t->BootServices,p->OutAgent,&OutFile,GU_CONSOLE_TEXT_SIZE,GU_CONSOLE_TEXT_STOP,GU_CONSOLE_TEXT_VERSION,EfiBootServicesCode,1);
+  if(s==EFI_SUCCESS)s=Driver(t->BootServices,p->GfxAgent,&GfxFile,GU_CONSOLE_GFX_SIZE,GU_CONSOLE_GFX_STOP,GU_CONSOLE_GFX_VERSION,EfiBootServicesCode,1);
   return s;
 }
 #endif
@@ -445,8 +575,24 @@ static EFI_STATUS Alive(EFI_SYSTEM_TABLE *t,PLAN *p) {
 }
 EFI_STATUS GuPrepareConsole(EFI_SYSTEM_TABLE *t,GU_PREPARE_LOG log,VOID *context) {
   PreparedReady=FALSE;
+#if GU_TOPO_B760M
+  DispSecond=FALSE;
+  log(context,"b760m-topo-v3",EFI_SUCCESS);
+#endif
   if(!t || !t->BootServices || !log || !t->ConOut || !t->StdErr || !t->ConIn || !t->ConsoleOutHandle || !t->ConsoleInHandle || !t->StandardErrorHandle)return EFI_INVALID_PARAMETER;
   EFI_BOOT_SERVICES *bs=t->BootServices;
+#if GU_TOPO_B760M
+  /* Sub-step preflight logging: one boot must identify the refusing stage. */
+  EFI_STATUS pre=(!bs->DisconnectController || !bs->RaiseTPL || !bs->RestoreTPL)?EFI_UNSUPPORTED:EFI_SUCCESS;
+  log(context,"preflight-bs-functions",pre);
+  if(pre!=EFI_SUCCESS)return pre;
+  pre=(!t->ConOut || !t->StdErr || !t->ConIn || !t->ConsoleOutHandle || !t->ConsoleInHandle || !t->StandardErrorHandle)?EFI_UNSUPPORTED:EFI_SUCCESS;
+  log(context,"preflight-console-handles",pre);
+  if(pre!=EFI_SUCCESS)return pre;
+  pre=(!t->ConIn->Reset || !t->ConIn->ReadKeyStroke || !t->ConIn->WaitForKey)?EFI_UNSUPPORTED:EFI_SUCCESS;
+  log(context,"preflight-conin-methods",pre);
+  if(pre!=EFI_SUCCESS)return pre;
+#endif
   if(!bs->DisconnectController || !bs->RaiseTPL || !bs->RestoreTPL)return EFI_UNSUPPORTED;
 #ifdef GU_SINGLE_RTX_CONSOLE
   if(!t->ConIn->Reset || !t->ConIn->ReadKeyStroke || !t->ConIn->WaitForKey)return EFI_UNSUPPORTED;
@@ -461,10 +607,27 @@ EFI_STATUS GuPrepareConsole(EFI_SYSTEM_TABLE *t,GU_PREPARE_LOG log,VOID *context
 #ifdef GU_SINGLE_RTX_CONSOLE
   p.KeyReset=(UINTN)t->ConIn->Reset;p.KeyRead=(UINTN)t->ConIn->ReadKeyStroke;p.KeyWait=t->ConIn->WaitForKey;
 #endif
+#if GU_TOPO_B760M
+  DispLog=log;DispCtx=context;
+#endif
   EFI_STATUS s=Displays(t,&p,TRUE);
+#if GU_TOPO_B760M
+  if(s!=EFI_SUCCESS){log(context,"preflight-displays-failed",s);log(context,"console-prepare-preflight",s);return s;}
+  log(context,"preflight-displays-ok",EFI_SUCCESS);
+#endif
   if(s==EFI_SUCCESS)s=Snapshot(bs,&original);
+#if GU_TOPO_B760M
+  if(s!=EFI_SUCCESS){log(context,"preflight-snapshot-failed",s);log(context,"console-prepare-preflight",s);return s;}
+#endif
   if(s==EFI_SUCCESS)s=Consumers(t,&p,&original);
+#if GU_TOPO_B760M
+  if(s!=EFI_SUCCESS){log(context,"preflight-consumers-failed",s);log(context,"console-prepare-preflight",s);return s;}
+#endif
   if(s==EFI_SUCCESS)s=Alive(t,&p);
+#if GU_TOPO_B760M
+  if(s!=EFI_SUCCESS){log(context,"preflight-alive-failed",s);log(context,"console-prepare-preflight",s);return s;}
+  log(context,"preflight-all-passed",EFI_SUCCESS);
+#endif
   EFI_STATUS recorded=log(context,"console-prepare-preflight",s);
   if(s!=EFI_SUCCESS || recorded!=EFI_SUCCESS)return s==EFI_SUCCESS?recorded:s;
 #if !GU_CONSOLE_AGGREGATE
@@ -477,7 +640,7 @@ EFI_STATUS GuPrepareConsole(EFI_SYSTEM_TABLE *t,GU_PREPARE_LOG log,VOID *context
     EFI_TPL old=bs->RaiseTPL(TPL_NOTIFY);
     if(s==EFI_SUCCESS)s=Snapshot(bs,&current);
     if(s==EFI_SUCCESS && !ExpectedGraph(&p,&original,&current,stage-1))s=EFI_NOT_READY;
-    if(s==EFI_SUCCESS)s=Driver(bs,stage==1?p.OutAgent:p.GfxAgent,stage==1?&OutFile:&GfxFile,stage==1?GU_CONSOLE_TEXT_SIZE:GU_CONSOLE_GFX_SIZE,stage==1?GU_CONSOLE_TEXT_STOP:GU_CONSOLE_GFX_STOP,GU_CONSOLE_TEXT_VERSION,EfiBootServicesCode);
+    if(s==EFI_SUCCESS)s=Driver(bs,stage==1?p.OutAgent:p.GfxAgent,stage==1?&OutFile:&GfxFile,stage==1?GU_CONSOLE_TEXT_SIZE:GU_CONSOLE_GFX_SIZE,stage==1?GU_CONSOLE_TEXT_STOP:GU_CONSOLE_GFX_STOP,GU_CONSOLE_TEXT_VERSION,EfiBootServicesCode,1);
     bs->RestoreTPL(old);
     if(s!=EFI_SUCCESS)return s;
     /* Flush intent BEFORE mutation. Never pass a virtual console, AMD, PCI
@@ -511,15 +674,34 @@ EFI_STATUS GuPrepareConsole(EFI_SYSTEM_TABLE *t,GU_PREPARE_LOG log,VOID *context
 EFI_STATUS GuVerifyPreparedConsole(EFI_SYSTEM_TABLE *t) {
   if(!PreparedReady || !t || !t->BootServices || !PreparedGraph)return EFI_NOT_READY;
   PLAN *p=&PreparedPlan;static GRAPH final;
+#if GU_TOPO_B760M
+  DispSecond=TRUE;
+  DispNote("verify2-enter",EFI_SUCCESS);
+#endif
   EFI_STATUS s=Alive(t,p);
+#if GU_TOPO_B760M
+  if(DispLog)DispNote("verify2-alive",s);
+#endif
 #if GU_CONSOLE_AGGREGATE
-  if(s==EFI_SUCCESS)s=Driver(t->BootServices,p->EdidAgent,&EdidFile,GU_EDID_IMAGE_SIZE,GU_EDID_STOP,1,EfiRuntimeServicesCode);
-  if(s==EFI_SUCCESS)s=Driver(t->BootServices,p->ComboAgent,&ComboFile,GU_COMBO_SIZE,GU_COMBO_STOP,GU_COMBO_VERSION,EfiBootServicesCode);
-  if(s==EFI_SUCCESS)s=Driver(t->BootServices,p->GfxAgent,&GfxFile,GU_CONSOLE_GFX_SIZE,GU_CONSOLE_GFX_STOP,GU_CONSOLE_GFX_VERSION,EfiBootServicesCode);
-  if(s==EFI_SUCCESS)s=Driver(t->BootServices,p->OutAgent,&OutFile,GU_CONSOLE_TEXT_SIZE,GU_CONSOLE_TEXT_STOP,GU_CONSOLE_TEXT_VERSION,EfiBootServicesCode);
+  if(s==EFI_SUCCESS)s=Driver(t->BootServices,p->EdidAgent,&EdidFile,GU_EDID_IMAGE_SIZE,GU_EDID_STOP,1,EfiRuntimeServicesCode,1);
+#if GU_TOPO_B760M
+  if(DispLog)DispNote("verify2-fp-edid",s);
+#endif
+  if(s==EFI_SUCCESS)s=Driver(t->BootServices,p->ComboAgent,&ComboFile,GU_COMBO_SIZE,GU_COMBO_STOP,GU_COMBO_VERSION,EfiBootServicesCode,1);
+#if GU_TOPO_B760M
+  if(DispLog)DispNote("verify2-fp-combo",s);
+#endif
+  if(s==EFI_SUCCESS)s=Driver(t->BootServices,p->GfxAgent,&GfxFile,GU_CONSOLE_GFX_SIZE,GU_CONSOLE_GFX_STOP,GU_CONSOLE_GFX_VERSION,EfiBootServicesCode,1);
+#if GU_TOPO_B760M
+  if(DispLog)DispNote("verify2-fp-gfx",s);
+#endif
+  if(s==EFI_SUCCESS)s=Driver(t->BootServices,p->OutAgent,&OutFile,GU_CONSOLE_TEXT_SIZE,GU_CONSOLE_TEXT_STOP,GU_CONSOLE_TEXT_VERSION,EfiBootServicesCode,GU_TOPO_B760M?0:1);
+#if GU_TOPO_B760M
+  if(DispLog)DispNote("verify2-fp-out",s);
+#endif
 #else
-  if(s==EFI_SUCCESS)s=Driver(t->BootServices,p->OutAgent,&OutFile,GU_CONSOLE_TEXT_SIZE,GU_CONSOLE_TEXT_STOP,GU_CONSOLE_TEXT_VERSION,EfiBootServicesCode);
-  if(s==EFI_SUCCESS)s=Driver(t->BootServices,p->GfxAgent,&GfxFile,GU_CONSOLE_GFX_SIZE,GU_CONSOLE_GFX_STOP,GU_CONSOLE_GFX_VERSION,EfiBootServicesCode);
+  if(s==EFI_SUCCESS)s=Driver(t->BootServices,p->OutAgent,&OutFile,GU_CONSOLE_TEXT_SIZE,GU_CONSOLE_TEXT_STOP,GU_CONSOLE_TEXT_VERSION,EfiBootServicesCode,1);
+  if(s==EFI_SUCCESS)s=Driver(t->BootServices,p->GfxAgent,&GfxFile,GU_CONSOLE_GFX_SIZE,GU_CONSOLE_GFX_STOP,GU_CONSOLE_GFX_VERSION,EfiBootServicesCode,1);
   EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL *text=NULL;
   if(s==EFI_SUCCESS) {
     EFI_STATUS absent=Interface(t->BootServices,p->Rtx,&TextGuid,(VOID **)&text);
@@ -528,6 +710,9 @@ EFI_STATUS GuVerifyPreparedConsole(EFI_SYSTEM_TABLE *t) {
 #endif
   if(s==EFI_SUCCESS)s=Snapshot(t->BootServices,&final);
   if(s==EFI_SUCCESS && !ExpectedGraph(p,PreparedGraph,&final,GU_CONSOLE_AGGREGATE?0:2))s=EFI_NOT_READY;
+#if GU_TOPO_B760M
+  if(DispLog)DispNote("verify2-graph",s);
+#endif
   if(s!=EFI_SUCCESS)PreparedReady=FALSE;
   return s;
 }

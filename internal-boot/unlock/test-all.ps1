@@ -79,6 +79,8 @@ try {
   $results=@()
   & python tests/test_stock_selection.py $Clang
   if($LASTEXITCODE -ne 0){throw 'Stock selection negative tests failed'}
+  & python tests/test_hardware_profiles.py $Clang
+  if($LASTEXITCODE -ne 0){throw 'Hardware profile tests failed'}
  foreach($job in $jobs) {
   $exe="$out/$($job.Name)-tests.exe"
   & $Clang @flags @($job.Defines) @($job.Sources) -o $exe

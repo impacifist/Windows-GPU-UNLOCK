@@ -3,17 +3,17 @@
  * Reviewed single-machine profiles. Every write-enabled build compiles for
  * exactly one profile: all hardware identities, display topology and driver
  * fingerprints below are immutable, build-time selected and never read from
- * a user-editable file. Select with -DGU_PROFILE_B650M_3090FE or
- * -DGU_PROFILE_B660M_3070TI; the default is the originally verified machine.
- * Adding a profile here is never sufficient for support: each entry needs
- * its own hardware evidence (see docs/PORTABILITY.en.md stage 4).
+ * a user-editable file. Select exactly one -DGU_PROFILE_* entry below; the
+ * default is the originally verified machine. Adding a profile here is never
+ * sufficient for support: each entry needs its own hardware evidence (see
+ * docs/PORTABILITY.en.md stage 4).
  */
 #pragma once
 
-#if (defined(GU_PROFILE_B650M_3090FE) + defined(GU_PROFILE_B660M_3070TI) + defined(GU_PROFILE_X870_3090TI) + defined(GU_PROFILE_B660PLUS_3060) + defined(GU_PROFILE_LOCAL) + defined(GU_PROFILE_H610M_3060) + defined(GU_PROFILE_PROBE_H610M_3060)) > 1
+#if (defined(GU_PROFILE_B650M_3090FE) + defined(GU_PROFILE_B660M_3070TI) + defined(GU_PROFILE_B760M_3080LHR) + defined(GU_PROFILE_X870_3090TI) + defined(GU_PROFILE_B660PLUS_3060) + defined(GU_PROFILE_LOCAL) + defined(GU_PROFILE_H610M_3060) + defined(GU_PROFILE_PROBE_H610M_3060)) > 1
 #error Select exactly one machine profile
 #endif
-#if !defined(GU_PROFILE_B650M_3090FE) && !defined(GU_PROFILE_B660M_3070TI) && !defined(GU_PROFILE_X870_3090TI) && !defined(GU_PROFILE_B660PLUS_3060) && !defined(GU_PROFILE_LOCAL) && !defined(GU_PROFILE_H610M_3060) && !defined(GU_PROFILE_PROBE_H610M_3060)
+#if !defined(GU_PROFILE_B650M_3090FE) && !defined(GU_PROFILE_B660M_3070TI) && !defined(GU_PROFILE_B760M_3080LHR) && !defined(GU_PROFILE_X870_3090TI) && !defined(GU_PROFILE_B660PLUS_3060) && !defined(GU_PROFILE_LOCAL) && !defined(GU_PROFILE_H610M_3060) && !defined(GU_PROFILE_PROBE_H610M_3060)
 #define GU_PROFILE_B650M_3090FE 1
 #endif
 
@@ -33,7 +33,7 @@
  * (aggregate GOP + text-out driver chain; verified on AMI boards without a
  * second display GPU). 0 = nvgop owns the console GOP on the target directly
  * (original verified B650M headless topology). */
-#if defined(GU_PROFILE_B660M_3070TI) || defined(GU_PROFILE_B660PLUS_3060)
+#if defined(GU_PROFILE_B660M_3070TI) || defined(GU_PROFILE_B660PLUS_3060) || defined(GU_PROFILE_B760M_3080LHR)
 #define GU_CONSOLE_AGGREGATE 1
 #else
 #define GU_CONSOLE_AGGREGATE 0
@@ -153,6 +153,55 @@
 #define GU_NVGOP_STOP 0x678U
 #define GU_NVGOP_TEXT_BYTES 0x20d33U
 #define GU_NVGOP_TEXT_SHA256 "615b37a708b1894e18d7fa60cfcdacaa4d8b598863a10b8103d231a595847b2b"
+
+#elif defined(GU_PROFILE_B760M_3080LHR)
+
+/* Maxsun MS-Terminator B760M D4 BIOS H7.8G, i5-12490F (no iGPU),
+ * RTX 3080 10 GB LHR (GA102): hardware-verified headless port (one cold boot,
+ * 2026-10-26). Every value below was captured by the DIAGNOSTIC.EFI probe on
+ * 2026-10-25 and checked against the live graph at preflight, release and
+ * post-unlock. */
+#define GU_PROFILE_NAME "MAXSUN-MS-TERMINATOR-B760M-D4-H7.8G-RTX3080LHR"
+#define GU_BOARD_ID 0x221610deU
+#define GU_BOARD_SUBSYSTEM 0x20007377U
+#define GU_BAR0_BASE 0x80000000ULL
+#define GU_BAR0_END 0x80ffffffULL
+#define GU_DEVICE_MEMORY_SIZE 0x2800U
+#define GU_CHIP_ID 0xb72000a1U
+#define GU_PROM_SHA256 "88a6bce1bd790d3e4c542cccafbbd88a7ef73e2e0bef34310d7e8ed780e56d25"
+#define GU_ROOT_PORT_DEVICE 1U
+#define GU_ROOT_PORT_FUNCTION 0U
+/* 36-byte display device path: ACPI root, PciRoot(0), Pci(1,0), endpoint. */
+#define GU_RTX_PATH_BYTES \
+  2,1,12,0,0xd0,0x41,3,10,0,0,0,0,1,1,6,0,0,1,1,1,6,0,0,0,2,3,8,0,0x40,3,1,128,127,255,4,0
+/* AMI console splitter text-out driver (BIOS H7.8G image fingerprint). The
+ * pinned stop is the binding that serves the aggregate console text-out. */
+#define GU_CONSOLE_TEXT_SIZE 0x68e0U
+#define GU_CONSOLE_TEXT_STOP 0x1644U
+#define GU_CONSOLE_TEXT_VERSION 0x10U
+/* AMI GOP combo splitter C1 GOP (BIOS H7.8G image fingerprint). */
+#define GU_CONSOLE_GFX_SIZE 0x3bc0U
+#define GU_CONSOLE_GFX_STOP 0xb2cU
+#define GU_CONSOLE_GFX_VERSION 0x10U
+/* AMI GOP combo aggregate driver present only in this topology. */
+#define GU_COMBO_SIZE 0x2180U
+#define GU_COMBO_STOP 0x88cU
+#define GU_COMBO_VERSION 0x11U
+/* AMI EDID/mouse runtime driver (BIOS H7.8G image fingerprint). */
+#define GU_EDID_IMAGE_SIZE 0x9000U
+#define GU_EDID_STOP 0x14d4U
+#define GU_EDID_TEXT_BYTES 0x39faU
+#define GU_EDID_TEXT_SHA256 "bc3e3d5af8dbe6e685d5537c0d0667c0157f5555ae14c6e6e42ec1205342a583"
+/* nvgop-ga1xx driver shipped for GA102 (binding 0x6000a). */
+#define GU_NVGOP_VERSION 0x6000aU
+#define GU_NVGOP_IMAGE_SIZE 0x2be40U
+#define GU_NVGOP_STOP 0x698U
+#define GU_NVGOP_TEXT_BYTES 0x24426U
+#define GU_NVGOP_TEXT_SHA256 "8924ba488419e5d82b524d10e8dd63bfe886f077026fae1a9cc03e25b920b276"
+/* This firmware's ownership topology needs the B760M allowances below: an
+ * AMI display-adjacent driver (binding version 0x1b, image 0x3d200 bytes,
+ * boot-services code) holds BY_DRIVER_EXCLUSIVE DevicePath opens on both
+ * GPU handles, and three child links use the non-standard attribute 0x8. */
 
 #elif defined(GU_PROFILE_B660M_3070TI)
 
@@ -277,6 +326,12 @@
 #define GU_NVGOP_TEXT_BYTES 0x23d6aU
 #define GU_NVGOP_TEXT_SHA256 "6aad26e6909c9791dd0caba92d6658e9dfd8009aee80676002bf24ce2ad24d08"
 
+#endif
+
+#if defined(GU_PROFILE_B760M_3080LHR)
+#define GU_TOPO_B760M 1
+#else
+#define GU_TOPO_B760M 0
 #endif
 
 /* PCI bus of the RTX (segment 0, device 0, function 0). Every reviewed profile sits at
