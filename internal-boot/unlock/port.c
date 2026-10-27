@@ -25,6 +25,24 @@ BOOLEAN GuIsTargetHandle(EFI_HANDLE Handle) {
   for(UINTN i=0;i<GuTargetCount_;i++)if(GuTargets_[i].handle==Handle)return TRUE;
   return FALSE;
 }
+
+/* Handles whose open-protocol edges may legitimately change during a run:
+   registered target GPUs plus any agent/image/child handle recorded when a
+   guarded driver release is authorized. */
+#define GU_MAX_VOLATILE 64
+static EFI_HANDLE GuVolatile_[GU_MAX_VOLATILE];
+static UINTN GuVolatileCount_;
+
+VOID GuAddVolatileHandle(EFI_HANDLE Handle) {
+  if(!Handle)return;
+  for(UINTN i=0;i<GuVolatileCount_;i++)if(GuVolatile_[i]==Handle)return;
+  if(GuVolatileCount_<GU_MAX_VOLATILE)GuVolatile_[GuVolatileCount_++]=Handle;
+}
+BOOLEAN GuIsVolatileHandle(EFI_HANDLE Handle) {
+  if(!Handle)return FALSE;
+  for(UINTN i=0;i<GuVolatileCount_;i++)if(GuVolatile_[i]==Handle)return TRUE;
+  return FALSE;
+}
 UINT32 GuTargetId(VOID) { return Gu.board_id; }
 UINT32 GuTargetSub(VOID) { return Gu.board_subsystem; }
 
@@ -79,6 +97,7 @@ EFI_STATUS GuDiscoverTargets(VOID) {
       GuTargets_[pos].ctx.prom_sha256=GuCardTable[t].prom_sha256;
       GuTargets_[pos].ctx.card_name=GuCardTable[t].name;
       GuTargets_[pos].spec=&GuCardTable[t];GuTargets_[pos].handle=handles[i];
+      GuAddVolatileHandle(handles[i]);
       GuTargets_[pos].console=console;
       GuLog("target[%zu]: %s id=%#x sub=%#x bdf=%zu:%02zu:%02zu.%zu console=%u\n",
         (size_t)pos,GuCardTable[t].name,id,sub,(size_t)seg,(size_t)bus,(size_t)dev,(size_t)fun,(unsigned)console);
@@ -146,7 +165,7 @@ BOOLEAN GuSelectorPhase(UINT32 Phase) {
 #endif
 VOID GuInit(EFI_BOOT_SERVICES *Bs, EFI_PCI_IO_PROTOCOL *Pci) {
   memset(&Gu,0,sizeof(Gu)); Gu.bs=Bs; Gu.pci=Pci;
-  GuTargetCount_=0;GuActive_=(UINTN)-1;
+  GuTargetCount_=0;GuActive_=(UINTN)-1;GuVolatileCount_=0;
 }
 /* The active card recorded BDF and PCI identity; bus is no longer fixed. */
 BOOLEAN GuTargetConfig(const UINT32 *C, UINTN S, UINTN B, UINTN D, UINTN F) {

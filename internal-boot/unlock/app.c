@@ -338,7 +338,10 @@ static EFI_STATUS Arm(VOID) {
 #if !defined(GU_INTERNAL_BOOT) || !defined(GU_ENTRY_LATCHED_SS1_FULL)
 #error Automatic boot requires the exact internal full profile
 #endif
-  if(!Gu.owned || !Gu.prom_verified || PendingOwner.agent)return EFI_ACCESS_DENIED;
+  /* A deferred guarded driver release holds no exclusive claim yet; the
+     pending owner is released and reclaimed after arming, so it is allowed
+     here and still re-verified by the post-release ownership stage. */
+  if(!Gu.prom_verified || (!Gu.owned && !PendingOwner.agent))return EFI_ACCESS_DENIED;
   if(!Table->ConIn || !Table->ConIn->Reset || !Table->ConIn->ReadKeyStroke || !Gu.bs->Stall)return EFI_UNSUPPORTED;
   EFI_STATUS status=Table->ConIn->Reset(Table->ConIn,FALSE);if(status!=EFI_SUCCESS)return status;
   GuLogText("AUTOMATIC INTERNAL UNLOCK: Esc within 3 seconds cancels. No U required. One guarded attempt only.\n");
@@ -354,7 +357,7 @@ static EFI_STATUS Arm(VOID) {
     status=Gu.bs->Stall(100000);if(status!=EFI_SUCCESS)return status;
     Gu.ticks+=100000;
   }
-  return GuLogReady() && Gu.profile_verified && Gu.owned && Gu.prom_verified && Gu.display_ok && !Gu.fault && !PendingOwner.agent?EFI_SUCCESS:EFI_ACCESS_DENIED;
+  return GuLogReady() && Gu.profile_verified && (Gu.owned || PendingOwner.agent) && Gu.prom_verified && Gu.display_ok && !Gu.fault?EFI_SUCCESS:EFI_ACCESS_DENIED;
 #else
   if(!Table->ConIn || !Table->ConIn->Reset || !Table->ConIn->ReadKeyStroke)return EFI_UNSUPPORTED;
   EFI_STATUS status=Table->ConIn->Reset(Table->ConIn,FALSE);if(EFI_ERROR(status))return status;

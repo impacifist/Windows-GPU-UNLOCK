@@ -99,6 +99,11 @@ UINTN GuTargetCount(VOID);
 const GU_CARD_SPEC *GuTargetSpec(UINTN Index);
 EFI_HANDLE GuTargetHandleOf(UINTN Index);
 BOOLEAN GuIsTargetHandle(EFI_HANDLE Handle);
+/* Volatile registry: target handles plus every driver/image/child handle an
+   authorized DisconnectController release may tear down. The headless graph
+   treats edges touching these handles as expected change, not foreign tamper. */
+VOID GuAddVolatileHandle(EFI_HANDLE Handle);
+BOOLEAN GuIsVolatileHandle(EFI_HANDLE Handle);
 EFI_STATUS GuDiscoverTargets(VOID);
 /* Save current Gu into its slot and load the target context. Index must be
    an enumerated card; shared fields (bs/image/display_check) are preserved. */

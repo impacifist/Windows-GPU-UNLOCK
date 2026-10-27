@@ -100,7 +100,37 @@ EFI_STATUS GuFindReleaseOwner(EFI_SYSTEM_TABLE *Table,GU_RELEASE_OWNER *Owner,BO
     (unsigned long long)image->ImageSize,binding->Version,(unsigned)image->ImageCodeType);
   if(!image->ImageBase || !image->ImageSize || image->ImageSize>64U*1024U*1024U || image->ImageCodeType!=EfiBootServicesCode)return EFI_UNSUPPORTED;
   Owner->image=binding->ImageHandle;Owner->base=image->ImageBase;Owner->size=image->ImageSize;
-  Owner->version=binding->Version;Owner->stop=binding->Stop;return EFI_SUCCESS;
+  Owner->version=binding->Version;Owner->stop=binding->Stop;
+  /* The authorized disconnect tears down this driver opens across the whole
+     handle database. Register every handle the agent touches, plus its driver
+     image and device handles, so the headless graph treats those edges as the
+     expected release rather than foreign change. */
+  GuAddVolatileHandle(Owner->agent);
+  GuAddVolatileHandle(Owner->image);
+  GuAddVolatileHandle(image->DeviceHandle);
+  {
+    EFI_HANDLE *all=NULL;UINTN alln=0;
+    if(!EFI_ERROR(Gu.bs->LocateHandleBuffer(AllHandles,NULL,NULL,&alln,&all)) && all) {
+      for(UINTN h=0;h<alln;h++) {
+        EFI_GUID **protos=NULL;UINTN np=0;BOOLEAN touched=FALSE;
+        if(EFI_ERROR(Gu.bs->ProtocolsPerHandle(all[h],&protos,&np)))continue;
+        for(UINTN p=0;p<np;p++) {
+          EFI_OPEN_PROTOCOL_INFORMATION_ENTRY *info=NULL;UINTN ni=0;
+          if(!protos[p])continue;
+          if(EFI_ERROR(Gu.bs->OpenProtocolInformation(all[h],protos[p],&info,&ni)))continue;
+          for(UINTN k=0;k<ni;k++) {
+            if(info[k].AgentHandle==Owner->agent){touched=TRUE;GuAddVolatileHandle(info[k].ControllerHandle);}
+            else if(info[k].ControllerHandle==Owner->agent)touched=TRUE;
+          }
+          if(info && EFI_ERROR(Gu.bs->FreePool(info)))touched=TRUE;
+        }
+        if(protos && EFI_ERROR(Gu.bs->FreePool(protos)))touched=TRUE;
+        if(touched)GuAddVolatileHandle(all[h]);
+      }
+      if(EFI_ERROR(Gu.bs->FreePool(all)))GuAddVolatileHandle(Owner->agent);
+    }
+  }
+  return EFI_SUCCESS;
 }
 BOOLEAN GuSameReleaseOwner(const GU_RELEASE_OWNER *A,const GU_RELEASE_OWNER *B) {
   if(A->agent!=B->agent || A->image!=B->image || A->base!=B->base || A->size!=B->size ||
