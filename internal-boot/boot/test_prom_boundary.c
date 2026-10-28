@@ -71,7 +71,7 @@ static VOID Reset(UINT32 ioBit) {
   memset(&Io,0,sizeof(Io));memset(&OtherIo,0,sizeof(OtherIo));memset(&Services,0,sizeof(Services));
   memset(&System,0,sizeof(System));memset(&Full,0,sizeof(Full));memset(&PreparedPlan,0,sizeof(PreparedPlan));
   memset(Config,0,sizeof(Config));Config[0]=GU_BOARD_ID;Config[1]=2|ioBit;Config[2]=0x030000a1;
-  Config[4]=(UINT32)GU_BAR0_BASE;Config[11]=GU_BOARD_SUBSYSTEM;Bus=1;
+  Config[4]=(UINT32)GU_BAR0_BASE;Config[11]=GU_BOARD_SUBSYSTEM;Bus=GU_TARGET_BUS;
   memcpy(Full.Config,Config,sizeof(Config));System.BootServices=&Services;Full.Table=&System;
   PreparedPlan.RtxPci=Target;PreparedPlan.RtxIo=&Io;
   Io.GetLocation=LocateProm;Io.Pci.Read=ConfigProm;Io.Mem.Read=ReadProm;

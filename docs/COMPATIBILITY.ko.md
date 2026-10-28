@@ -2,9 +2,9 @@
 
 [English](COMPATIBILITY.en.md) | **한국어**
 
-현재 소스에는 실기기 결과가 기록된 정확한 장비 프로필 여섯 개가 있습니다.
-내부 headless 세 구성과 headless USB 세 구성입니다. 최초 B650M은 유지관리자가
-시험했고, B660M·X870·B660-PLUS의 근거는 기여자의 보고입니다
+현재 소스에는 실기기 결과가 기록된 정확한 장비 프로필 일곱 개가 있습니다.
+내부 headless 세 구성과 headless USB 네 구성입니다. 최초 B650M은 유지관리자가
+시험했고, B660M·X870·B660-PLUS·H610M·B550의 근거는 기여자의 보고입니다
 ([PR #5](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/5),
 [PR #10](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/10),
 [PR #24](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/24),
@@ -20,6 +20,7 @@
 | `x870-3090ti` | Gigabyte X870 AORUS ELITE WIFI7 BIOS F13d / Ryzen 7 9800X3D / ASUS RTX 3090 Ti | USB 전용; 기여자 보고 |
 | `b660plus-3060` | ASUS PRIME B660-PLUS D4 BIOS 3010 / iGPU 없는 i5-12600KF / GA104 RTX 3060 12GB | USB 전용, 디스플레이 child 두 개, CSM 끔; 기여자 보고 |
 | `h610m-3060` | Gigabyte H610M H BIOS FC / i5-14400(iGPU 켜짐, GOP 없음) / Gigabyte GA106 RTX 3060 12GB | USB 전용, 디스플레이 child 두 개; 기여자 보고 |
+| `b550-3060` | Gigabyte B550 AORUS ELITE V2 BIOS F13 / iGPU 없는 Ryzen 7 3700X / 레퍼런스 GA104 RTX 3060 12GB, 버스 06 | USB 전용, 디스플레이 child 한 개, CSM 끔; 기여자가 cold boot 1회 보고 |
 | `b660m-3090ti` | ASUS TUF GAMING B660M-E D4 BIOS 4003 / iGPU 없는 i7-12700F / Colorful RTX 3090 Ti | 내부; 기여자가 cold boot 1회 보고 |
 
 최신 태그 v0.3.1은 소스 전용 사전 릴리스이며, 현재 소스에는 그 이후의 USB 경로와
@@ -179,6 +180,26 @@ main 소스에서 `internal-boot/Configure.ps1`과 `research/headless/build-unlo
 Cold/full-flow와 컴파일 회귀 검사를 제공하지만 `test-all.ps1`의 전체 개인 fixture
 트랜잭션 재현은 아직 연결하지 않았습니다. 공개 근거에 정확한 FWSEC 이미지 offset·size와
 개인 입력이 없으므로 펌웨어 배치를 추정해 통과시키지 않고 해당 검증을 차단합니다.
+
+## 프로필 7: Gigabyte B550 AORUS ELITE V2 / RTX 3060 12GB GA104(headless USB)
+
+빌드 프로필 `b550-3060`은 PCI `10de:2487`, subsystem `10de:2487`(NVIDIA 레퍼런스 보드),
+VBIOS 94.04.71.00.a5, 12 GiB(`0x3000`), Gigabyte B550 AORUS ELITE V2 BIOS F13과 iGPU 없는
+Ryzen 7 3700X를 고정합니다. **CSM 끔**, RTX에 모니터 한 대(non-aggregate 디스플레이 child
+한 개), 루트 포트 `00:03.1` 뒤 **버스 06**의 카드가 필요합니다. 버스 01이 아닌 유일한 고정
+프로필입니다. 칩과 PCI ID가 같은 프로필 4와는 subsystem, VBIOS, PROM, 버스, 콘솔 구성,
+펌웨어가 다릅니다. BIOS F13 템플릿에는 nvgop `0x6000a`와 새 AMI 콘솔·EDID 지문이 있습니다.
+
+`research/headless/build-usb.ps1 -HardwareProfile b550-3060`으로 빌드합니다.
+[headless USB 경로 — 영어](HEADLESS-USB.en.md)만 제공하며 내부 쓰기 빌드는 거부됩니다.
+`research/profile/test-b550-3060.ps1`는 실제 콘솔 그래프와 그 그래프에서의 전체 드라이버
+해제 재현을 포함한 host 작업을 실행합니다.
+
+기여자는 cold boot 1회에서 깨끗한 트랜잭션, nvgop `0x6000a` 해제·검증, Windows 직접 진입과
+화면 복구를 보고했습니다. 언락 후 cuBLAS 중앙값은 FP32 8.28, TF32 24.05, FP16 48.41,
+BF16 48.15 TFLOPS이며, 이 장비에서 같은 스크립트의 잠금 기준값은 측정하지 않았습니다.
+반복 부팅, 재시작, 절전, 장기 안정성, 두 번째 NVIDIA 카드는 확인되지 않았습니다.
+[근거와 한계 — 영어](../evidence/b550-3060-usb/README.md).
 
 ## 기록된 구성 밖의 범위
 

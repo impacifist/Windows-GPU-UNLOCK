@@ -3,16 +3,17 @@
  * console firmware. LOCAL always keeps its own captured values, never defaults.
  */
 #pragma once
-#if defined(GU_PROFILE_LOCAL) || defined(GU_PROFILE_PROBE_H610M_3060)
+#if defined(GU_PROFILE_LOCAL) || defined(GU_PROFILE_PROBE_H610M_3060) || defined(GU_PROFILE_PROBE_B550_3060)
 #error Captured local and identity-only probe profiles must not inherit firmware templates
 #endif
-#if defined(GU_FIRMWARE_AMI_B650M_3057) || defined(GU_FIRMWARE_AMI_B660M_4003) || defined(GU_FIRMWARE_AMI_X870_F13D) || defined(GU_FIRMWARE_AMI_H610M_FC)
+#if defined(GU_FIRMWARE_AMI_B650M_3057) || defined(GU_FIRMWARE_AMI_B660M_4003) || defined(GU_FIRMWARE_AMI_X870_F13D) || defined(GU_FIRMWARE_AMI_H610M_FC) || defined(GU_FIRMWARE_AMI_B550_F13)
 #error Firmware template selectors must come from firmware-profile.h
 #endif
 #define GU_FIRMWARE_AMI_B650M_3057 1U
 #define GU_FIRMWARE_AMI_B660M_4003 2U
 #define GU_FIRMWARE_AMI_X870_F13D 3U
 #define GU_FIRMWARE_AMI_H610M_FC 4U
+#define GU_FIRMWARE_AMI_B550_F13 5U
 #ifndef GU_FIRMWARE_PROFILE
 #error Select an exact reviewed firmware template
 #endif
@@ -74,11 +75,31 @@
 #define GU_EDID_STOP 0x14d4U
 #define GU_EDID_TEXT_BYTES 0x3bb2U
 #define GU_EDID_TEXT_SHA256 "49fe68461765963d0b63144b0a7863f3b2db5926f1c988cbacc1e85ebe2b96f4"
+#elif GU_FIRMWARE_PROFILE == GU_FIRMWARE_AMI_B550_F13
+/* Gigabyte B550 AORUS ELITE V2 BIOS F13: captured identically in three cold boots.
+ * Its console text driver has three bindings from one image; the pinned stop is the
+ * binding that holds the RTX GOP child BY_DRIVER. nvgop 0x6000a is unique to this
+ * template; one contributor-reported release (evidence/b550-3060-usb). */
+#define GU_CONSOLE_TEXT_SIZE 0x5b80U
+#define GU_CONSOLE_TEXT_STOP 0xe6cU
+#define GU_CONSOLE_TEXT_VERSION 0x10U
+#define GU_CONSOLE_GFX_SIZE 0x3b20U
+#define GU_CONSOLE_GFX_STOP 0xa40U
+#define GU_CONSOLE_GFX_VERSION 0x10U
+#define GU_EDID_IMAGE_SIZE 0x9000U
+#define GU_EDID_STOP 0x149cU
+#define GU_EDID_TEXT_BYTES 0x3526U
+#define GU_EDID_TEXT_SHA256 "34c093b37d6c469aa6e24636de39f9568a0f6fe21368ad30c17d3d5f03b16d1b"
+#define GU_NVGOP_VERSION 0x6000aU
+#define GU_NVGOP_IMAGE_SIZE 0x2be40U
+#define GU_NVGOP_STOP 0x698U
+#define GU_NVGOP_TEXT_BYTES 0x24426U
+#define GU_NVGOP_TEXT_SHA256 "8924ba488419e5d82b524d10e8dd63bfe886f077026fae1a9cc03e25b920b276"
 #else
 #error No reviewed firmware template for this selection
 #endif
 
-#if GU_FIRMWARE_PROFILE != GU_FIRMWARE_AMI_B650M_3057
+#if GU_FIRMWARE_PROFILE != GU_FIRMWARE_AMI_B650M_3057 && GU_FIRMWARE_PROFILE != GU_FIRMWARE_AMI_B550_F13
 /* These five fixed profiles pin the same nvgop code; LOCAL does not inherit it. */
 #define GU_NVGOP_VERSION 0x60010U
 #define GU_NVGOP_IMAGE_SIZE 0x26ae0U

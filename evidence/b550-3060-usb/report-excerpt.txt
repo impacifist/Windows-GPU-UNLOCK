@@ -1,0 +1,39 @@
+Selected lines from AUTO000000\REPORT.TXT and HLS000000.TXT (USB headless, Gigabyte B550 AORUS ELITE V2 / RTX 3060 12GB GA104, 2026-10-28). PROM, raw graph log, driver dumps and partition data excluded.
+BUILD MODE: AUTOMATIC INTERNAL UNLOCK; profile=entryLatchedSs1Full; Esc cancellation; all hardware gates retained.
+cold observed: profile=entryLatchedSs1Full chip=0xb74000a1 memory=0x3000 SS0=0x76446145 SS1=0x3
+entry selectors: latched_once=1 SS0=0x76446145 SS1=0x3 SS0target=0x88888888 SS1policy=full SS1target=0x8
+layout ranges: nonwpr=0x2f5300000 wpr=0x2f5400000 heap=0x2f5500000 gsp=0x2fada0000 boot=0x2ffdfa000 frts=0x2ffe00000 end=0x2fff00000 scrub_floor=0x2f0000000
+FWSEC result: scratch=0 expected_hi16=0
+FWSEC WPR2: low=0x2ffe000 high=0x2ffee00 expected_page=0x2ffe00 end=0x2fff00000
+selector intent: SS0target=0x88888888 SS1entry=0x3 SS1target=0x8 (one SS1 write)
+pre-FLR selectors: ss0=0x88888888 expected=0x88888888 ss1=0x8 expected=0x8
+PCIe FLR begin: BME=0 DMA retained, chip=0xb74000a1
+PCIe FLR returned: result=0
+post-FLR BAR ready: chip=0xb74000a1
+post-FLR GFW result: error=0 pci=0x248710de plm=0x8b8f boot=0x3ff cpuctl=0x10 budget_us=2050000
+post-FLR SEC2 reset released, GSP halted, BME=0 pending=0 WPR2=1ffffe00:00000000 SS0=88888888 SS1=00000008
+BME containment: attribute_status=0 hardware_status=0 command=0x3 cached=0x300 pending=0
+transaction result=0 containment=0 started=1 quiesced=1 fault=0 retained=0 maps=0 FLR=1
+FINAL status=0 stage=transaction attempted=1 driver_release=0 clean=1
+--- wrapper (HLS000000.TXT)
+pre-release-cold-check status=0x0000000000000000
+pre-release-cold-wpr2-hi status=0x0000000000000000
+pre-release-cold-ss0 status=0x0000000076446145
+detach-rtx-textout-intent status=0x0000000000000000
+detach-rtx-textout-return status=0x0000000000000000
+detach-textout-verified status=0x0000000000000000
+detach-rtx-graphics-console-intent status=0x0000000000000000
+detach-rtx-graphics-console-return status=0x0000000000000000
+detach-graphics-console-verified status=0x0000000000000000
+full-release-preflight status=0x0000000000000000
+detach-rtx-edid-intent-shared-pointer-pauses status=0x0000000000000000
+detach-edid-return status=0x0000000000000000
+edid-detach-verified status=0x0000000000000000
+detach-nvidia-gop-intent status=0x0000000000000000
+detach-nvidia-return status=0x0000000000000000
+nvidia-detach-verified status=0x0000000000000000
+full-release-ready-for-original-unlock status=0x0000000000000000
+full-windows-start status=0x0000000000000000
+windows-preclose-verify-begin status=0x0000000000000000
+verify-complete status=0x0000000000000000
+windows-close-files-next-then-final-verify-and-StartImage status=0x0000000000000000

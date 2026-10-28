@@ -23,7 +23,7 @@ PR에 남겨주세요. [커뮤니티 룰 — English](docs/DISCORD-RULES.en.md)�
 
 | GPU | 현재 상태 | 상세 조건 |
 |---|---|---|
-| **RTX 3060 12GB (GA104 / GA106)** | 실기기 성공 보고 · headless USB 전용 | [GA104](docs/COMPATIBILITY.ko.md#프로필-4-asus-prime-b660-plus-d4--rtx-3060-12gbheadless-usb) · [GA106](docs/COMPATIBILITY.ko.md#프로필-5-gigabyte-h610m-h--rtx-3060-12gb-ga106headless-usb) |
+| **RTX 3060 12GB (GA104 / GA106)** | 실기기 성공 보고 · headless USB 전용 | [GA104](docs/COMPATIBILITY.ko.md#프로필-4-asus-prime-b660-plus-d4--rtx-3060-12gbheadless-usb) · [GA106](docs/COMPATIBILITY.ko.md#프로필-5-gigabyte-h610m-h--rtx-3060-12gb-ga106headless-usb) · [GA104 B550](docs/COMPATIBILITY.ko.md#프로필-7-gigabyte-b550-aorus-elite-v2--rtx-3060-12gb-ga104headless-usb) |
 | **RTX 3070 Ti 8GB** | 실기기 성공 보고 · 내부 headless | [지원 구성](docs/COMPATIBILITY.ko.md#프로필-2-asus-tuf-b660m-e-d4--rtx-3070-tiaggregate-console) |
 | **RTX 3080** | 전용 프로필 없음 · Windows 화면 연결 연구 자료 제공 | [연구 관측](research/rtx3080/README.md) · [프로젝트 출처](THIRD_PARTY_NOTICES.md) |
 | **RTX 3090 FE 24GB** | 실기기 성공 기록 · 내부 headless · 기본 프로필 | [지원 구성](docs/COMPATIBILITY.ko.md#프로필-1-asus-tuf-b650m--rtx-3090-fe최초-검증) |

@@ -24,7 +24,8 @@ class FamilyTests(unittest.TestCase):
                  ('B660M_3090TI', 102, 0xb72000a1, 0x5ff4),
                  ('B660M_3070TI', 104, 0xb74000a1, 0x2000),
                  ('B660PLUS_3060', 104, 0xb74000a1, 0x3000),
-                 ('H610M_3060', 106, 0xb76000a1, 0x3000)]
+                 ('H610M_3060', 106, 0xb76000a1, 0x3000),
+                 ('B550_3060', 104, 0xb74000a1, 0x3000)]
         for profile, family, chip, memory in cases:
             with self.subTest(profile=profile):
                 source = ('#include "machine-profile.h"\n'
@@ -83,18 +84,20 @@ class FamilyTests(unittest.TestCase):
         source = ('#include "machine-profile.h"\n'
                   '#if defined(GU_CHIP_ID) || defined(GU_DEVICE_MEMORY_SIZE) || defined(GU_PROM_SHA256) || defined(GU_GPU_FAMILY) || defined(GU_FIRMWARE_PROFILE)\n'
                   '#error Identity-only probe gained write traits\n#endif\n')
-        base = ['-DGU_PROFILE_PROBE_H610M_3060', '-DGU_DIAGNOSTIC_ONLY', '-DGU_DIAGNOSTIC_PROBE']
-        done = compile_source(source, base)
-        self.assertEqual(done.returncode, 0, done.stderr)
-        for flag in ('GU_FULL_UNLOCK', 'GU_EXPERIMENTAL_3090', 'GU_UEFI_PORT', 'GU_INTERNAL_BOOT',
-                     'GU_CONSOLE_PREPARE', 'GU_AUTOMATIC_BOOT', 'GU_HEADLESS_RESEARCH'):
-            with self.subTest(flag=flag):
-                self.assertNotEqual(compile_source(source, base + ['-D' + flag]).returncode, 0)
+        for profile in ('GU_PROFILE_PROBE_H610M_3060', 'GU_PROFILE_PROBE_B550_3060'):
+            base = ['-D' + profile, '-DGU_DIAGNOSTIC_ONLY', '-DGU_DIAGNOSTIC_PROBE']
+            done = compile_source(source, base)
+            self.assertEqual(done.returncode, 0, done.stderr)
+            for flag in ('GU_FULL_UNLOCK', 'GU_EXPERIMENTAL_3090', 'GU_UEFI_PORT', 'GU_INTERNAL_BOOT',
+                         'GU_CONSOLE_PREPARE', 'GU_AUTOMATIC_BOOT', 'GU_HEADLESS_RESEARCH'):
+                with self.subTest(profile=profile, flag=flag):
+                    self.assertNotEqual(compile_source(source, base + ['-D' + flag]).returncode, 0)
 
     def test_unknown_firmware_and_local_template_inheritance_are_refused(self):
         for defines in (['-DGU_FIRMWARE_PROFILE=99'],
                         ['-DGU_PROFILE_LOCAL', '-DGU_FIRMWARE_PROFILE=2'],
-                        ['-DGU_PROFILE_PROBE_H610M_3060', '-DGU_FIRMWARE_PROFILE=4']):
+                        ['-DGU_PROFILE_PROBE_H610M_3060', '-DGU_FIRMWARE_PROFILE=4'],
+                        ['-DGU_PROFILE_PROBE_B550_3060', '-DGU_FIRMWARE_PROFILE=4']):
             with self.subTest(defines=defines):
                 self.assertNotEqual(compile_source('#include "firmware-profile.h"\n', defines).returncode, 0)
 

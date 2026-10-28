@@ -11,7 +11,7 @@ try {
    Set-Content -LiteralPath build/prom-boundary/include/platform-config.h -Encoding ascii
  $flags=@('-std=c11','-O1','-Wall','-Wextra','-Werror','-D_CRT_SECURE_NO_WARNINGS',
    '-I','build/prom-boundary/include','-I','../../deps/edk2/MdePkg/Include','-I','../../deps/edk2/MdePkg/Include/X64')
- foreach($profile in @('B650M_3090FE','B660M_3070TI','X870_3090TI','B660PLUS_3060','H610M_3060')) {
+ foreach($profile in @('B650M_3090FE','B660M_3070TI','X870_3090TI','B660PLUS_3060','H610M_3060','B550_3060')) {
   foreach($headless in @($false,$true)) {
    $mode=@();if($headless){$mode=@('-DGU_HEADLESS_RESEARCH','-DGU_SINGLE_RTX_CONSOLE','-DGU_FULL_UNLOCK','-DGU_AUTOMATIC_BOOT')}
    $exe="build/prom-boundary/test-$profile-$headless.exe"
