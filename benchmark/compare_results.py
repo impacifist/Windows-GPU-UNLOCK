@@ -17,7 +17,8 @@ IDENTITY = ('gpu', 'pci', 'compute_capability', 'cuda_runtime',
             'cuda_driver_api', 'cublas')
 CARDS = {'NVIDIA GeForce RTX 3090': '3090',
          'NVIDIA GeForce RTX 3090 Ti': '3090ti',
-         'NVIDIA GeForce RTX 3070 Ti': '3070ti'}
+         'NVIDIA GeForce RTX 3070 Ti': '3070ti',
+         'NVIDIA GeForce RTX 3060': '3060'}
 
 
 def require(condition, message):

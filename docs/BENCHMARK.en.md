@@ -19,8 +19,8 @@ any nonempty `NVIDIA_TF32_OVERRIDE` rather than silently changing the environmen
 or reporting overridden FP32 work as TF32. `tf32_allowed` reports this environment
 policy, not a measured hardware unlock state.
 
-Select the RTX 3090 (default), RTX 3090 Ti or RTX 3070 Ti with
-`-Card 3090|3090ti|3070ti` when building and running. Each binary requires its named
+Select the RTX 3090 (default), RTX 3090 Ti, RTX 3070 Ti or RTX 3060 with
+`-Card 3090|3090ti|3070ti|3060` when building and running. Each binary requires its named
 GPU at PCI `0000:01:00.0`; this is a measurement target, not an EFI compatibility
 verdict. Result checking remains limited to the first and last output elements,
 as in upstream.

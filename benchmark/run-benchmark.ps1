@@ -1,12 +1,12 @@
 # Modified 2026-10-19/20 for Windows GPU UNLOCK; changes documented in CHANGES.md.
-param([switch]$PreflightOnly,[ValidateSet('3090','3090ti','3070ti')][string]$Card='3090')
+param([switch]$PreflightOnly,[ValidateSet('3090','3090ti','3070ti','3060')][string]$Card='3090')
 $ErrorActionPreference = 'Stop'
 $root = $PSScriptRoot
 $benchmarkNames = @('fp32_pedantic','fp16_tensor_fp32_accumulate','bf16_tensor_fp32_accumulate','tf32_tensor_fp32_accumulate')
 # Reject overrides before executable/GPU queries; metadata inspection alone never runs GEMM.
 if (![string]::IsNullOrEmpty($env:NVIDIA_TF32_OVERRIDE)) { throw 'Unset NVIDIA_TF32_OVERRIDE before running the four-mode benchmark' }
 $exe = Join-Path $root "bin\compute-benchmark-$Card.exe"
-$gpuName = @{'3090'='NVIDIA GeForce RTX 3090';'3090ti'='NVIDIA GeForce RTX 3090 Ti';'3070ti'='NVIDIA GeForce RTX 3070 Ti'}[$Card]
+$gpuName = @{'3090'='NVIDIA GeForce RTX 3090';'3090ti'='NVIDIA GeForce RTX 3090 Ti';'3070ti'='NVIDIA GeForce RTX 3070 Ti';'3060'='NVIDIA GeForce RTX 3060'}[$Card]
 if (-not (Test-Path -LiteralPath $exe)) { throw 'Build the benchmark first' }
 $manifest = Get-Content -LiteralPath (Join-Path $root 'build-manifest.json') -Raw | ConvertFrom-Json
 $selectedArtifacts = 0
