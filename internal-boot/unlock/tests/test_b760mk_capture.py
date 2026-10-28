@@ -1,6 +1,6 @@
-"""Draft B760M-K/RTX 3060 profile versus its own read-only capture. Preprocess-only; no GPU or EFI.
+"""B760M-K/RTX 3060 profile versus its own read-only capture. Preprocess-only; no GPU or EFI.
 
-Every pinned value in GU_PROFILE_DRAFT_B760MK_3060 must equal what the capture
+Every pinned value in GU_PROFILE_B760MK_3060 must equal what the capture
 (DIAG00.TXT, PROM.BIN, IMG*.BIN) records, parsed with research/profile/make-profile.py.
 The capture is private and not committed: set GU_B760MK_CAPTURE or keep it at
 ../scans/RTX3090-UNLOCK next to the repository.
@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REPO = ROOT.parents[1]
 CLANG = 'clang'
 CAPTURE = Path(os.environ.get('GU_B760MK_CAPTURE', REPO.parent / 'scans' / 'RTX3090-UNLOCK'))
-PROFILE = ['-DGU_PROFILE_DRAFT_B760MK_3060', '-DGU_DRAFT_REVIEW']
+PROFILE = ['-DGU_PROFILE_B760MK_3060']
 
 sys.dont_write_bytecode = True
 _spec = importlib.util.spec_from_file_location('make_profile', REPO / 'research' / 'profile' / 'make-profile.py')

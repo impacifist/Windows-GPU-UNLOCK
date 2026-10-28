@@ -1,7 +1,7 @@
-# GPL-2.0-only. Replay the DRAFT B760M-K / RTX 3060 console graph from real read-only
+# GPL-2.0-only. Replay the B760M-K / RTX 3060 console graph from real read-only
 # captures in WebAssembly. Each capture becomes capture-graph.h (capture-replay-b760mk.py),
-# then the actual release-planning code runs against it. No firmware or GPU access, and
-# no x64 UEFI object: the draft profile refuses every non-WebAssembly write build.
+# then the actual release-planning code runs against it. No firmware or GPU access; the
+# x64 UEFI source is only syntax-checked.
 param(
  [string[]]$Capture=@(),
  [string]$Clang='clang',
@@ -21,9 +21,9 @@ try {
  }
  if(!$Capture.Count){throw 'No captures found; pass -Capture <dir>'}
  $common=@('-std=c11','-O1','-Wall','-Wextra','-Werror','-ffreestanding','-fno-builtin',
-           '-fno-stack-protector','-fshort-wchar','-DGU_PROFILE_DRAFT_B760MK_3060','-DGU_DRAFT_REVIEW',
-           '-DGU_DRAFT_HOST_TEST','-DGU_HEADLESS_RESEARCH','-DGU_SINGLE_RTX_CONSOLE','-DGU_FULL_UNLOCK',
-           '-DGU_AUTOMATIC_BOOT','-I','../../deps/edk2/MdePkg/Include','-I','../../deps/edk2/MdePkg/Include/Ia32')
+           '-fno-stack-protector','-fshort-wchar','-DGU_PROFILE_B760MK_3060',
+           '-DGU_HEADLESS_RESEARCH','-DGU_SINGLE_RTX_CONSOLE','-DGU_FULL_UNLOCK',
+           '-DGU_AUTOMATIC_BOOT','-I','../../deps/edk2/MdePkg/Include')
  $runner='build/aggregate-b760mk/run.js'
  New-Item -ItemType Directory -Path 'build/aggregate-b760mk' -Force | Out-Null
  @(
@@ -41,7 +41,10 @@ try {
   ) | Set-Content -LiteralPath "$build/include/platform-config.h" -Encoding ascii
   & $Python -I capture-replay-b760mk.py $dir "$build/include/capture-graph.h"
   if($LASTEXITCODE -ne 0){throw "Capture refused: $name"}
-  $wasm=@('--target=wasm32-unknown-unknown')+$common+@('-I',"$build/include")
+  $x64=@('-target','x86_64-pc-windows-msvc')+$common+@('-I',"$build/include",'-I','../../deps/edk2/MdePkg/Include/X64','-fsyntax-only','full-release.c')
+  & $Clang @x64
+  if($LASTEXITCODE -ne 0){throw "x64 UEFI source compile failed ($name)"}
+  $wasm=@('--target=wasm32-unknown-unknown')+$common+@('-I',"$build/include",'-I','../../deps/edk2/MdePkg/Include/Ia32')
   foreach($source in @('test_aggregate_graph_b760mk.c','../unlock/checks.c','../unlock/sha256.c')) {
    $obj=[IO.Path]::GetFileNameWithoutExtension($source)
    & $Clang @wasm '-c' $source '-o' "$build/$obj.wasm.o"

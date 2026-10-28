@@ -77,7 +77,7 @@
 #define GU_EDID_TEXT_SHA256 "49fe68461765963d0b63144b0a7863f3b2db5926f1c988cbacc1e85ebe2b96f4"
 
 #elif GU_FIRMWARE_PROFILE == GU_FIRMWARE_AMI_B760MK_1663
-/* DRAFT, unreviewed. ASUS PRIME B760M-K BIOS 1663, three identical iGPU-off
+/* Unreviewed. ASUS PRIME B760M-K BIOS 1663, three identical iGPU-off
  * captures. Compared with the drivers extracted from ASUS's own
  * TUF-GAMING-B660M-E-D4-ASUS-4003.CAP (sizes there match B660M_4003 below);
  * the 1663 .CAP extraction matches the captured loaded .text byte-for-byte.
@@ -110,7 +110,7 @@
 #endif
 
 #if GU_FIRMWARE_PROFILE != GU_FIRMWARE_AMI_B650M_3057
-/* These five fixed profiles pin the same nvgop code; LOCAL does not inherit it. */
+/* These fixed profiles pin the same nvgop code; LOCAL does not inherit it. */
 #define GU_NVGOP_VERSION 0x60010U
 #define GU_NVGOP_IMAGE_SIZE 0x26ae0U
 #define GU_NVGOP_STOP 0x678U

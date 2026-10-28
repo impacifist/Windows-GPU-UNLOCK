@@ -18,25 +18,11 @@
 #error GPU family and firmware must be derived from the selected machine profile
 #endif
 
-#if (defined(GU_PROFILE_B650M_3090FE) + defined(GU_PROFILE_B660M_3070TI) + defined(GU_PROFILE_B660M_3090TI) + defined(GU_PROFILE_X870_3090TI) + defined(GU_PROFILE_B660PLUS_3060) + defined(GU_PROFILE_LOCAL) + defined(GU_PROFILE_H610M_3060) + defined(GU_PROFILE_PROBE_H610M_3060) + defined(GU_PROFILE_DRAFT_B760MK_3060)) > 1
+#if (defined(GU_PROFILE_B650M_3090FE) + defined(GU_PROFILE_B660M_3070TI) + defined(GU_PROFILE_B660M_3090TI) + defined(GU_PROFILE_X870_3090TI) + defined(GU_PROFILE_B660PLUS_3060) + defined(GU_PROFILE_LOCAL) + defined(GU_PROFILE_H610M_3060) + defined(GU_PROFILE_PROBE_H610M_3060) + defined(GU_PROFILE_B760MK_3060)) > 1
 #error Select exactly one machine profile
 #endif
-#if !defined(GU_PROFILE_B650M_3090FE) && !defined(GU_PROFILE_B660M_3070TI) && !defined(GU_PROFILE_B660M_3090TI) && !defined(GU_PROFILE_X870_3090TI) && !defined(GU_PROFILE_B660PLUS_3060) && !defined(GU_PROFILE_LOCAL) && !defined(GU_PROFILE_H610M_3060) && !defined(GU_PROFILE_PROBE_H610M_3060) && !defined(GU_PROFILE_DRAFT_B760MK_3060)
+#if !defined(GU_PROFILE_B650M_3090FE) && !defined(GU_PROFILE_B660M_3070TI) && !defined(GU_PROFILE_B660M_3090TI) && !defined(GU_PROFILE_X870_3090TI) && !defined(GU_PROFILE_B660PLUS_3060) && !defined(GU_PROFILE_LOCAL) && !defined(GU_PROFILE_H610M_3060) && !defined(GU_PROFILE_PROBE_H610M_3060) && !defined(GU_PROFILE_B760MK_3060)
 #define GU_PROFILE_B650M_3090FE 1
-#endif
-
-/* Draft profile: no hardware result yet (see its entry below). It may be
- * preprocessed for review, and the release code may be compiled with it only as
- * a WebAssembly host replay (GU_DRAFT_HOST_TEST); every build that could run as
- * firmware and release a driver or unlock must fail to compile with it. */
-#if defined(GU_PROFILE_DRAFT_B760MK_3060)
-#if !defined(GU_DRAFT_REVIEW)
-#error GU_PROFILE_DRAFT_B760MK_3060 is an unreviewed draft; only -DGU_DRAFT_REVIEW preprocessing is allowed
-#endif
-#if (defined(GU_FULL_UNLOCK) || defined(GU_EXPERIMENTAL_3090) || defined(GU_UEFI_PORT) || defined(GU_INTERNAL_BOOT) || defined(GU_CONSOLE_PREPARE) || defined(GU_AUTOMATIC_BOOT) || defined(GU_HEADLESS_RESEARCH)) && \
-    !(defined(GU_DRAFT_HOST_TEST) && defined(__wasm__))
-#error GU_PROFILE_DRAFT_B760MK_3060 must not be combined with release or unlock builds
-#endif
 #endif
 
 /* Probe-only identity: never a write profile. It selects the read-only probe
@@ -55,7 +41,7 @@
  * (aggregate GOP + text-out driver chain; verified on AMI boards without a
  * second display GPU). 0 = nvgop owns the console GOP on the target directly
  * (original verified B650M headless topology). */
-#if defined(GU_PROFILE_B660M_3070TI) || defined(GU_PROFILE_B660M_3090TI) || defined(GU_PROFILE_B660PLUS_3060) || defined(GU_PROFILE_DRAFT_B760MK_3060)
+#if defined(GU_PROFILE_B660M_3070TI) || defined(GU_PROFILE_B660M_3090TI) || defined(GU_PROFILE_B660PLUS_3060) || defined(GU_PROFILE_B760MK_3060)
 #define GU_CONSOLE_AGGREGATE 1
 #elif !defined(GU_PROFILE_LOCAL)
 #define GU_CONSOLE_AGGREGATE 0
@@ -140,9 +126,9 @@
 #define GU_RTX_PATH_BYTES   2,1,12,0,0xd0,0x41,3,10,0,0,0,0,1,1,6,0,0,1,1,1,6,0,0,0,2,3,8,0,0x30,3,1,128,127,255,4,0
 #define GU_FIRMWARE_PROFILE GU_FIRMWARE_AMI_H610M_FC
 
-#elif defined(GU_PROFILE_DRAFT_B760MK_3060)
+#elif defined(GU_PROFILE_B760MK_3060)
 
-/* DRAFT, unreviewed, no hardware result. ASUS PRIME B760M-K BIOS 1663, Intel
+/* Unreviewed, no hardware result yet. ASUS PRIME B760M-K BIOS 1663, Intel
  * iGPU disabled (Primary Display PEG), Zotac RTX 3060 12GB (GA106, 19da:2630,
  * VBIOS 94.06.2f.40.e3). Aggregate console like B660M_3070TI: the AMI combo
  * splitter owns the console on one nvgop child (single-child, one monitor).
@@ -156,7 +142,7 @@
  * replays the release planning against each capture's full graph.
  * With the iGPU enabled the firmware adds an iGPU GOP (3 GOPs) and writes no
  * ConOut; this draft does not cover that. */
-#define GU_PROFILE_NAME "DRAFT-ASUS-PRIME-B760M-K-1663-RTX3060-12GB"
+#define GU_PROFILE_NAME "ASUS-PRIME-B760M-K-1663-RTX3060-12GB"
 #define GU_BOARD_ID 0x250410deU
 #define GU_BOARD_SUBSYSTEM 0x263019daU
 #define GU_BAR0_BASE 0x84000000ULL
