@@ -77,11 +77,15 @@
 #define GU_EDID_TEXT_SHA256 "49fe68461765963d0b63144b0a7863f3b2db5926f1c988cbacc1e85ebe2b96f4"
 
 #elif GU_FIRMWARE_PROFILE == GU_FIRMWARE_AMI_B760MK_1663
-/* DRAFT, unreviewed. ASUS PRIME B760M-K BIOS 1663, one iGPU-off capture
- * (scans/RTX3090-UNLOCK/DIAG00.TXT). console_gfx, EDID and nvgop match
- * B660M_4003 byte-for-byte; console_text (+0xa0) and combo (+0x20) are larger,
- * with the extra bytes only in .reloc. Stop offsets and versions are unchanged.
- * Same code is assumed, not proven: needs a .text hash comparison. */
+/* DRAFT, unreviewed. ASUS PRIME B760M-K BIOS 1663, three identical iGPU-off
+ * captures. EDID and nvgop .text hashes match B660M_4003; console_gfx matches
+ * its size, stop and version. Stop offsets and versions of the other two match.
+ * combo (+0x20): .reloc starts at 0x2160, the B660M image size, so the same
+ * code plus a relocation table is plausible but unproven.
+ * console_text (+0xa0): .xdata already ends at 0x6a4c, past the whole B660M
+ * image (0x6a40), so it is a DIFFERENT build; its Stop() behaviour is unproven.
+ * Captured .text SHA-256 prefixes (no relocations in .text):
+ * combo 3f4c4ea26023ddf0 (0x1990 bytes), console_text 721b3a8839de8581 (0x5620). */
 #define GU_CONSOLE_TEXT_SIZE 0x6ae0U
 #define GU_CONSOLE_TEXT_STOP 0x104cU
 #define GU_CONSOLE_TEXT_VERSION 0x10U
