@@ -83,9 +83,12 @@
  * the 1663 .CAP extraction matches the captured loaded .text byte-for-byte.
  * EDID: every section identical. nvgop: .text hash identical.
  * console_gfx: same size; .text differs only from 0x1ad2 on, after Stop().
- * console_text (+0xa0) and combo (+0x20): different builds. Stop() disassembly,
- * addresses normalized: console_text and console_gfx identical; combo adds one
- * error path that calls gBS->FreePool on a saved buffer and clears it.
+ * console_text (+0xa0) and combo (+0x20): different builds. Whole direct call
+ * tree under Stop(), addresses normalized: console_text (Stop + 8 callees) and
+ * console_gfx (no direct callees) identical; combo's 5 callees identical, and
+ * its Stop() adds one error path that calls gBS->FreePool on a saved buffer and
+ * clears it, and writes two state fields after (not before) the copy-back.
+ * Indirect calls (boot services, protocols) were not followed.
  * .text SHA-256 prefixes, B760M-K / B660M: console_text 721b3a8839de8581 /
  * 92f9227e66645ca9, combo 3f4c4ea26023ddf0 / 3dba65aa122c0883, console_gfx
  * e5e68f0856c6e932 / 038d7ee2e6f47d37. */
