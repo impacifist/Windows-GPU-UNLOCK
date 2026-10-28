@@ -79,7 +79,7 @@
 /* Gigabyte B550 AORUS ELITE V2 BIOS F13: captured identically in three cold boots.
  * Its console text driver has three bindings from one image; the pinned stop is the
  * binding that holds the RTX GOP child BY_DRIVER. nvgop 0x6000a is unique to this
- * template and has never released on reviewed hardware. */
+ * template; one contributor-reported release (evidence/b550-3060-usb). */
 #define GU_CONSOLE_TEXT_SIZE 0x5b80U
 #define GU_CONSOLE_TEXT_STOP 0xe6cU
 #define GU_CONSOLE_TEXT_VERSION 0x10U

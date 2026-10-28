@@ -1,13 +1,15 @@
-## Unreleased — Gigabyte B550 AORUS ELITE V2 / RTX 3060 (GA104) profile, host-tested only
+## Unreleased — Gigabyte B550 AORUS ELITE V2 / RTX 3060 (GA104) profile
 
 - Add the exact `b550-3060` USB-only profile: Gigabyte B550 AORUS ELITE V2 BIOS F13, Ryzen 7 3700X
   (no iGPU), reference-subsystem RTX 3060 12GB (`10de:2487` / `10de:2487`, VBIOS 94.04.71.00.a5)
   on bus 06 behind root port 00:03.1, CSM off, one monitor on the RTX. Constants come from three
   identical read-only probe captures (`probe-b550-3060`) and the card's own PROM (FWSEC-FRTS at
   `0x438b4`, `0xea00` bytes).
-- This is **not hardware evidence**. No write boot exists for this profile. Its BIOS firmware template
-  is new: nvgop `0x6000a` and the AMI console/EDID fingerprints have not released on any reviewed
-  machine. The 19 host jobs of `research/profile/test-b550-3060.ps1` pass with simulated EFI/MMIO/DMA,
+- One contributor-reported cold boot ([evidence/b550-3060-usb](evidence/b550-3060-usb/README.md)):
+  clean transaction, nvgop `0x6000a` released and verified, direct Windows entry and display
+  recovery; unlocked cuBLAS FP16/BF16/TF32 48.41/48.15/24.05 TFLOPS. No locked baseline with that
+  script on this machine; repeated boots, restart, sleep and stability are not established. The
+  BIOS F13 template (nvgop `0x6000a`, AMI console/EDID) is new and has this one release only. The 19 host jobs of `research/profile/test-b550-3060.ps1` pass with simulated EFI/MMIO/DMA,
   including an R2 replay of the real captured console graph and a replay of the whole driver release
   (EDID stop, NVIDIA stop, IO/MEM decode restore, final verifier) on that graph with the captured
   EDID and nvgop images. They replace neither a supervised boot nor recovery testing; the simulated

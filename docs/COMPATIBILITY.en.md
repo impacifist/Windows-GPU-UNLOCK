@@ -2,10 +2,10 @@
 
 **English** | [한국어](COMPATIBILITY.ko.md)
 
-The current source contains six exact-machine profiles with recorded hardware
-results: three internal headless configurations and three headless USB configurations.
-The original B650M run was performed by the maintainer; B660M, X870 and B660-PLUS evidence
-comes from contributors ([PR #5](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/5),
+The current source contains seven exact-machine profiles with recorded hardware
+results: three internal headless configurations and four headless USB configurations.
+The original B650M run was performed by the maintainer; B660M, X870, B660-PLUS, H610M and B550
+evidence comes from contributors ([PR #5](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/5),
 [PR #10](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/10),
 [PR #24](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/24),
 [PR #30](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/30),
@@ -21,6 +21,7 @@ other GPUs or platforms remain unsupported.
 | `x870-3090ti` | Gigabyte X870 AORUS ELITE WIFI7 BIOS F13d / Ryzen 7 9800X3D / ASUS RTX 3090 Ti | USB only; contributor report |
 | `b660plus-3060` | ASUS PRIME B660-PLUS D4 BIOS 3010 / i5-12600KF (no iGPU) / GA104 RTX 3060 12GB | USB only, two display children, CSM off; contributor report |
 | `h610m-3060` | Gigabyte H610M H BIOS FC / i5-14400 (iGPU enabled, no GOP) / Gigabyte GA106 RTX 3060 12GB | USB only, two display children; contributor report |
+| `b550-3060` | Gigabyte B550 AORUS ELITE V2 BIOS F13 / Ryzen 7 3700X (no iGPU) / reference GA104 RTX 3060 12GB, bus 06 | USB only, one display child, CSM off; one contributor-reported cold boot |
 | `b660m-3090ti` | ASUS TUF GAMING B660M-E D4 BIOS 4003 / i7-12700F (no iGPU) / Colorful RTX 3090 Ti | Internal; one contributor-reported cold boot |
 
 The latest tag is the source-only pre-release v0.3.1; this source tree includes
@@ -191,6 +192,28 @@ transaction replay through `test-all.ps1` is not wired for this profile; the pub
 evidence does not provide its exact FWSEC image offset/size or private inputs.
 Those tests remain blocked rather than accepting an inferred firmware layout.
 
+## Profile 7: Gigabyte B550 AORUS ELITE V2 / RTX 3060 12GB GA104 (headless USB)
+
+Build profile `b550-3060` selects PCI `10de:2487`, subsystem `10de:2487` (NVIDIA reference
+board), VBIOS 94.04.71.00.a5, 12 GiB (`0x3000`), on Gigabyte B550 AORUS ELITE V2 BIOS F13
+with a Ryzen 7 3700X (no iGPU). It requires **CSM disabled**, one monitor on the RTX (one
+non-aggregate display child) and the card on **bus 06** behind root port `00:03.1`; it is the
+only fixed profile off bus 01. It differs from Profile 4 (same chip and PCI ID) in subsystem,
+VBIOS, PROM, bus, console topology and firmware: its BIOS F13 template carries nvgop
+`0x6000a` and new AMI console/EDID fingerprints.
+
+Build with `research/headless/build-usb.ps1 -HardwareProfile b550-3060`; only the
+[headless USB route](HEADLESS-USB.en.md) is shipped and internal write builds are rejected.
+`research/profile/test-b550-3060.ps1` runs its host jobs, including replays of the real
+console graph and of the whole driver release on that graph. The read-only
+`probe-b550-3060` observation profile used to derive it remains available.
+
+One contributor-reported cold boot shows a clean transaction, nvgop `0x6000a` released and
+verified, direct Windows entry and display recovery. Unlocked cuBLAS medians were FP32 8.28,
+TF32 24.05, FP16 48.41 and BF16 48.15 TFLOPS; no locked baseline was measured with that
+script on this machine. Repeated boots, restart, sleep, stability and a second NVIDIA card
+are not established. [Evidence and limits](../evidence/b550-3060-usb/README.md).
+
 ## Scope beyond the recorded configurations
 
 | Other configuration | Status |
@@ -198,7 +221,7 @@ Those tests remain blocked rather than accepting an inferred firmware layout.
 | Original B650M, F8-selected internal headless automatic child | One unlock + Windows display recovery + Tensor measurement verified on 2026-10-24 |
 | Default automatic startup across repeated cold boots | Not established by the limited supervised runs |
 | Another RTX 3090, even a Founders Edition in another PC | Unverified; exact checks may reject |
-| Another ASUS BIOS, AMD board/CPU or Intel host | Unverified; separate profile and validation required |
+| Another ASUS BIOS, AMD board/CPU or Intel host | Unverified unless listed above; separate profile and validation required |
 | CPU without iGPU (Intel host, aggregate console) | One contributor-reported profile above; still not generalized |
 | Multiple discrete GPUs, laptop/hybrid setup | Unverified |
 | Other NVIDIA models/architectures | Separate GPU port and validation required |

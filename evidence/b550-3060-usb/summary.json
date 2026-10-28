@@ -1,0 +1,74 @@
+{
+  "profile": "b550-3060",
+  "source_revision": "c26378c (profile commit); the EFI sources are unchanged in later commits on this branch, which touch only tests, docs, header comments and the USB manifest name list",
+  "evidence_source": "contributor-reported; one machine",
+  "integrated_build_hardware_tested": true,
+  "hardware": {
+    "board": "Gigabyte B550 AORUS ELITE V2",
+    "bios": "F13 (AMI, 2021-07-08), CSM disabled, Above 4G Decoding and Re-Size BAR disabled, Secure Boot enabled but not active (setup mode)",
+    "cpu": "AMD Ryzen 7 3700X (no iGPU)",
+    "gpu": "NVIDIA reference-subsystem RTX 3060 12 GiB (GA104) 10de:2487 / 10de:2487, bus 06:00.0 behind root port 00:03.1",
+    "vbios": "94.04.71.00.a5",
+    "display": "one monitor on the RTX over HDMI (single-RTX headless topology, non-aggregate console, one nvgop display child, ADR 0x80010370)"
+  },
+  "software": {
+    "windows": "Windows 11 Pro build 26200",
+    "nvidia_driver": "610.88",
+    "toolchain": "LLVM 20.1.8, MSVC Build Tools 14.44, firmware assets generated on Windows with Python 3.14.4 (built-in zstd) from the pinned upstream scripts; all five hashes match unlock/assets.json",
+    "benchmark": "torch 2.11.0+cu128 cuBLAS, n=4096, FP32 accumulation (reduced-precision reduction off), 2 s warm-up, median of 30 samples of ten multiplies, all-ones reference check"
+  },
+  "route": "headless USB (GU_USB_MEDIA), FAT32 MBR stick, firmware boot menu (F12)",
+  "efi": {
+    "wrapper_sha256": "9045718fcd1b9a50b02f12d0c84c79252a965a14a265c68a90ca7f57735e48d4",
+    "child_sha256": "0f0e8015dc900eb9ac1abe87a03d5a8646748fc4f314d284b95f0e5473df1d63",
+    "note": "Built with research/headless/build-usb.ps1 -HardwareProfile b550-3060. The wrapper embeds the builder's Windows ESP GUID, so other machines get a different wrapper hash."
+  },
+  "probe": {
+    "captures": 3,
+    "note": "three cold boots of the read-only USB observation EFI (probe-b550-3060, PROM dump on each); identical identity, BAR0, PROM digest, GOP path and driver fingerprints; only the entry selector SS0 differs",
+    "entry_selectors_seen": ["0x76446145/0x3", "0x77446145/0x3", "0x76446145/0x3"],
+    "fwsec_frts": {"prom_offset": "0x438b4", "bytes": "0xea00"},
+    "firmware_fingerprints": {
+      "nvgop": "version 0x6000a, image 0x2be40, stop 0x698, .text 0x24426 bytes sha256 8924ba48...b276 (new; not seen on any other profile)",
+      "edid_mouse": "image 0x9000, stop 0x149c, .text 0x3526 bytes sha256 34c093b3...6d1b",
+      "console_text": "image 0x5b80, stop 0xe6c (one of three bindings of the same image; the one holding the RTX GOP child)",
+      "console_gfx": "image 0x3b20, stop 0xa40"
+    }
+  },
+  "runs": [
+    {
+      "log": "HLS000000 / AUTO000000",
+      "boot": "full shutdown, F12 to the USB stick",
+      "wrapper": "with pre-check (passed: cold, WPR2_HI=0)",
+      "entry_ss0": "0x76446145",
+      "entry_ss1": "0x3",
+      "release": "console text and graphics, EDID and nvgop 0x6000a detached and verified",
+      "final": "status=0 clean=1 FLR=1, fault=0 retained=0 maps=0",
+      "windows": "direct start, display recovered"
+    }
+  ],
+  "selectors_after": {
+    "ss0": "0x88888888",
+    "ss1": "0x8"
+  },
+  "tflops_medians": {
+    "locked_baseline": null,
+    "after_AUTO000000": {"fp32": 8.28, "tf32": 24.05, "fp16": 48.41, "bf16": 48.15},
+    "note": "No locked baseline on this machine with this script. For reference, the B660-PLUS GA104 RTX 3060 profile recorded locked FP32/TF32/FP16/BF16 of 7.99/12.98/26.12/25.77 with the same method."
+  },
+  "application": {
+    "workload": "MOSS-image, 1808x1152, one image",
+    "locked_minutes": 8,
+    "unlocked_minutes": 5,
+    "note": "contributor's wall-clock observation; the card runs a few degrees warmer when unlocked"
+  },
+  "not_established": [
+    "repeated cold-boot reliability (one successful transaction)",
+    "a locked GEMM baseline on this machine",
+    "Windows restart behaviour and the pre-check skip branch on hardware",
+    "sleep/hibernate resume",
+    "long-term stability",
+    "internal-ESP route for this profile",
+    "configurations with a second NVIDIA card installed (the RTX 3050 was removed for captures and the run)"
+  ]
+}

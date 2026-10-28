@@ -118,10 +118,10 @@
 
 /* Gigabyte B550 AORUS ELITE V2 BIOS F13 (AMI), Ryzen 7 3700X (no iGPU), NVIDIA
  * reference-subsystem RTX 3060 12GB (GA104 10de:2487, subsystem 10de:2487, VBIOS
- * 94.04.71.00.a5): UNVERIFIED on hardware. Values come from three identical
- * read-only probe captures (2026-10-28, single RTX, CSM off, one monitor on the card):
- * DIAG00.TXT / PROM.BIN. No hardware result exists for this profile and its nvgop
- * (0x6000a) has not released on any reviewed machine. Single-RTX non-aggregate
+ * 94.04.71.00.a5): contributor-reported hardware result pinned in evidence/b550-3060-usb
+ * (one cold boot, 2026-10-28). Values come from three identical read-only probe captures
+ * (single RTX, CSM off, one monitor on the card): DIAG00.TXT / PROM.BIN. First profile
+ * whose nvgop (0x6000a) released on hardware. Single-RTX non-aggregate
  * console, one nvgop display child (ADR 0x80010370) behind root port 00:03.1; the RTX
  * is on bus 06 (CPU x16 slot), unlike every other fixed profile. */
 #define GU_PROFILE_NAME "GIGABYTE-B550-AORUS-ELITE-V2-F13-RTX3060-12GB"
