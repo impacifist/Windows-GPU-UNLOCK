@@ -157,13 +157,17 @@ static VOID DumpProm(CAPTURE *c,EFI_FILE_PROTOCOL *root,UINT8 *page) {
 
 #ifdef GU_CHECKED_PROBE
 /* Inventory never implies permission to read another GPU's register map.
- * Generic reads accept the reviewed GA102 and 12 GiB GA104/GA106 identities;
+ * Generic deep reads accept only hardware-evidenced GA10x identities. The RTX
+ * 3080 10 GiB research target is pinned to device 2216 + subsystem 403f:1458
+ * and is capture-only here: the write/profile envelope remains separately
+ * gated by research/profile/proven.json and gpu-family.h.
  * named probes pin their own
  * PCI/subsystem and require the same 16 MiB, MEM1/BME0 resource envelope.
  * All allocation/protocol calls finish before the final identity/config recheck. */
 static BOOLEAN ProbeEnvelope(CAPTURE *c,EFI_PCI_IO_PROTOCOL *io,const UINT32 *cfg) {
 #ifdef GU_PROBE_GENERIC
   BOOLEAN identity=cfg[0]==0x220410deU || cfg[0]==0x220310deU ||
+    (cfg[0]==0x221610deU && cfg[11]==0x403f1458U) ||
     cfg[0]==0x248710deU || cfg[0]==0x250410deU;
 #else
   BOOLEAN identity=cfg[0]==GU_BOARD_ID && cfg[11]==GU_BOARD_SUBSYSTEM;

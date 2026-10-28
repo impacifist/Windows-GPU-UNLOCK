@@ -35,7 +35,8 @@ class FamilyTests(unittest.TestCase):
                 self.assertEqual(done.returncode, 0, done.stderr)
 
     def test_wrong_family_identity_memory_or_revision_is_refused(self):
-        cases = [(102, 0x221610de, 0x6000, 0xb72000a1),
+        cases = [(102, 0x221610de, 0x2800, 0xb72000a1),
+                 (102, 0x221610de, 0x6000, 0xb72000a1),
                  (102, 0x220410de, 0x3000, 0xb72000a1),
                  (102, 0x220410de, 0x6000, 0xb72000a2),
                  (104, 0x248210de, 0x3000, 0xb74000a1),

@@ -72,6 +72,9 @@ try {
    $out=& $Clang -target x86_64-pc-windows-msvc -std=c11 -ffreestanding -fsyntax-only -DGU_DIAGNOSTIC_ONLY -DGU_DIAGNOSTIC_PROBE -DGU_PROBE_GENERIC "-DGU_PROBE_BUS=$bus" -I ../../deps/edk2/MdePkg/Include -I ../../deps/edk2/MdePkg/Include/X64 probe.c 2>&1 | Out-String
    if($LASTEXITCODE -eq 0 -or $out -notmatch 'GU_PROBE_BUS must be between'){throw "Out-of-range bus compiled: $bus"}
   }
- $ErrorActionPreference='Stop'
- 'PASS non-default probe bus rejected outside diagnostic-only builds'
+  $ErrorActionPreference='Stop'
+  'PASS non-default probe bus rejected outside diagnostic-only builds'
+  # The last command above is deliberately a rejected compile. Do not leak its
+  # expected nonzero process status to callers after every assertion passed.
+  $global:LASTEXITCODE=0
 } finally {Pop-Location}

@@ -30,7 +30,7 @@ static BOOLEAN AttributeReturned;
 static int AttributeConfigReads;
 static EFI_PCI_IO_PROTOCOL ChangedPci;
 static UINTN TestBus;
-static UINT32 TestId;
+static UINT32 TestId,TestSubsystem;
 static int LocationCalls;
 
 static EFI_STATUS EFIAPI GenericRead(EFI_PCI_IO_PROTOCOL *io,EFI_PCI_IO_PROTOCOL_WIDTH w,UINT32 at,UINTN n,VOID *data) {
@@ -39,6 +39,9 @@ static EFI_STATUS EFIAPI GenericRead(EFI_PCI_IO_PROTOCOL *io,EFI_PCI_IO_PROTOCOL
     return (Mode==G_INVENTORY_CLASS_FAIL || (Mode==G_LOST_CLASS_READ && S.IdReads>1))?EFI_DEVICE_ERROR:EFI_SUCCESS;
   }
   EFI_STATUS s=PciRead(io,w,at,n,data);
+  if(s==EFI_SUCCESS && w==EfiPciIoWidthUint32 && at==0x2c && n==1) {
+    *(UINT32 *)data=TestSubsystem;
+  }
   if(s==EFI_SUCCESS && w==EfiPciIoWidthUint32 && at==0) {
     UINT32 *v=data;
     if(n==1) {
@@ -53,7 +56,7 @@ static EFI_STATUS EFIAPI GenericRead(EFI_PCI_IO_PROTOCOL *io,EFI_PCI_IO_PROTOCOL
       v[0]=TestId;
       if(Mode==G_UNKNOWN || Mode==G_INITIAL_ID)v[0]=0x999910de;
       v[1]=(Mode==G_BME)?6U:((Mode==G_MEM_OFF)?0U:2U);
-      v[2]=0x030000a1;v[4]=GU_BAR0_BASE;
+      v[2]=0x030000a1;v[4]=GU_BAR0_BASE;v[11]=TestSubsystem;
       if(Mode==G_INITIAL_CLASS)v[2]^=1U;
       if(Mode==G_BAD_BAR)v[4]|=4U;
       if(Mode==G_CHANGED && S.CfgReads>1)v[11]^=1U;
@@ -166,7 +169,7 @@ static void GenericSetup(int mode) {
   Pci.Pci.Read=GenericRead;Pci.GetBarAttributes=Bar;Pci.GetLocation=GenericLocation;
   Pci.Attributes=Attr;AttributeGets=AttributeOthers=0;
   AttributeReturned=FALSE;AttributeConfigReads=0;
-  TestBus=GU_TEST_PROBE_BUS;TestId=GU_BOARD_ID;LocationCalls=0;ChangedPci=Pci;
+  TestBus=GU_TEST_PROBE_BUS;TestId=GU_BOARD_ID;TestSubsystem=GU_BOARD_SUBSYSTEM;LocationCalls=0;ChangedPci=Pci;
   Bs.LocateHandleBuffer=GenericLocate;Bs.HandleProtocol=GenericHandle;
   memset(&Binding,0,sizeof(Binding));Binding.ImageHandle=ImageHandle;
   memset(&Image,0,sizeof(Image));Image.ImageBase=ImageBytes;Image.ImageSize=sizeof(ImageBytes);
@@ -227,12 +230,17 @@ int main(void) {
     Check(!S.RegReads && !S.PromReads,"bad inventory permits no deep reads");
     Check(!Logged("capture-complete=1"),"bad inventory cannot claim a complete capture");
   }
-  const UINT32 reviewedIds[]={0x220310deU,0x248710deU,0x250410deU};
+  const struct {UINT32 id,subsystem;} reviewedIds[]={
+    {0x220310deU,GU_BOARD_SUBSYSTEM},{0x221610deU,0x403f1458U},
+    {0x248710deU,GU_BOARD_SUBSYSTEM},{0x250410deU,GU_BOARD_SUBSYSTEM}};
   for(UINTN i=0;i<sizeof(reviewedIds)/sizeof(reviewedIds[0]);i++) {
-    GenericSetup(G_OK);TestId=reviewedIds[i];
+    GenericSetup(G_OK);TestId=reviewedIds[i].id;TestSubsystem=reviewedIds[i].subsystem;
     Check(GuCaptureGraphOnVolume(&Table,&LogFile,&RootFile)==EFI_SUCCESS,"reviewed GA10x capture identity succeeds");
     Check(S.RegReads==16 && S.PromReads==PROM_DWORDS,"each reviewed identity retains bounded deep reads");
   }
+  GenericSetup(G_OK);TestId=0x221610deU;TestSubsystem=0x20007377U;
+  Check(GuCaptureGraphOnVolume(&Table,&LogFile,&RootFile)==EFI_NOT_READY,"2216 capture admission stays subsystem-pinned");
+  Check(S.RegReads==0 && S.PromReads==0,"different 2216 subsystem remains inventory-only");
 #ifdef GU_PROBE_AUTO_BUS
   const UINTN buses[]={1,0x2b,255};
   for(UINTN i=0;i<sizeof(buses)/sizeof(buses[0]);i++) {
