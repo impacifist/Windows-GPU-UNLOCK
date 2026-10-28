@@ -6,13 +6,14 @@
 #if defined(GU_PROFILE_LOCAL) || defined(GU_PROFILE_PROBE_H610M_3060)
 #error Captured local and identity-only probe profiles must not inherit firmware templates
 #endif
-#if defined(GU_FIRMWARE_AMI_B650M_3057) || defined(GU_FIRMWARE_AMI_B660M_4003) || defined(GU_FIRMWARE_AMI_X870_F13D) || defined(GU_FIRMWARE_AMI_H610M_FC)
+#if defined(GU_FIRMWARE_AMI_B650M_3057) || defined(GU_FIRMWARE_AMI_B660M_4003) || defined(GU_FIRMWARE_AMI_X870_F13D) || defined(GU_FIRMWARE_AMI_H610M_FC) || defined(GU_FIRMWARE_AMI_B760MK_1663)
 #error Firmware template selectors must come from firmware-profile.h
 #endif
 #define GU_FIRMWARE_AMI_B650M_3057 1U
 #define GU_FIRMWARE_AMI_B660M_4003 2U
 #define GU_FIRMWARE_AMI_X870_F13D 3U
 #define GU_FIRMWARE_AMI_H610M_FC 4U
+#define GU_FIRMWARE_AMI_B760MK_1663 5U
 #ifndef GU_FIRMWARE_PROFILE
 #error Select an exact reviewed firmware template
 #endif
@@ -74,6 +75,26 @@
 #define GU_EDID_STOP 0x14d4U
 #define GU_EDID_TEXT_BYTES 0x3bb2U
 #define GU_EDID_TEXT_SHA256 "49fe68461765963d0b63144b0a7863f3b2db5926f1c988cbacc1e85ebe2b96f4"
+
+#elif GU_FIRMWARE_PROFILE == GU_FIRMWARE_AMI_B760MK_1663
+/* DRAFT, unreviewed. ASUS PRIME B760M-K BIOS 1663, one iGPU-off capture
+ * (scans/RTX3090-UNLOCK/DIAG00.TXT). console_gfx, EDID and nvgop match
+ * B660M_4003 byte-for-byte; console_text (+0xa0) and combo (+0x20) are larger,
+ * with the extra bytes only in .reloc. Stop offsets and versions are unchanged.
+ * Same code is assumed, not proven: needs a .text hash comparison. */
+#define GU_CONSOLE_TEXT_SIZE 0x6ae0U
+#define GU_CONSOLE_TEXT_STOP 0x104cU
+#define GU_CONSOLE_TEXT_VERSION 0x10U
+#define GU_CONSOLE_GFX_SIZE 0x3bc0U
+#define GU_CONSOLE_GFX_STOP 0xb2cU
+#define GU_CONSOLE_GFX_VERSION 0x10U
+#define GU_COMBO_SIZE 0x2180U
+#define GU_COMBO_STOP 0x88cU
+#define GU_COMBO_VERSION 0x11U
+#define GU_EDID_IMAGE_SIZE 0x9000U
+#define GU_EDID_STOP 0x14d4U
+#define GU_EDID_TEXT_BYTES 0x37daU
+#define GU_EDID_TEXT_SHA256 "a015d52f55fa6441414458e2b699ba2edcb53f03b001ac6367e45bcd908c418e"
 #else
 #error No reviewed firmware template for this selection
 #endif
