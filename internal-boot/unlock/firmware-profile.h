@@ -78,14 +78,17 @@
 
 #elif GU_FIRMWARE_PROFILE == GU_FIRMWARE_AMI_B760MK_1663
 /* DRAFT, unreviewed. ASUS PRIME B760M-K BIOS 1663, three identical iGPU-off
- * captures. EDID and nvgop .text hashes match B660M_4003; console_gfx matches
- * its size, stop and version. Stop offsets and versions of the other two match.
- * combo (+0x20): .reloc starts at 0x2160, the B660M image size, so the same
- * code plus a relocation table is plausible but unproven.
- * console_text (+0xa0): .xdata already ends at 0x6a4c, past the whole B660M
- * image (0x6a40), so it is a DIFFERENT build; its Stop() behaviour is unproven.
- * Captured .text SHA-256 prefixes (no relocations in .text):
- * combo 3f4c4ea26023ddf0 (0x1990 bytes), console_text 721b3a8839de8581 (0x5620). */
+ * captures. Compared with the drivers extracted from ASUS's own
+ * TUF-GAMING-B660M-E-D4-ASUS-4003.CAP (sizes there match B660M_4003 below);
+ * the 1663 .CAP extraction matches the captured loaded .text byte-for-byte.
+ * EDID: every section identical. nvgop: .text hash identical.
+ * console_gfx: same size; .text differs only from 0x1ad2 on, after Stop().
+ * console_text (+0xa0) and combo (+0x20): different builds. Stop() disassembly,
+ * addresses normalized: console_text and console_gfx identical; combo adds one
+ * error path that calls gBS->FreePool on a saved buffer and clears it.
+ * .text SHA-256 prefixes, B760M-K / B660M: console_text 721b3a8839de8581 /
+ * 92f9227e66645ca9, combo 3f4c4ea26023ddf0 / 3dba65aa122c0883, console_gfx
+ * e5e68f0856c6e932 / 038d7ee2e6f47d37. */
 #define GU_CONSOLE_TEXT_SIZE 0x6ae0U
 #define GU_CONSOLE_TEXT_STOP 0x104cU
 #define GU_CONSOLE_TEXT_VERSION 0x10U
