@@ -10,7 +10,7 @@
 [PR #24](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/24),
 [PR #30](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/30),
 [PR #77](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/77),
-[PR #PR_NUMBER](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/PR_NUMBER)).
+[PR #141](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/141)).
 고정 프로필 빌드는 [internal-boot/unlock/machine-profile.h](../internal-boot/unlock/machine-profile.h)에서
 선택한 정확한 구성 전용입니다. 다른 GPU·플랫폼에는 이 고정 프로필을 적용할 수 없습니다.
 실험적 LOCAL 생성 경로와 별도의 기여자 성공 보고는 아래에 설명합니다.
@@ -193,7 +193,7 @@ Cold/full-flow와 컴파일 회귀 검사를 제공하지만 `test-all.ps1`의 �
 
 ## 프로필 7: ASUS PRIME B760M-K / RTX 3060 12GB GA106(headless USB)
 
-[PR #PR_NUMBER](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/PR_NUMBER)의 PCI `10de:2504`, subsystem `19da:2630`, VBIOS 94.06.2f.40.e3,
+[PR #141](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/141)의 PCI `10de:2504`, subsystem `19da:2630`, VBIOS 94.06.2f.40.e3,
 12 GiB(`0x3000`) 구성입니다. ASUS PRIME B760M-K BIOS 1663과 i5-13500을 사용합니다.
 iGPU·CSM·Secure Boot·Fast Boot를 끄고 Primary Display는 PEG로 둡니다. 모니터 한 대를
 RTX에 연결하며, 단일 child AMI aggregate 콘솔을 사용합니다. 칩은 프로필 5와 같지만 콘솔

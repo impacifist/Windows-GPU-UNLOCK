@@ -10,7 +10,7 @@ comes from contributors ([PR #5](https://github.com/impacifist/Windows-GPU-UNLOC
 [PR #24](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/24),
 [PR #30](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/30),
 [PR #77](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/77),
-[PR #PR_NUMBER](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/PR_NUMBER)). Fixed-profile builds compile
+[PR #141](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/141)). Fixed-profile builds compile
 for exactly one reviewed profile selected at build time in
 [internal-boot/unlock/machine-profile.h](../internal-boot/unlock/machine-profile.h);
 other GPUs or platforms cannot use those fixed profiles. Experimental LOCAL
@@ -196,7 +196,7 @@ Those tests remain blocked rather than accepting an inferred firmware layout.
 
 ## Profile 7: ASUS PRIME B760M-K / RTX 3060 12GB GA106 (headless USB)
 
-[PR #PR_NUMBER](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/PR_NUMBER) contributes PCI `10de:2504`, subsystem `19da:2630`, VBIOS
+[PR #141](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/141) contributes PCI `10de:2504`, subsystem `19da:2630`, VBIOS
 94.06.2f.40.e3, 12 GiB (`0x3000`), on ASUS PRIME B760M-K BIOS 1663 with an i5-13500.
 The iGPU, CSM, Secure Boot and Fast Boot are off, and Primary Display is PEG. One monitor is on
 the RTX, which gives a single-child AMI aggregate console. The chip is the same as Profile 5,
