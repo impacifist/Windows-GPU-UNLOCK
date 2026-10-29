@@ -134,7 +134,7 @@ static BOOLEAN StartFull(PLAN *p) {
 /* A nonzero process exit code identifies the first broken invariant. */
 int mainCRTStartup(void) {
   /* The captured child path is the profile's display route (ADR is a display endpoint). */
-  if(!DisplayRoute((const EFI_DEVICE_PATH_PROTOCOL *)CapChildPath,RtxPath))return 1;
+  if(!DisplayRoute((const EFI_DEVICE_PATH_PROTOCOL *)CapChildPath,RtxPath,sizeof(RtxPath)))return 1;
   if(CapRtxConfig[0]!=GU_BOARD_ID || CapRtxConfig[11]!=GU_BOARD_SUBSYSTEM)return 2;
 
   Init();PLAN p=NewPlan();
