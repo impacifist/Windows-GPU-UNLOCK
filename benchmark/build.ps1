@@ -1,5 +1,5 @@
 # Modified 2026-10-19/20 for Windows GPU UNLOCK; changes documented in CHANGES.md.
-param([string]$VcVars='C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxiliary\Build\vcvars64.bat',[switch]$AllowUnsupportedCompiler,[ValidateSet('3090','3090ti','3070ti')][string]$Card='3090')
+param([string]$VcVars='C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxiliary\Build\vcvars64.bat',[switch]$AllowUnsupportedCompiler,[ValidateSet('3090','3090ti','3070ti','3060')][string]$Card='3090')
 $ErrorActionPreference = 'Stop'
 $root = $PSScriptRoot
 $nvcc = Join-Path $root 'packages\cuda_nvcc\cuda_nvcc-windows-x86_64-12.6.20-archive'

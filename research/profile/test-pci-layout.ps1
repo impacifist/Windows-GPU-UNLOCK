@@ -10,7 +10,7 @@ Push-Location (Join-Path $repo 'internal-boot/unlock')
 try {
  $flags=@('-std=c11','-O1','-Wall','-Wextra','-Werror','-D_CRT_SECURE_NO_WARNINGS',
   '-DGU_HOST_WRITE_TEST','-I../../deps/edk2/MdePkg/Include','-I../../deps/edk2/MdePkg/Include/X64')
- foreach($profile in @('B650M_3090FE','B660M_3070TI','B660M_3090TI','X870_3090TI','B660PLUS_3060','H610M_3060')) {
+ foreach($profile in @('B650M_3090FE','B660M_3070TI','B660M_3090TI','X870_3090TI','B660PLUS_3060','H610M_3060','B760MK_3060')) {
   $exe=Join-Path $out ($profile+'.exe')
   & $Clang @flags "-DGU_PROFILE_$profile" tests/test_pci_layout.c checks.c port.c -o $exe
   if($LASTEXITCODE -ne 0){throw "PCI layout compile failed: $profile"}

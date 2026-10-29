@@ -1,0 +1,16 @@
+Selected lines from AUTO000000\REPORT.TXT (USB headless, ASUS PRIME B760M-K BIOS 1663 / Zotac RTX 3060 12GB GA106, 2026-10-28 23:28). AUTO000001 (2026-10-29 00:23) is identical except the cold entry SS0 (0x5020024). PROM, raw graph log and partition data excluded.
+BUILD MODE: AUTOMATIC INTERNAL UNLOCK; profile=entryLatchedSs1Full; Esc cancellation; all hardware gates retained.
+cold observed: profile=entryLatchedSs1Full chip=0xb76000a1 memory=0x3000 SS0=0x5024024 SS1=0x5
+entry selectors: latched_once=1 SS0=0x5024024 SS1=0x5 SS0target=0x88888888 SS1policy=full SS1target=0x8
+layout ranges: nonwpr=0x2f5300000 wpr=0x2f5400000 heap=0x2f5500000 gsp=0x2fada0000 boot=0x2ffdfa000 frts=0x2ffe00000 end=0x2fff00000 scrub_floor=0x2f0000000
+FWSEC WPR2: low=0x2ffe000 high=0x2ffee00 expected_page=0x2ffe00 end=0x2fff00000
+selector intent: SS0target=0x88888888 SS1entry=0x5 SS1target=0x8 (one SS1 write)
+pre-FLR selectors: ss0=0x88888888 expected=0x88888888 ss1=0x8 expected=0x8
+PCIe FLR begin: BME=0 DMA retained, chip=0xb76000a1
+PCIe FLR returned: result=0
+post-FLR BAR ready: chip=0xb76000a1
+post-FLR GFW result: error=0 pci=0x250410de plm=0x8b8f boot=0x3ff cpuctl=0x10 budget_us=2050000
+post-FLR SEC2 reset released, GSP halted, BME=0 pending=0 WPR2=1ffffe00:00000000 SS0=88888888 SS1=00000008
+BME containment: attribute_status=0 hardware_status=0 command=0x3 cached=0x300 pending=0
+transaction result=0 containment=0 started=1 quiesced=1 fault=0 retained=0 maps=0 FLR=1
+FINAL status=0 stage=transaction attempted=1 driver_release=0 clean=1

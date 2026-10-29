@@ -15,7 +15,7 @@ try {
   'vendor/prep_610.c','vendor/layout_610.c','vendor/vbios_610.c','vendor/gfw_eval.c')
  # These profiles have pinned FWSEC fixtures in the retained transaction test.
  # Do not bypass that requirement for profiles without a transaction fixture.
- foreach($profile in @('B650M_3090FE','X870_3090TI','B660PLUS_3060','H610M_3060')) {
+ foreach($profile in @('B650M_3090FE','X870_3090TI','B660PLUS_3060','H610M_3060','B760MK_3060')) {
   $exe=Join-Path $out ($profile+'.exe')
   & $Clang @flags "-DGU_PROFILE_$profile" @sources -o $exe
   if($LASTEXITCODE -ne 0){throw "Capture model compile failed: $profile"}

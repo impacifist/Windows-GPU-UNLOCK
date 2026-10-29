@@ -1,7 +1,7 @@
 # GPL-2.0-only. Fixture-free host tests for the read-only pre-release cold check and the full-flow gates.
 param([string]$Clang='clang',[string]$VcVars='C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Auxiliary/Build/vcvars64.bat',
- [ValidateSet('b650m-3090fe','b660m-3070ti','b660m-3090ti','x870-3090ti','b660plus-3060','h610m-3060','local')][string]$HardwareProfile='b650m-3090fe')
-$profiles=@{'b650m-3090fe'=@('-DGU_PROFILE_B650M_3090FE');'b660m-3070ti'=@('-DGU_PROFILE_B660M_3070TI');'b660m-3090ti'=@('-DGU_PROFILE_B660M_3090TI');'x870-3090ti'=@('-DGU_PROFILE_X870_3090TI');'b660plus-3060'=@('-DGU_PROFILE_B660PLUS_3060');'h610m-3060'=@('-DGU_PROFILE_H610M_3060');'local'=@('-DGU_PROFILE_LOCAL')}
+ [ValidateSet('b650m-3090fe','b660m-3070ti','b660m-3090ti','x870-3090ti','b660plus-3060','h610m-3060','b760mk-3060','local')][string]$HardwareProfile='b650m-3090fe')
+$profiles=@{'b650m-3090fe'=@('-DGU_PROFILE_B650M_3090FE');'b660m-3070ti'=@('-DGU_PROFILE_B660M_3070TI');'b660m-3090ti'=@('-DGU_PROFILE_B660M_3090TI');'x870-3090ti'=@('-DGU_PROFILE_X870_3090TI');'b660plus-3060'=@('-DGU_PROFILE_B660PLUS_3060');'h610m-3060'=@('-DGU_PROFILE_H610M_3060');'b760mk-3060'=@('-DGU_PROFILE_B760MK_3060');'local'=@('-DGU_PROFILE_LOCAL')}
 $ErrorActionPreference='Stop'
 Push-Location -LiteralPath $PSScriptRoot
 try {

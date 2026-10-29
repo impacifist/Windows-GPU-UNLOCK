@@ -6,13 +6,14 @@
 #if defined(GU_PROFILE_LOCAL) || defined(GU_PROFILE_PROBE_H610M_3060)
 #error Captured local and identity-only probe profiles must not inherit firmware templates
 #endif
-#if defined(GU_FIRMWARE_AMI_B650M_3057) || defined(GU_FIRMWARE_AMI_B660M_4003) || defined(GU_FIRMWARE_AMI_X870_F13D) || defined(GU_FIRMWARE_AMI_H610M_FC)
+#if defined(GU_FIRMWARE_AMI_B650M_3057) || defined(GU_FIRMWARE_AMI_B660M_4003) || defined(GU_FIRMWARE_AMI_X870_F13D) || defined(GU_FIRMWARE_AMI_H610M_FC) || defined(GU_FIRMWARE_AMI_B760MK_1663)
 #error Firmware template selectors must come from firmware-profile.h
 #endif
 #define GU_FIRMWARE_AMI_B650M_3057 1U
 #define GU_FIRMWARE_AMI_B660M_4003 2U
 #define GU_FIRMWARE_AMI_X870_F13D 3U
 #define GU_FIRMWARE_AMI_H610M_FC 4U
+#define GU_FIRMWARE_AMI_B760MK_1663 5U
 #ifndef GU_FIRMWARE_PROFILE
 #error Select an exact reviewed firmware template
 #endif
@@ -74,12 +75,42 @@
 #define GU_EDID_STOP 0x14d4U
 #define GU_EDID_TEXT_BYTES 0x3bb2U
 #define GU_EDID_TEXT_SHA256 "49fe68461765963d0b63144b0a7863f3b2db5926f1c988cbacc1e85ebe2b96f4"
+
+#elif GU_FIRMWARE_PROFILE == GU_FIRMWARE_AMI_B760MK_1663
+/* Unreviewed. ASUS PRIME B760M-K BIOS 1663, three identical iGPU-off
+ * captures. Compared with the drivers extracted from ASUS's own
+ * TUF-GAMING-B660M-E-D4-ASUS-4003.CAP (sizes there match B660M_4003 below);
+ * the 1663 .CAP extraction matches the captured loaded .text byte-for-byte.
+ * EDID: every section identical. nvgop: .text hash identical.
+ * console_gfx: same size; .text differs only from 0x1ad2 on, after Stop().
+ * console_text (+0xa0) and combo (+0x20): different builds. Whole direct call
+ * tree under Stop(), addresses normalized: console_text (Stop + 8 callees) and
+ * console_gfx (no direct callees) identical; combo's 5 callees identical, and
+ * its Stop() adds one error path that calls gBS->FreePool on a saved buffer and
+ * clears it, and writes two state fields after (not before) the copy-back.
+ * Indirect calls (boot services, protocols) were not followed.
+ * .text SHA-256 prefixes, B760M-K / B660M: console_text 721b3a8839de8581 /
+ * 92f9227e66645ca9, combo 3f4c4ea26023ddf0 / 3dba65aa122c0883, console_gfx
+ * e5e68f0856c6e932 / 038d7ee2e6f47d37. */
+#define GU_CONSOLE_TEXT_SIZE 0x6ae0U
+#define GU_CONSOLE_TEXT_STOP 0x104cU
+#define GU_CONSOLE_TEXT_VERSION 0x10U
+#define GU_CONSOLE_GFX_SIZE 0x3bc0U
+#define GU_CONSOLE_GFX_STOP 0xb2cU
+#define GU_CONSOLE_GFX_VERSION 0x10U
+#define GU_COMBO_SIZE 0x2180U
+#define GU_COMBO_STOP 0x88cU
+#define GU_COMBO_VERSION 0x11U
+#define GU_EDID_IMAGE_SIZE 0x9000U
+#define GU_EDID_STOP 0x14d4U
+#define GU_EDID_TEXT_BYTES 0x37daU
+#define GU_EDID_TEXT_SHA256 "a015d52f55fa6441414458e2b699ba2edcb53f03b001ac6367e45bcd908c418e"
 #else
 #error No reviewed firmware template for this selection
 #endif
 
 #if GU_FIRMWARE_PROFILE != GU_FIRMWARE_AMI_B650M_3057
-/* These five fixed profiles pin the same nvgop code; LOCAL does not inherit it. */
+/* These fixed profiles pin the same nvgop code; LOCAL does not inherit it. */
 #define GU_NVGOP_VERSION 0x60010U
 #define GU_NVGOP_IMAGE_SIZE 0x26ae0U
 #define GU_NVGOP_STOP 0x678U

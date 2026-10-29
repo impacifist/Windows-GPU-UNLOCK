@@ -47,8 +47,8 @@ try {
     $benchmarks = foreach ($name in @('fp32_pedantic','fp16_tensor_fp32_accumulate','bf16_tensor_fp32_accumulate','tf32_tensor_fp32_accumulate')) {
         [pscustomobject]@{name=$name;n=4096;samples=30;warmup_seconds=2;median_ms=2;min_ms=1.9;max_ms=2.1;gflops=(2.0*4096*4096*4096/2e6);reference_checked=$true}
     }
-    $cards = @{'3090'='NVIDIA GeForce RTX 3090';'3090ti'='NVIDIA GeForce RTX 3090 Ti';'3070ti'='NVIDIA GeForce RTX 3070 Ti'}
-    foreach ($card in @('3090','3090ti','3070ti')) {
+    $cards = @{'3090'='NVIDIA GeForce RTX 3090';'3090ti'='NVIDIA GeForce RTX 3090 Ti';'3070ti'='NVIDIA GeForce RTX 3070 Ti';'3060'='NVIDIA GeForce RTX 3060'}
+    foreach ($card in @('3090','3090ti','3070ti','3060')) {
     foreach ($scenario in @('preflight','success','telemetry-failure','settings-change','wrong-gpu','wrong-settings-gpu','missing-selected-hash','duplicate-selected-hash',
         'override-blocked','override-other-blocked','old-inspect','inspect-flag-string','inspect-flag-false','inspect-protocol-string',
         'missing-tf32','duplicate-mode','trial-flag-false','trial-flag-string','trial-flag-missing','trial-protocol-string')) {

@@ -32,7 +32,8 @@ static EFI_STATUS EFIAPI preflight_locate(EFI_LOCATE_SEARCH_TYPE t,EFI_GUID *g,V
 }
 static EFI_STATUS EFIAPI preflight_bar(EFI_PCI_IO_PROTOCOL *p,UINT8 b,UINT64 *s,VOID **out) {
   EFI_STATUS status=bar_info(p,b,s,out);EFI_ACPI_ADDRESS_SPACE_DESCRIPTOR *r=*out;
-  r->AddrRangeMin=negative==10?0x84000000:GU_BAR0_BASE;r->AddrRangeMax=GU_BAR0_END;
+  /* Case 10 moves BAR0 off the profile's pin; a fixed address could equal a real pin. */
+  r->AddrRangeMin=negative==10?GU_BAR0_BASE+0x1000000:GU_BAR0_BASE;r->AddrRangeMax=GU_BAR0_END;
   if(negative==11)r->AddrLen=0x2000000;
   return status;
 }
