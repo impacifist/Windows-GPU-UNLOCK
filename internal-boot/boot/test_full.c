@@ -1,3 +1,4 @@
+/* ASRock port changes: 2026-10-27; publication notice: 2026-10-28. GPL-2.0-only; see CHANGES.md. */
 /* GPL-2.0-only. Actual ownership graph and ROM/driver fixtures, host RAM only. */
 #define GU_FULL_REPLAY_TEST
 #define main ConsoleSuiteMain

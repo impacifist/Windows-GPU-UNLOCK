@@ -36,3 +36,6 @@ internal-boot/deps/
 # Per-machine pipeline (research/profile): generated profile, captures, fixtures, evidence.
 internal-boot/unlock/profile-local.h
 research/profile/local/
+toolchain/
+firmware-source/
+benchmark/.venv/

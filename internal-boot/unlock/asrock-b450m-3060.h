@@ -1,0 +1,39 @@
+/* ASRock port changes: 2026-10-27; publication notice: 2026-10-28. GPL-2.0-only; see CHANGES.md. */
+/* GPL-2.0-only. Experimental ASRock B450M Pro4-F P10.31 / RTX 3060.
+ * Derived from two cold captures. Host-tested; hardware unlock untested. */
+#pragma once
+#define GU_PROFILE_NAME "ASROCK-B450M-PRO4-F-P10.31-RTX3060-EXPERIMENTAL"
+#if !defined(GU_ASROCK_HOST_TEST) && (defined(GU_FULL_UNLOCK) || defined(GU_UEFI_PORT)) && (!defined(GU_USB_MEDIA) || !defined(GU_HEADLESS_RESEARCH))
+#error ASRock experimental unlock is headless USB only
+#endif
+#define GU_BOARD_ID 0x250310deU
+#define GU_BOARD_SUBSYSTEM 0x40741458U
+#define GU_TARGET_BUS 0x7U
+#define GU_NO_EDID_DRIVER 0
+#define GU_BAR0_BASE 0xfb000000ULL
+#define GU_BAR0_END 0xfbffffffULL
+#define GU_DEVICE_MEMORY_SIZE 0x3000U
+#define GU_GPU_FAMILY GU_GPU_FAMILY_GA106
+#define GU_PROM_SHA256 "547fe0b82b8927e7bcbc4d0c49914cd433839236b9a44c907d0efd30fbfab4b7"
+#define GU_ROOT_PORT_DEVICE 3U
+#define GU_ROOT_PORT_FUNCTION 1U
+#define GU_RTX_PATH_BYTES \
+  2,1,12,0,208,65,3,10,0,0,0,0,1,1,6,0,1,3,1,1,6,0,0,0,2,3,8,0,112,3,1,128,127,255,4,0
+#define GU_CONSOLE_TEXT_SIZE 0x5c60U
+#define GU_CONSOLE_TEXT_STOP 0xf30U
+#define GU_CONSOLE_TEXT_VERSION 0x10U
+#define GU_CONSOLE_GFX_SIZE 0x3a80U
+#define GU_CONSOLE_GFX_STOP 0xa38U
+#define GU_CONSOLE_GFX_VERSION 0x10U
+#define GU_EDID_IMAGE_SIZE 0x8000U
+#define GU_EDID_STOP 0x1478U
+#define GU_NVGOP_VERSION 0x6000bU
+#define GU_NVGOP_IMAGE_SIZE 0x2bec0U
+#define GU_NVGOP_STOP 0x698U
+#define GU_EDID_TEXT_BYTES 0x2050U
+#define GU_EDID_TEXT_SHA256 "f803c0023b2e3f5c7a1998a79bba03065b6953de3ecce3406d51b62980cf33fd"
+#define GU_NVGOP_TEXT_BYTES 0x244baU
+#define GU_NVGOP_TEXT_SHA256 "61246a83c52e4ca5d93d2aa878c1844f61a7bfe5f26d70a701706fb20f348921"
+#define GU_LOCAL_FWSEC_IMAGE_OFF 0x434e0U
+#define GU_LOCAL_FWSEC_IMAGE_SIZE 0xe700U
+#define GU_LOCAL_TEST_COLD_LINE "cold state: chip=0xb76000a1 plm=0xffffff8f gfw=0x8b8f/0x3ff/0x10 WPR2_HI=0 SS0=0x12524140 SS1=0x5"

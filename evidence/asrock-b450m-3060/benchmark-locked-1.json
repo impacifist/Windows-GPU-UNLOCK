@@ -1,0 +1,122 @@
+{
+  "protocol": 1,
+  "label": "locked",
+  "label_is_user_supplied": true,
+  "utc": "2026-10-27T15:23:09.140239+00:00",
+  "script_sha256": "1e5c8381c462b6303cd1b56f0ba5890a0601fa31f4c2855e41d4e2cb1b1ad3e4",
+  "torch": "2.11.0+cu128",
+  "cuda": "12.8",
+  "size": 8192,
+  "iterations": 10,
+  "samples": 5,
+  "fp32_accumulation_reduction": true,
+  "gpu_before": {
+    "name": "NVIDIA GeForce RTX 3060",
+    "bus": "00000000:07:00.0",
+    "driver": "617.42",
+    "power_limit_w": "170.00",
+    "temperature_c": "35",
+    "sm_mhz": "210",
+    "memory_mhz": "405",
+    "power_w": "16.46",
+    "utilization_percent": "3"
+  },
+  "benchmarks": [
+    {
+      "mode": "FP32",
+      "median_ms": 107.645751953125,
+      "tflops": 10.214166447132898,
+      "samples_ms": [
+        107.180517578125,
+        107.4423828125,
+        107.8077392578125,
+        107.645751953125,
+        107.75255126953125
+      ],
+      "correctness_checked": true,
+      "gpu_after": {
+        "name": "NVIDIA GeForce RTX 3060",
+        "bus": "00000000:07:00.0",
+        "driver": "617.42",
+        "power_limit_w": "170.00",
+        "temperature_c": "54",
+        "sm_mhz": "1807",
+        "memory_mhz": "7501",
+        "power_w": "169.45",
+        "utilization_percent": "100"
+      }
+    },
+    {
+      "mode": "FP16",
+      "median_ms": 38.228274536132815,
+      "tflops": 28.761738297572325,
+      "samples_ms": [
+        38.335104370117186,
+        38.228274536132815,
+        38.45702209472656,
+        38.152294921875,
+        38.047027587890625
+      ],
+      "correctness_checked": true,
+      "gpu_after": {
+        "name": "NVIDIA GeForce RTX 3060",
+        "bus": "00000000:07:00.0",
+        "driver": "617.42",
+        "power_limit_w": "170.00",
+        "temperature_c": "54",
+        "sm_mhz": "2062",
+        "memory_mhz": "7501",
+        "power_w": "158.20",
+        "utilization_percent": "100"
+      }
+    },
+    {
+      "mode": "BF16",
+      "median_ms": 38.087066650390625,
+      "tflops": 28.868372507356728,
+      "samples_ms": [
+        38.426577758789065,
+        38.01087951660156,
+        38.115020751953125,
+        38.087066650390625,
+        38.08634948730469
+      ],
+      "correctness_checked": true,
+      "gpu_after": {
+        "name": "NVIDIA GeForce RTX 3060",
+        "bus": "00000000:07:00.0",
+        "driver": "617.42",
+        "power_limit_w": "170.00",
+        "temperature_c": "54",
+        "sm_mhz": "2062",
+        "memory_mhz": "7501",
+        "power_w": "148.67",
+        "utilization_percent": "100"
+      }
+    },
+    {
+      "mode": "TF32",
+      "median_ms": 76.20429077148438,
+      "tflops": 14.428473995947705,
+      "samples_ms": [
+        76.20429077148438,
+        76.0406005859375,
+        76.22379760742187,
+        76.1206787109375,
+        76.26885375976562
+      ],
+      "correctness_checked": true,
+      "gpu_after": {
+        "name": "NVIDIA GeForce RTX 3060",
+        "bus": "00000000:07:00.0",
+        "driver": "617.42",
+        "power_limit_w": "170.00",
+        "temperature_c": "56",
+        "sm_mhz": "2062",
+        "memory_mhz": "7501",
+        "power_w": "159.53",
+        "utilization_percent": "100"
+      }
+    }
+  ]
+}

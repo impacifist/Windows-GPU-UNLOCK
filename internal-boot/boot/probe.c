@@ -1,3 +1,4 @@
+/* ASRock port changes: 2026-10-27; publication notice: 2026-10-28. GPL-2.0-only; see CHANGES.md. */
 /* GPL-2.0-only. Read-only GA10x capture for the 3070 Ti headless port.
  * PCI config reads, BAR0 Mem.Read, PROM hash, loaded-image dumps only. */
 #include <Uefi.h>
@@ -11,6 +12,9 @@
 #include "../unlock/sha256.h"
 #include "probe.h"
 #include "../unlock/machine-profile.h"
+#ifdef GU_PROBE_ASROCK_3060
+#include "asrock-probe.h"
+#endif
 
 #if defined(GU_PROBE_DUMP_PROM) && (!defined(GU_DIAGNOSTIC_ONLY) || !defined(GU_DIAGNOSTIC_PROBE) || !defined(GU_USB_MEDIA) || defined(GU_FULL_UNLOCK) || defined(GU_EXPERIMENTAL_3090))
 #error GU_PROBE_DUMP_PROM is only for the observation-only diagnostic image
@@ -162,7 +166,9 @@ static VOID DumpProm(CAPTURE *c,EFI_FILE_PROTOCOL *root,UINT8 *page) {
  * PCI/subsystem and require the same 16 MiB, MEM1/BME0 resource envelope.
  * All allocation/protocol calls finish before the final identity/config recheck. */
 static BOOLEAN ProbeEnvelope(CAPTURE *c,EFI_PCI_IO_PROTOCOL *io,const UINT32 *cfg) {
-#ifdef GU_PROBE_GENERIC
+#ifdef GU_PROBE_ASROCK_3060
+  BOOLEAN identity=AsrockProbeIdentity(cfg);
+#elif defined(GU_PROBE_GENERIC)
   BOOLEAN identity=cfg[0]==0x220410deU || cfg[0]==0x220310deU ||
     cfg[0]==0x248710deU || cfg[0]==0x250410deU || cfg[0]==0x248410deU;
 #else

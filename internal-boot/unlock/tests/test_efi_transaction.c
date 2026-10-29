@@ -1,3 +1,4 @@
+/* ASRock port changes: 2026-10-27; publication notice: 2026-10-28. GPL-2.0-only; see CHANGES.md. */
 /* Modified 2026-10-19/20 for Windows GPU UNLOCK; changes documented in CHANGES.md. */ /* SPDX-License-Identifier: GPL-2.0-only */
 /* Real retained core + compatibility layer + UEFI port; only EFI services are fake. */
 #include "../port.h"
@@ -142,7 +143,7 @@ static VOID check_fwsec_image(void) {
   CHECK(fw.image_off==0x416bc && fw.image_size==0xea00 && fw.dmem_size==sizeof(gsp_dmem)); /* Gigabyte RTX 3060 12GB PROM 727dd833 */
 #elif defined(GU_PROFILE_B660PLUS_3060)
   CHECK(fw.image_off==0x416b4 && fw.image_size==0xea00 && fw.dmem_size==sizeof(gsp_dmem)); /* VBIOS 94.04.71.00.87 */
-#elif defined(GU_PROFILE_LOCAL)
+#elif defined(GU_PROFILE_LOCAL) || defined(GU_PROFILE_ASROCK_B450M_3060)
   /* Pinned by make-profile.py from fwsec-locate on this machine's PROM.BIN. */
   CHECK(fw.image_off==GU_LOCAL_FWSEC_IMAGE_OFF && fw.image_size==GU_LOCAL_FWSEC_IMAGE_SIZE && fw.dmem_size==sizeof(gsp_dmem));
 #else

@@ -18,6 +18,27 @@ def compile_source(source, defines=(), extra=()):
 
 
 class FamilyTests(unittest.TestCase):
+    def test_asrock_profile_keeps_exact_family_and_captured_firmware(self):
+        source = ('#include "machine-profile.h"\n'
+                  '_Static_assert(GU_GPU_FAMILY == 106, "GA106");\n'
+                  '_Static_assert(GU_CHIP_ID == 0xb76000a1U, "chip");\n'
+                  '_Static_assert(GU_TARGET_BUS == 7, "captured bus");\n'
+                  '_Static_assert(GU_NVGOP_VERSION == 0x6000bU, "captured GOP");\n'
+                  '#ifdef GU_FIRMWARE_PROFILE\n#error ASRock inherited unrelated firmware\n#endif\n')
+        done = compile_source(source, ['-DGU_PROFILE_ASROCK_B450M_3060'])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        for flags in (['-DGU_PROFILE_ASROCK_B450M_3060', '-DGU_FULL_UNLOCK'],
+                      ['-DGU_PROFILE_ASROCK_B450M_3060', '-DGU_PROFILE_B650M_3090FE']):
+            refused = compile_source('#include "machine-profile.h"\n', flags)
+            self.assertNotEqual(refused.returncode, 0)
+        generic = compile_source('#include "gpu-family.h"\n',
+            ['-DGU_GPU_FAMILY=106', '-DGU_BOARD_ID=0x250310deU',
+             '-DGU_BOARD_SUBSYSTEM=0x40741458U', '-DGU_DEVICE_MEMORY_SIZE=0x3000U'])
+        self.assertNotEqual(generic.returncode, 0)
+        admitted = compile_source(source, ['-DGU_PROFILE_ASROCK_B450M_3060', '-DGU_FULL_UNLOCK',
+                                            '-DGU_HEADLESS_RESEARCH', '-DGU_USB_MEDIA'])
+        self.assertEqual(admitted.returncode, 0, admitted.stderr)
+
     def test_six_profiles_select_exact_family_chip_and_memory(self):
         cases = [('B650M_3090FE', 102, 0xb72000a1, 0x6000),
                  ('X870_3090TI', 102, 0xb72000a1, 0x5ff4),

@@ -1,10 +1,12 @@
+# ASRock port changes: 2026-10-27; publication notice: 2026-10-28. GPL-2.0-only; see CHANGES.md.
 # GPL-2.0-only. Headless wrapper/child package for a USB stick (-DGU_USB_MEDIA).
 # Same exact-profile child and hash contract as build-unlock.ps1, but the wrapper and
 # child accept only the USB device they were loaded from instead of a pinned internal
 # ESP GUID. Builds files only: no staging, boot entries or firmware settings change.
 param([Parameter(Mandatory)][guid]$WindowsEspGuid,[string]$Clang='clang',[string]$LldLink='lld-link',[string]$Python='python',
- [ValidateSet('b650m-3090fe','b660m-3070ti','x870-3090ti','b660plus-3060','h610m-3060','local')][string]$HardwareProfile='b650m-3090fe')
+ [ValidateSet('b650m-3090fe','b660m-3070ti','x870-3090ti','b660plus-3060','h610m-3060','asrock-b450m-3060','local')][string]$HardwareProfile='b650m-3090fe')
 $profiles=@{
+ 'asrock-b450m-3060'=@{Defines=@('-DGU_PROFILE_ASROCK_B450M_3060');Name='ASROCK-B450M-PRO4-F-P10.31-RTX3060-EXPERIMENTAL'}
  'b650m-3090fe'=@{Defines=@('-DGU_PROFILE_B650M_3090FE');Name='ASUS-TUF-B650M-PLUS-WIFI-3057-RTX3090-FE'}
  'b660m-3070ti'=@{Defines=@('-DGU_PROFILE_B660M_3070TI');Name='ASUS-TUF-GAMING-B660M-E-D4-4003-RTX3070TI'}
  'x870-3090ti'=@{Defines=@('-DGU_PROFILE_X870_3090TI');Name='GIGABYTE-X870-AORUS-ELITE-WIFI7-F13d-RTX3090TI'}
@@ -15,6 +17,7 @@ $ErrorActionPreference='Stop'
 $repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 $boot=Join-Path $repo 'internal-boot/boot'
 $unlock=Join-Path $repo 'internal-boot/unlock'
+if($HardwareProfile -eq 'asrock-b450m-3060'){. (Join-Path $unlock 'asrock-evidence.ps1');$asrockEvidence=Assert-AsrockEvidence $repo}
 . (Join-Path $unlock 'local-profile.ps1')
 # 'local': this machine's generated profile; refused here and again in build.ps1 without passing evidence.
 if($HardwareProfile -eq 'local'){
@@ -68,5 +71,11 @@ try {
   $usbManifest.LocalProfileEvidenceSha256=$localEvidenceSha
  }
  $usbManifest | ConvertTo-Json | Set-Content build/headless/usb-manifest.json -Encoding utf8
+ if($HardwareProfile -eq 'asrock-b450m-3060'){
+  $current=Assert-AsrockEvidence $repo
+  $usbManifest.AsrockTreeSha256=$current.TreeSha256
+  $usbManifest.AsrockEvidenceSha256=Get-GuSha256 (Join-Path $repo 'research/results/asrock-host-tests/test-results.json')
+  $usbManifest | ConvertTo-Json | Set-Content build/headless/usb-manifest.json -Encoding utf8
+ }
  Get-Content build/headless/usb-manifest.json
 } finally {Pop-Location}

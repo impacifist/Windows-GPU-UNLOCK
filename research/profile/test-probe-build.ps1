@@ -46,6 +46,23 @@ foreach($bus in @(0,256)) {
  try {& $build -WindowsEspGuid $dummy -Clang $Clang -LldLink $LldLink -TargetBus $bus;throw 'Invalid build bus accepted'}
  catch {if($_.FullyQualifiedErrorId -notmatch 'ParameterArgumentValidation'){throw}};$checks++
 }
+# The targeted ASRock diagnostic stays explicit on captured bus 7. It must not
+# inherit automatic discovery or let another bus widen its exact admission.
+& $build -WindowsEspGuid $dummy -Clang $Clang -LldLink $LldLink -Python $Python -Asrock3060 -TargetBus 7
+if(!$?){throw 'Sandbox ASRock probe build failed'}
+$m=Get-Content -LiteralPath (Join-Path $sandbox 'internal-boot/boot/build/probe-generic/manifest.json') -Raw | ConvertFrom-Json
+if($m.CanUnlock -or $m.CanDetach -or $m.WritesFirmwareVariables -or $m.HardwareTested -or
+   $m.ProbeBusMode -cne 'explicit' -or $m.TargetBus -ne 7 -or
+   $m.Defines -ccontains '-DGU_PROBE_AUTO_BUS'){throw 'Invalid ASRock diagnostic contract'}
+foreach($define in @('-DGU_PROBE_ASROCK_3060','-DGU_PROBE_DUMP_PROM','-DGU_USB_MEDIA','-DGU_PROBE_BUS=0x7U')) {
+ if($m.Defines -cnotcontains $define){throw "Missing ASRock diagnostic define: $define"}
+}
+$checks++
+foreach($bus in @($null,1,43,255)) {
+ $options=@{};if($null -ne $bus){$options.TargetBus=$bus}
+ try {& $build -WindowsEspGuid $dummy -Clang $Clang -LldLink $LldLink -Python $Python -Asrock3060 @options;throw 'Invalid ASRock bus accepted'}
+ catch {if($_.Exception.Message -cne 'ASRock diagnostic requires PCI bus 7'){throw}};$checks++
+}
 # Stop at the very first probe-builder call: this tests real new-machine parameter
 # binding/forwarding with all USB staging paths unreachable. IsSystem is false for the mock stick.
 function Get-Partition {param($DriveLetter) [pscustomobject]@{Guid=$dummy;IsSystem=$false;DiskNumber=123}}

@@ -1,3 +1,4 @@
+/* ASRock port changes: 2026-10-27; publication notice: 2026-10-28. GPL-2.0-only; see CHANGES.md. */
 /* Modified 2026-10-19/20 for Windows GPU UNLOCK; changes documented in CHANGES.md. */ /* SPDX-License-Identifier: GPL-2.0-only */
 /* Hardware Command and firmware attribute cache are deliberately independent. */
 #define main transaction_fixture_main
@@ -19,7 +20,7 @@ static const char *names[]={"normal","no-api","support-error","unsupported","get
  "disable-error","disable-error-after-clear","disable-noop","disable-hardware-only","disable-cache-only",
  "disable-get-error","disable-raw-error","disable-extra-attribute","disable-extra-hardware-bit"};
 static enum master_case mode;
-static UINTN gets,enables,disables;
+static UINTN attributeGets,enables,disables;
 static BOOLEAN clearing;
 static EFI_PCI_IO_PROTOCOL replacement;
 VOID GuLog(const char *format,...) {
@@ -39,8 +40,8 @@ static EFI_STATUS EFIAPI attr(EFI_PCI_IO_PROTOCOL *p,
     return mode==SUPPORT_ERROR?EFI_DEVICE_ERROR:EFI_SUCCESS;
   }
   if(op==EfiPciIoAttributeOperationGet) {
-    CHECK(out && !mask);gets++;*out=fake.pci_attributes;
-    return ((mode==GET_ERROR && gets==1) || (mode==ENABLE_GET_ERROR && gets==2) ||
+    CHECK(out && !mask);attributeGets++;*out=fake.pci_attributes;
+    return ((mode==GET_ERROR && attributeGets==1) || (mode==ENABLE_GET_ERROR && attributeGets==2) ||
       (mode==DISABLE_GET_ERROR && disables))?EFI_DEVICE_ERROR:EFI_SUCCESS;
   }
   CHECK(!out && mask==EFI_PCI_IO_ATTRIBUTE_BUS_MASTER);
@@ -80,7 +81,7 @@ static EFI_STATUS EFIAPI replacement_write(EFI_PCI_IO_PROTOCOL *p,EFI_PCI_IO_PRO
 int main(void) {
   setvbuf(stdout,NULL,_IONBF,0);
   for(mode=NORMAL;mode<MASTER_CASES;mode++) {
-    printf("BME attributes %s: ",names[mode]);setup(SUCCESS);gets=enables=disables=0;
+    printf("BME attributes %s: ",names[mode]);setup(SUCCESS);attributeGets=enables=disables=0;
     pci.Attributes=mode==NO_API?NULL:attr;pci.Pci.Write=raw_write;
     if(mode==CACHE_ALREADY_ON)fake.pci_attributes|=EFI_PCI_IO_ATTRIBUTE_BUS_MASTER;
     struct pci_dev dev={0};pci_set_master(&dev);
@@ -111,21 +112,21 @@ int main(void) {
     }
     CHECK(!fake.mmio_writes && !fake.flrs);puts("PASS");
   }
-  mode=DISABLE_EXTRA_HARDWARE;setup(SUCCESS);gets=enables=disables=0;pci.Attributes=attr;
+  mode=DISABLE_EXTRA_HARDWARE;setup(SUCCESS);attributeGets=enables=disables=0;pci.Attributes=attr;
   CHECK(!EFI_ERROR(GuEnableMaster()) && !Gu.started);
   clearing=TRUE;CHECK(EFI_ERROR(GuClearMaster()));clearing=FALSE;
   CHECK(Gu.fault && Gu.retained && !GuSafeToReturn() && !(config[4]&4));
   CHECK((config[4]&3)==1 && Gu.master_attributes_pending && !Gu.started);
   CHECK(!EFI_ERROR(Gu.master_attribute_status) && EFI_ERROR(Gu.master_hardware_status));
   puts("BME attributes nonstarted extra hardware bit retains: PASS");
-  mode=NORMAL;setup(SUCCESS);gets=enables=disables=0;pci.Attributes=attr;
+  mode=NORMAL;setup(SUCCESS);attributeGets=enables=disables=0;pci.Attributes=attr;
   VOID *cpu=NULL;UINT64 dma=0;CHECK(!EFI_ERROR(GuDmaAllocate(4096,&cpu,&dma)));
   CHECK(!EFI_ERROR(GuEnableMaster()) && !Gu.started && !GuSafeToReturn());
   CHECK(GuDmaFree(cpu,dma)==EFI_ACCESS_DENIED && !fake.unmaps && !fake.frees && Gu.retained);
   clearing=TRUE;CHECK(!EFI_ERROR(GuClearMaster()));clearing=FALSE;
   CHECK(!GuSafeToReturn() && GuDmaFree(cpu,dma)==EFI_ACCESS_DENIED);
   dispose_host_fixture();puts("BME attributes pending-DMA-free retention: PASS");
-  setup(SUCCESS);gets=enables=disables=0;pci.Attributes=attr;
+  setup(SUCCESS);attributeGets=enables=disables=0;pci.Attributes=attr;
   CHECK(!EFI_ERROR(GuEnableMaster()));
   replacement=pci;Gu.pci=&replacement;
   /* The fixture accepts only its original interface. A replacement must never
@@ -135,7 +136,7 @@ int main(void) {
   CHECK(!disables && Gu.retained && !GuSafeToReturn() && !(config[4]&4));
   CHECK(Gu.master_attributes_pending && Gu.master_attribute_status==EFI_COMPROMISED_DATA);
   puts("BME attributes replacement protocol raw containment only: PASS");
-  setup(SUCCESS);gets=enables=disables=0;pci.Attributes=attr;
+  setup(SUCCESS);attributeGets=enables=disables=0;pci.Attributes=attr;
   CHECK(!EFI_ERROR(GuEnableMaster()));
   /* Identity change is a separate rejection before any Attributes call. */
   *(UINT32 *)config=0x220610de; /* Old RTX3080 must now be refused. */

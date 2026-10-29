@@ -1,0 +1,126 @@
+{
+  "prepared_utc": "2026-10-28T08:27:56.009382+00:00",
+  "upstream_commit": "20c44fecac13cdf601b6a9357a46d8fea29f2678",
+  "hardware_scope": "One exact ASRock B450M Pro4-F P10.31 / RTX 3060 2503:40741458 system",
+  "successful_hardware_transactions_in_selected_evidence": 1,
+  "hardware_tested_source_tree_digest": "e82fd056029b26a289767b8f1d31f2d22d5419ca2edc3b6ac734b61bfc9b43a5",
+  "historical_build": {
+    "HardwareProfile": "ASROCK-B450M-PRO4-F-P10.31-RTX3060-EXPERIMENTAL",
+    "EfiSha256": "96dcd0d67e410dd906cc1442eb29fcd8350ada75100f5888d2e8719556f76166",
+    "ChildSha256": "9c0c2606a39eb6e44cc8801257bf01b88359ca828011b3ad19a0c75c79fef209",
+    "BuiltUtc": "2026-10-27T11:29:47.8651432Z"
+  },
+  "transaction_excerpt": [
+    "pre-FLR selectors: ss0=0x88888888 expected=0x88888888 ss1=0x8 expected=0x8",
+    "transaction result=0 containment=0 started=1 quiesced=1 fault=0 retained=0 maps=0 FLR=1",
+    "FINAL status=0 stage=transaction attempted=1 driver_release=0 clean=1"
+  ],
+  "wrapper_excerpt": [
+    "original-unlock-return status=0x0000000000000000",
+    "full-windows-start status=0x0000000000000000",
+    "verify-complete status=0x0000000000000000"
+  ],
+  "private_log_digests": {
+    "child": "c2bc3683e21f9588503a4b35f13ea7bd75061e300d5ce7585e73c389d5037053",
+    "wrapper": "e04ed2415b97eaf1ee0b678adf1d37343a2c77ffb72a6db13f2018f9349f5802"
+  },
+  "host_tests": {
+    "all_passed": true,
+    "hardware_access": false,
+    "jobs": {
+      "console-replay": {
+        "exit": 0,
+        "expected": 0
+      },
+      "transaction": {
+        "exit": 0,
+        "expected": 0
+      },
+      "manual-app": {
+        "exit": 0,
+        "expected": 0
+      },
+      "automatic-app": {
+        "exit": 0,
+        "expected": 0
+      },
+      "headless-usb-app": {
+        "exit": 0,
+        "expected": 0
+      },
+      "checks": {
+        "exit": 0,
+        "expected": 0
+      },
+      "port": {
+        "exit": 0,
+        "expected": 0
+      },
+      "write-lock": {
+        "exit": 0,
+        "expected": 0
+      },
+      "master-attributes": {
+        "exit": 0,
+        "expected": 0
+      },
+      "GU_ENTRY_LATCHED_SS1_FULL": {
+        "exit": 0,
+        "expected": 0
+      },
+      "GU_ENTRY_LATCHED_SS1_PRESERVE": {
+        "exit": 0,
+        "expected": 0
+      },
+      "release": {
+        "exit": 0,
+        "expected": 0
+      },
+      "cold-precheck": {
+        "exit": 0,
+        "expected": 0
+      },
+      "full-flow": {
+        "exit": 0,
+        "expected": 0
+      }
+    }
+  },
+  "primary_comparison": [
+    {
+      "mode": "FP32",
+      "locked_tflops": 10.214166447132898,
+      "unlocked_tflops": 10.227885063622228,
+      "throughput_gain_percent": 0.13430970172980672,
+      "time_reduction_percent": 0.13412955272761318
+    },
+    {
+      "mode": "FP16",
+      "locked_tflops": 28.761738297572325,
+      "unlocked_tflops": 49.94566099247265,
+      "throughput_gain_percent": 73.65313763628947,
+      "time_reduction_percent": 42.41394001791862
+    },
+    {
+      "mode": "BF16",
+      "locked_tflops": 28.868372507356728,
+      "unlocked_tflops": 51.78405030904952,
+      "throughput_gain_percent": 79.37987427539612,
+      "time_reduction_percent": 44.252385946891
+    },
+    {
+      "mode": "TF32",
+      "locked_tflops": 14.428473995947705,
+      "unlocked_tflops": 25.375149580664974,
+      "throughput_gain_percent": 75.86856092883896,
+      "time_reduction_percent": 43.139353917575626
+    }
+  ],
+  "limitations": [
+    "Single hardware transaction; no long-term stability claim",
+    "Five timing samples per run, not five independent boots",
+    "Unlock labels are operator-supplied",
+    "Starting temperatures differed",
+    "No general game or LLM decoding speedup established"
+  ]
+}

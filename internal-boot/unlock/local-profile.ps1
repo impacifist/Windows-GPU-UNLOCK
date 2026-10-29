@@ -1,3 +1,4 @@
+# ASRock port changes: 2026-10-27; publication notice: 2026-10-28. GPL-2.0-only; see CHANGES.md.
 # GPL-2.0-only. Local machine profile (-DGU_PROFILE_LOCAL) identity and its write-build evidence gate.
 # Dot-sourced by build.ps1, research/headless/build-usb.ps1, stage-usb.ps1 and research/profile/test-profile.ps1.
 # A generated profile-local.h is never write-eligible on its own: a write build needs
@@ -237,6 +238,11 @@ function Assert-GuUsbManifest([string]$Repo,$Manifest) {
  if($Manifest.HardwareProfile -isnot [string]){throw 'Missing USB hardware profile'}
  if($Manifest.HardwareProfile -cmatch '^LOCAL-[0-9a-f]{8}-[0-9a-f]{8}-[0-9a-f]{8}$') {
   Assert-LocalProfilePackage $Repo $Manifest
+ } elseif($Manifest.HardwareProfile -ceq 'ASROCK-B450M-PRO4-F-P10.31-RTX3060-EXPERIMENTAL') {
+  . (Join-Path $Repo 'internal-boot/unlock/asrock-evidence.ps1')
+  $asrock=Assert-AsrockEvidence $Repo
+  if($Manifest.AsrockTreeSha256 -cne $asrock.TreeSha256 -or
+     $Manifest.AsrockEvidenceSha256 -cne (Get-GuSha256 (Join-Path $Repo 'research/results/asrock-host-tests/test-results.json'))){throw 'ASRock package is stale; rebuild it'}
  } elseif($reviewed -ccontains $Manifest.HardwareProfile) {
   foreach($key in @('LocalProfileHeaderSha256','LocalProfileTreeSha256','LocalProfileEvidenceSha256')){
    if((Get-LocalObjectNames $Manifest) -ccontains $key){throw 'Local package metadata cannot select a reviewed profile'}

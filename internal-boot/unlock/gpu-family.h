@@ -48,7 +48,7 @@
 #elif GU_GPU_FAMILY == GU_GPU_FAMILY_GA106
 #define GU_GPU_FAMILY_NAME "GA106"
 #define GU_FAMILY_CHIP_ID 0xb76000a1U
-#if GU_BOARD_ID != 0x250410deU || GU_DEVICE_MEMORY_SIZE != 0x3000U
+#if (GU_BOARD_ID != 0x250410deU && !(defined(GU_PROFILE_ASROCK_B450M_3060) && GU_BOARD_ID == 0x250310deU && GU_BOARD_SUBSYSTEM == 0x40741458U)) || GU_DEVICE_MEMORY_SIZE != 0x3000U
 #error Card identity or memory is outside the reviewed GA106 family combinations
 #endif
 #else

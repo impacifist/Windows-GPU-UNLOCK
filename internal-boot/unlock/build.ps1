@@ -1,3 +1,4 @@
+# ASRock port changes: 2026-10-27; publication notice: 2026-10-28. GPL-2.0-only; see CHANGES.md.
 # Modified 2026-10-19/20 for Windows GPU UNLOCK; changes documented in CHANGES.md.
 param(
  [string]$Clang='clang',
@@ -9,13 +10,14 @@ param(
  [switch]$HeadlessResearch,
  [switch]$UsbMedia,
  [ValidateSet('original03100062','observed03000062','entryLatchedSs1Preserve','entryLatchedSs1Full')][string]$StockProfile,
- [ValidateSet('b650m-3090fe','b660m-3070ti','b660m-3090ti','x870-3090ti','b660plus-3060','h610m-3060','local')][string]$HardwareProfile='b650m-3090fe'
+ [ValidateSet('b650m-3090fe','b660m-3070ti','b660m-3090ti','x870-3090ti','b660plus-3060','h610m-3060','asrock-b450m-3060','local')][string]$HardwareProfile='b650m-3090fe'
 )
 # Reviewed single-machine profiles; mirrors internal-boot/unlock/machine-profile.h.
 # A profile is fixed provenance: it selects constants compiled into the EFI,
 # never a user-editable switch. 'local' is this machine's generated profile-local.h,
 # write-eligible only with matching passing evidence (local-profile.ps1).
 $hwTable=@{
+ 'asrock-b450m-3060'=[ordered]@{Define='-DGU_PROFILE_ASROCK_B450M_3060';Name='ASROCK-B450M-PRO4-F-P10.31-RTX3060-EXPERIMENTAL';TargetPci='250310de';Subsystem='40741458';Chip='0xb76000a1';Prom='547fe0b82b8927e7bcbc4d0c49914cd433839236b9a44c907d0efd30fbfab4b7';Memory='0x3000';HeadlessOnly=$true;UsbOnly=$true}
  'b650m-3090fe'=[ordered]@{Define='-DGU_PROFILE_B650M_3090FE';Name='ASUS-TUF-B650M-PLUS-WIFI-3057-RTX3090-FE';TargetPci='220410de';Subsystem='145410de';Chip='0xb72000a1';Prom='8ea297373e9e5d3600ff41ad9fae88f2d14c98c017d100669f7333981da673b4';Memory='0x6000';HeadlessOnly=$false}
  'b660m-3070ti'=[ordered]@{Define='-DGU_PROFILE_B660M_3070TI';Name='ASUS-TUF-GAMING-B660M-E-D4-4003-RTX3070TI';TargetPci='248210de';Subsystem='50521462';Chip='0xb74000a1';Prom='f429aa1d5f0f18d11ed9a19503683a674fe3541ae77e959df8e732652c2b4df0';Memory='0x2000';HeadlessOnly=$true}
  'b660m-3090ti'=[ordered]@{Define='-DGU_PROFILE_B660M_3090TI';Name='ASUS-TUF-GAMING-B660M-E-D4-4003-RTX3090TI';TargetPci='220310de';Subsystem='13017377';Chip='0xb72000a1';Prom='22b77e844a215bf52d745e0b10c6698ec3d9479f8350e833247bd5d77430bf44';Memory='0x5ff4';HeadlessOnly=$true}
@@ -26,6 +28,7 @@ $hwTable=@{
 $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'local-profile.ps1')
 $repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
+if($HardwareProfile -eq 'asrock-b450m-3060' -and $ExperimentalUnlock){. (Join-Path $PSScriptRoot 'asrock-evidence.ps1');$null=Assert-AsrockEvidence $repo}
 $hw=if($HardwareProfile -eq 'local'){Get-LocalProfile $repo}else{$hwTable[$HardwareProfile]}
 $evidence=$null
 Push-Location -LiteralPath $PSScriptRoot

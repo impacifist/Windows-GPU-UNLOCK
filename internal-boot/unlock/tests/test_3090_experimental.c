@@ -1,3 +1,4 @@
+/* ASRock port changes: 2026-10-27; publication notice: 2026-10-28. GPL-2.0-only; see CHANGES.md. */
 /* Actual captured PROM/PCI + production app/stock core; all EFI I/O simulated. */
 #define GU_EXACT_FIXTURE
 #include "test_3090_preflight.c"
@@ -18,7 +19,7 @@ VOID GuLogText(const char *);
 #define GU_TEST_COLD_LINE "cold state: chip=0xb72000a1 plm=0xffffff8f gfw=0x8b8f/0x3ff/0x10 WPR2_HI=0 SS0=0x40123070 SS1=0x7"
 #elif defined(GU_PROFILE_B660PLUS_3060)
 #define GU_TEST_COLD_LINE "cold state: chip=0xb74000a1 plm=0xffffff8f gfw=0x8b8f/0x3ff/0x10 WPR2_HI=0 SS0=0x60110006 SS1=0x7"
-#elif defined(GU_PROFILE_LOCAL)
+#elif defined(GU_PROFILE_LOCAL) || defined(GU_PROFILE_ASROCK_B450M_3060)
 #define GU_TEST_COLD_LINE GU_LOCAL_TEST_COLD_LINE /* make-profile.py, from this machine's capture */
 #else
 #error Add this profile's captured cold-state line (app.c ColdCheck format)
