@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "purpose": "compatibility-research-inventory",
+  "collection_complete": true,
+  "missing_sections": [],
+  "hardware": {
+    "board": [
+      {
+        "Manufacturer": "ASUSTeK COMPUTER INC.",
+        "Product": "ROG STRIX B550-F GAMING"
+      }
+    ],
+    "cpu": [
+      {
+        "Name": "AMD Ryzen 5 5600X 6-Core Processor",
+        "Manufacturer": "AuthenticAMD"
+      }
+    ],
+    "os": [
+      {
+        "Caption": "Microsoft Windows 11 Pro",
+        "Version": "10.0.26200",
+        "BuildNumber": "26200",
+        "OSArchitecture": "64-bit"
+      }
+    ],
+    "bios": [
+      {
+        "Manufacturer": "American Megatrends Inc.",
+        "SMBIOSBIOSVersion": "3205"
+      }
+    ],
+    "video": [
+      {
+        "Name": "NVIDIA GeForce RTX 4070 Ti",
+        "DriverVersion": "32.0.16.1088",
+        "pci": {
+          "vendor": "10de",
+          "device": "2782",
+          "subsystem_vendor": "1462",
+          "subsystem_device": "5132"
+        },
+        "pci_status": "parsed"
+      }
+    ]
+  },
+  "assessment": {
+    "status": "not-assessed",
+    "can_unlock": false,
+    "reason": "Windows inventory cannot validate the exact pre-boot safety checks."
+  },
+  "not_collected": [
+    "serials, UUIDs, hostname, username and PNP device-instance suffixes",
+    "Secure Boot state, active physical display route, PCI BDF and BAR layout",
+    "PROM, firmware, cold state, ownership, DMA and cleanup readiness"
+  ]
+}

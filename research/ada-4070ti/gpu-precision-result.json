@@ -1,0 +1,340 @@
+{
+  "scope": "one-warp numerical recurrence on current GPU; no selector-state inference",
+  "utc": "2026-10-25T21:54:56.961806+00:00",
+  "before": {
+    "name": "NVIDIA GeForce RTX 4070 Ti",
+    "pci.device_id": "0x278210DE",
+    "pci.sub_device_id": "0x51321462",
+    "driver_version": "610.88",
+    "vbios_version": "95.04.31.00.f0",
+    "memory.total": "12282",
+    "memory.used": "3359",
+    "temperature.gpu": "31",
+    "power.draw": "19.48",
+    "power.limit": "285.00",
+    "utilization.gpu": "50",
+    "clocks.sm": "210",
+    "clocks.mem": "405",
+    "pstate": "P8"
+  },
+  "grid": 1,
+  "threads": 32,
+  "device_buffer_bytes": 2048,
+  "observations": [
+    {
+      "accumulation": "f16",
+      "iterations": 8,
+      "initial_bias": 16,
+      "observed_chain_values": [
+        144.0,
+        160.0,
+        176.0,
+        192.0
+      ],
+      "ideal_chain_values": [
+        144,
+        160,
+        176,
+        192
+      ],
+      "matches_ideal_all_512_values": true,
+      "all_outputs_finite_and_chain_uniform": true,
+      "output_sha256": "34483a9052f8bf0f02c7d81e7767623088935a7c1a6595bc6747ee42e04adbe1"
+    },
+    {
+      "accumulation": "f16",
+      "iterations": 256,
+      "initial_bias": 16,
+      "observed_chain_values": [
+        4112.0,
+        4128.0,
+        4144.0,
+        4160.0
+      ],
+      "ideal_chain_values": [
+        4112,
+        4128,
+        4144,
+        4160
+      ],
+      "matches_ideal_all_512_values": true,
+      "all_outputs_finite_and_chain_uniform": true,
+      "output_sha256": "9fd920b364ce8dd1d9a7b2df2dc60f14a4363082e6e963583eda267a32476ff5"
+    },
+    {
+      "accumulation": "f16",
+      "iterations": 512,
+      "initial_bias": 16,
+      "observed_chain_values": [
+        8208.0,
+        8224.0,
+        8240.0,
+        8256.0
+      ],
+      "ideal_chain_values": [
+        8208,
+        8224,
+        8240,
+        8256
+      ],
+      "matches_ideal_all_512_values": true,
+      "all_outputs_finite_and_chain_uniform": true,
+      "output_sha256": "e9cba8c6d24cc7e9405f57903c3c0e1e6f24868b7750cbeb40a51145f9fcf922"
+    },
+    {
+      "accumulation": "f16",
+      "iterations": 768,
+      "initial_bias": 16,
+      "observed_chain_values": [
+        12304.0,
+        12320.0,
+        12336.0,
+        12352.0
+      ],
+      "ideal_chain_values": [
+        12304,
+        12320,
+        12336,
+        12352
+      ],
+      "matches_ideal_all_512_values": true,
+      "all_outputs_finite_and_chain_uniform": true,
+      "output_sha256": "0414b209b9b91089eab973a4a709aa5067f7370105abf52c7870cfb06792f217"
+    },
+    {
+      "accumulation": "f16",
+      "iterations": 1000,
+      "initial_bias": 16,
+      "observed_chain_values": [
+        16016.0,
+        16032.0,
+        16048.0,
+        16064.0
+      ],
+      "ideal_chain_values": [
+        16016,
+        16032,
+        16048,
+        16064
+      ],
+      "matches_ideal_all_512_values": true,
+      "all_outputs_finite_and_chain_uniform": true,
+      "output_sha256": "b06fa686059214b281719a893ebed8d9d20c331f20aca43a7f6a4d832a5b6762"
+    },
+    {
+      "accumulation": "f16",
+      "iterations": 1024,
+      "initial_bias": 16,
+      "observed_chain_values": [
+        16384.0,
+        16384.0,
+        16384.0,
+        16384.0
+      ],
+      "ideal_chain_values": [
+        16400,
+        16416,
+        16432,
+        16448
+      ],
+      "matches_ideal_all_512_values": false,
+      "all_outputs_finite_and_chain_uniform": true,
+      "output_sha256": "91b09b3df04c27b481505ef33a53f018822978443897c4a097a4716840ee6944"
+    },
+    {
+      "accumulation": "f16",
+      "iterations": 1536,
+      "initial_bias": 16,
+      "observed_chain_values": [
+        16384.0,
+        16384.0,
+        16384.0,
+        16384.0
+      ],
+      "ideal_chain_values": [
+        24592,
+        24608,
+        24624,
+        24640
+      ],
+      "matches_ideal_all_512_values": false,
+      "all_outputs_finite_and_chain_uniform": true,
+      "output_sha256": "91b09b3df04c27b481505ef33a53f018822978443897c4a097a4716840ee6944"
+    },
+    {
+      "accumulation": "f32",
+      "iterations": 8,
+      "initial_bias": 16,
+      "observed_chain_values": [
+        144.0,
+        160.0,
+        176.0,
+        192.0
+      ],
+      "ideal_chain_values": [
+        144,
+        160,
+        176,
+        192
+      ],
+      "matches_ideal_all_512_values": true,
+      "all_outputs_finite_and_chain_uniform": true,
+      "output_sha256": "fc303f07450dae195c314f67b5c4518f17db824dce3abe02719c9f97713d69f2"
+    },
+    {
+      "accumulation": "f32",
+      "iterations": 256,
+      "initial_bias": 16,
+      "observed_chain_values": [
+        4112.0,
+        4128.0,
+        4144.0,
+        4160.0
+      ],
+      "ideal_chain_values": [
+        4112,
+        4128,
+        4144,
+        4160
+      ],
+      "matches_ideal_all_512_values": true,
+      "all_outputs_finite_and_chain_uniform": true,
+      "output_sha256": "9fcda40fdf900c11ee8da58665d823520d1547d143c4a115f9dbca0dfeb5af4a"
+    },
+    {
+      "accumulation": "f32",
+      "iterations": 512,
+      "initial_bias": 16,
+      "observed_chain_values": [
+        8208.0,
+        8224.0,
+        8240.0,
+        8256.0
+      ],
+      "ideal_chain_values": [
+        8208,
+        8224,
+        8240,
+        8256
+      ],
+      "matches_ideal_all_512_values": true,
+      "all_outputs_finite_and_chain_uniform": true,
+      "output_sha256": "7c4327323ff7dbe6cd01d2f2f98fa53cc7b186153f353cd03b61b4d1e99bc282"
+    },
+    {
+      "accumulation": "f32",
+      "iterations": 768,
+      "initial_bias": 16,
+      "observed_chain_values": [
+        12304.0,
+        12320.0,
+        12336.0,
+        12352.0
+      ],
+      "ideal_chain_values": [
+        12304,
+        12320,
+        12336,
+        12352
+      ],
+      "matches_ideal_all_512_values": true,
+      "all_outputs_finite_and_chain_uniform": true,
+      "output_sha256": "d3109866216ea0e79d887e10d7c0b19eba299af867698f056a6d0a509cd2a950"
+    },
+    {
+      "accumulation": "f32",
+      "iterations": 1000,
+      "initial_bias": 16,
+      "observed_chain_values": [
+        16016.0,
+        16032.0,
+        16048.0,
+        16064.0
+      ],
+      "ideal_chain_values": [
+        16016,
+        16032,
+        16048,
+        16064
+      ],
+      "matches_ideal_all_512_values": true,
+      "all_outputs_finite_and_chain_uniform": true,
+      "output_sha256": "76103a400700e58b4eedee1687333284276ef61cac5077462a393afdecd045d0"
+    },
+    {
+      "accumulation": "f32",
+      "iterations": 1024,
+      "initial_bias": 16,
+      "observed_chain_values": [
+        16400.0,
+        16416.0,
+        16432.0,
+        16448.0
+      ],
+      "ideal_chain_values": [
+        16400,
+        16416,
+        16432,
+        16448
+      ],
+      "matches_ideal_all_512_values": true,
+      "all_outputs_finite_and_chain_uniform": true,
+      "output_sha256": "c72a2945d9ea30ef0da7572421d620419025561ddebfe534cd17c6303fda5ed1"
+    },
+    {
+      "accumulation": "f32",
+      "iterations": 1536,
+      "initial_bias": 16,
+      "observed_chain_values": [
+        24592.0,
+        24608.0,
+        24624.0,
+        24640.0
+      ],
+      "ideal_chain_values": [
+        24592,
+        24608,
+        24624,
+        24640
+      ],
+      "matches_ideal_all_512_values": true,
+      "all_outputs_finite_and_chain_uniform": true,
+      "output_sha256": "eaf319a287832b971332ff80725cd891ef3b5e47710da665a5d3d3e0a8a8b4b7"
+    }
+  ],
+  "cuda": {
+    "gpu": "NVIDIA GeForce RTX 4070 Ti",
+    "pci_bus_id": "0000:0B:00.0",
+    "compute_capability": [
+      8,
+      9
+    ],
+    "cuda_driver_api": 13030,
+    "free_bytes_after_context": 11595153408,
+    "total_bytes": 12877955072
+  },
+  "cleanup_completed": true,
+  "after": {
+    "name": "NVIDIA GeForce RTX 4070 Ti",
+    "pci.device_id": "0x278210DE",
+    "pci.sub_device_id": "0x51321462",
+    "driver_version": "610.88",
+    "vbios_version": "95.04.31.00.f0",
+    "memory.total": "12282",
+    "memory.used": "3359",
+    "temperature.gpu": "31",
+    "power.draw": "19.48",
+    "power.limit": "285.00",
+    "utilization.gpu": "50",
+    "clocks.sm": "210",
+    "clocks.mem": "405",
+    "pstate": "P8"
+  },
+  "research_source_sha256": {
+    "gpu_precision_probe.py": "c60300c165c95d4f5365ae1d4ec3c9514a14bb9545d3075494fe90d1ab67c0c0",
+    "gpu_accumulation_probe.py": "ef88d57d0c2de93445b78fe2cc3977f10796a7aa3ac44f87cbd18876cf8a75eb",
+    "gpu_tensor_probe.py": "afecf4413df338ae2375212a81b9d85a7fb84265a3b6942caa5a1cab631b8dc3",
+    "cuda_driver.py": "24fba7f42f5eacd54cbb6209613574883c1ca883e8a8c92eb4cc83c771555d4e",
+    "gpu_smoke.py": "52d1f0c32902947de566a3a5aacf5cfb886e9b05e9d3f6d833a0b7a5732bfa28"
+  }
+}

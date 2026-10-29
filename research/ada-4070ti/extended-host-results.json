@@ -1,0 +1,52 @@
+{
+  "scope": "Windows console executables; synthetic UEFI callbacks and ROMs only",
+  "reviewed_source_commit": "4e7fefcc4923f9e083d5324dc75a7d2f906af77f",
+  "source_inputs_checked": 68,
+  "compiler_version": "14.29.30133",
+  "research_source_sha256": {
+    "run_host_tests.py": "f95ee26a847dd498ce8bdbdfe5c1cb4bbcce0de165a446dd1b3082a4e0f6b285",
+    "host_capture_cases.c": "997c31433d4f6b1c884b015e6a6473c9aaf533bda7324e191284a3de992803aa",
+    "host_parser_cases.c": "d1fc159b4a73a2cf984cfcc87743e3084764a71ec79d363f76ae5c11cc4f3af2",
+    "host_platform_cases.c": "14759069092dc6b0ffd79f058378e7a010ca8999e2c4d1e34aac12fb0a09b774"
+  },
+  "firmware_built": false,
+  "hardware_accessed": false,
+  "targets": [
+    {
+      "target": "upstream-host",
+      "exit_code": 0,
+      "summary": "PASS: 5530 checks; full EFI application executed against host mocks; no GPU hardware accessed.",
+      "binary_sha256": "247c906ba082f0701f1e70999374f513184a96200a95706a0539968db20b4891"
+    },
+    {
+      "target": "upstream-platform",
+      "exit_code": 0,
+      "summary": "PASS: 179 platform PE/ownership checks; read-only host mocks.",
+      "binary_sha256": "6950abc6855cabddf11fbcce8ea06a9bf6d8783c318dfe6a1d5e38b7d1084c21"
+    },
+    {
+      "target": "upstream-vbios",
+      "exit_code": 0,
+      "summary": "vbios valid-chain, malformed range, patch and signature checks passed",
+      "binary_sha256": "2ec63e7e77796a7d23dbc999c0612209c8ea8d1957f1a13036153e8079f8f70f"
+    },
+    {
+      "target": "capture-cases",
+      "exit_code": 0,
+      "summary": "PASS: 10 new synthetic capture failure scenarios; 2832 assertions; no device access.",
+      "binary_sha256": "efce64a3fa497d1d844a1b3f026a92cc578ad090bd73f7e9a96d8ba139dcb963"
+    },
+    {
+      "target": "platform-cases",
+      "exit_code": 0,
+      "summary": "PASS: 5 graph-observation cases, 13 malformed PE cases, 1 relocation-overlap characterization; 103 assertions.",
+      "binary_sha256": "8bd88c6adacee945ebee06c8c6a184a4fb500aad84e9a11469c9b9d2c110da3f"
+    },
+    {
+      "target": "parser-cases",
+      "exit_code": 0,
+      "summary": "PASS: 14 extra synthetic signature/descriptor checks; no board ROM or firmware execution.",
+      "binary_sha256": "7273267f53f89ff5abb42e050cdb5171cbf06c5165addf45a42f02b4fdb7aacc"
+    }
+  ]
+}

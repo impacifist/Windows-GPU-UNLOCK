@@ -1,0 +1,29 @@
+{
+  "scope": "offline consistency audit of third-party published evidence",
+  "reviewed_source_commit": "4e7fefcc4923f9e083d5324dc75a7d2f906af77f",
+  "source_inputs_checked": 16,
+  "hardware_exercised": false,
+  "hashes_checked": 15,
+  "runs_checked": 6,
+  "results": [
+    {
+      "mode": "fp32_pedantic",
+      "stock_tflops": 30.226964022473208,
+      "after_tflops": 30.527228705266726,
+      "change_percent": 0.9933669903807729
+    },
+    {
+      "mode": "fp16_fp32",
+      "stock_tflops": 84.07755700444267,
+      "after_tflops": 151.4296012471355,
+      "change_percent": 80.1070424050665
+    },
+    {
+      "mode": "bf16_fp32",
+      "stock_tflops": 84.02656479972585,
+      "after_tflops": 148.24749813795242,
+      "change_percent": 76.42932147862376
+    }
+  ],
+  "limit": "No original output matrices or local GPU execution; numerical flags and hashes are recorded claims."
+}

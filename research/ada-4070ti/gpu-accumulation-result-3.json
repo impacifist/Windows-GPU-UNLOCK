@@ -1,0 +1,183 @@
+{
+  "scope": "stock short register-resident FP16-input accumulation comparison; no selector-state inference",
+  "utc": "2026-10-25T21:56:05.085434+00:00",
+  "before": {
+    "name": "NVIDIA GeForce RTX 4070 Ti",
+    "pci.device_id": "0x278210DE",
+    "pci.sub_device_id": "0x51321462",
+    "driver_version": "610.88",
+    "vbios_version": "95.04.31.00.f0",
+    "memory.total": "12282",
+    "memory.used": "3316",
+    "temperature.gpu": "33",
+    "power.draw": "41.37",
+    "power.limit": "285.00",
+    "utilization.gpu": "9",
+    "clocks.sm": "2745",
+    "clocks.mem": "10251",
+    "pstate": "P2"
+  },
+  "grid": 120,
+  "threads_per_block": 256,
+  "iterations_per_chain": 768,
+  "ptx_chains": 4,
+  "sample_pairs": 7,
+  "device_buffer_bytes": 1966080,
+  "nominal_flops_per_launch": 12079595520,
+  "pairs": [
+    {
+      "order": [
+        "f16",
+        "f32"
+      ],
+      "initial_bias": 16,
+      "f16_ms": 0.19206400215625763,
+      "f32_ms": 0.26444798707962036
+    },
+    {
+      "order": [
+        "f32",
+        "f16"
+      ],
+      "initial_bias": 32,
+      "f32_ms": 0.24700799584388733,
+      "f16_ms": 0.23257599771022797
+    },
+    {
+      "order": [
+        "f16",
+        "f32"
+      ],
+      "initial_bias": 48,
+      "f16_ms": 0.1876479983329773,
+      "f32_ms": 0.2651839852333069
+    },
+    {
+      "order": [
+        "f32",
+        "f16"
+      ],
+      "initial_bias": 64,
+      "f32_ms": 0.4941120147705078,
+      "f16_ms": 0.2128320038318634
+    },
+    {
+      "order": [
+        "f16",
+        "f32"
+      ],
+      "initial_bias": 80,
+      "f16_ms": 0.25071999430656433,
+      "f32_ms": 0.2521919906139374
+    },
+    {
+      "order": [
+        "f32",
+        "f16"
+      ],
+      "initial_bias": 96,
+      "f32_ms": 0.26556798815727234,
+      "f16_ms": 0.2683199942111969
+    },
+    {
+      "order": [
+        "f16",
+        "f32"
+      ],
+      "initial_bias": 112,
+      "f16_ms": 0.2242559939622879,
+      "f32_ms": 0.298335999250412
+    }
+  ],
+  "results": [
+    {
+      "input": "f16",
+      "accumulation": "f16",
+      "milliseconds": [
+        0.19206400215625763,
+        0.23257599771022797,
+        0.1876479983329773,
+        0.2128320038318634,
+        0.25071999430656433,
+        0.2683199942111969,
+        0.2242559939622879
+      ],
+      "median_ms": 0.2242559939622879,
+      "nominal_tflops": 53.86520692968131,
+      "output_values_per_launch": 491520,
+      "full_output_verified_every_launch": true,
+      "last_output_sha256": "18282e20b0dcabce0d89335fc181be7f622621d43e8ac6a768f92de8e2fe372c",
+      "ptx_sha256": "936063f263d9a5a541ffb2b0484f1d9d410327b38b0d83aa6908695299dab46a"
+    },
+    {
+      "input": "f16",
+      "accumulation": "f32",
+      "milliseconds": [
+        0.26444798707962036,
+        0.24700799584388733,
+        0.2651839852333069,
+        0.4941120147705078,
+        0.2521919906139374,
+        0.26556798815727234,
+        0.298335999250412
+      ],
+      "median_ms": 0.2651839852333069,
+      "nominal_tflops": 45.551753471735715,
+      "output_values_per_launch": 491520,
+      "full_output_verified_every_launch": true,
+      "last_output_sha256": "e704dd1d551564dadb2480b810d601c0614ee4fab41860e7008a0d361e57190e",
+      "ptx_sha256": "7bb689a1a23ceed223a3a881104187f6905f366347cc15937de7288b4ff5bd09"
+    }
+  ],
+  "cuda": {
+    "gpu": "NVIDIA GeForce RTX 4070 Ti",
+    "pci_bus_id": "0000:0B:00.0",
+    "compute_capability": [
+      8,
+      9
+    ],
+    "cuda_driver_api": 13030,
+    "free_bytes_after_context": 11595153408,
+    "total_bytes": 12877955072
+  },
+  "before_samples": {
+    "name": "NVIDIA GeForce RTX 4070 Ti",
+    "pci.device_id": "0x278210DE",
+    "pci.sub_device_id": "0x51321462",
+    "driver_version": "610.88",
+    "vbios_version": "95.04.31.00.f0",
+    "memory.total": "12282",
+    "memory.used": "3488",
+    "temperature.gpu": "33",
+    "power.draw": "41.67",
+    "power.limit": "285.00",
+    "utilization.gpu": "11",
+    "clocks.sm": "2745",
+    "clocks.mem": "10251",
+    "pstate": "P2"
+  },
+  "fp16_accum_over_fp32_accum_nominal_rate_ratio": 1.182505673752032,
+  "cleanup_completed": true,
+  "after": {
+    "name": "NVIDIA GeForce RTX 4070 Ti",
+    "pci.device_id": "0x278210DE",
+    "pci.sub_device_id": "0x51321462",
+    "driver_version": "610.88",
+    "vbios_version": "95.04.31.00.f0",
+    "memory.total": "12282",
+    "memory.used": "3315",
+    "temperature.gpu": "33",
+    "power.draw": "41.76",
+    "power.limit": "285.00",
+    "utilization.gpu": "8",
+    "clocks.sm": "2745",
+    "clocks.mem": "10251",
+    "pstate": "P2"
+  },
+  "research_source_sha256": {
+    "gpu_accumulation_probe.py": "ef88d57d0c2de93445b78fe2cc3977f10796a7aa3ac44f87cbd18876cf8a75eb",
+    "cuda_driver.py": "24fba7f42f5eacd54cbb6209613574883c1ca883e8a8c92eb4cc83c771555d4e",
+    "gpu_tensor_probe.py": "afecf4413df338ae2375212a81b9d85a7fb84265a3b6942caa5a1cab631b8dc3",
+    "gpu_smoke.py": "52d1f0c32902947de566a3a5aacf5cfb886e9b05e9d3f6d833a0b7a5732bfa28"
+  }
+}

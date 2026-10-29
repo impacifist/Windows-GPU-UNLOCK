@@ -1,0 +1,23 @@
+{
+  "repository": "https://github.com/JustAResearcher/gpu-unlock-ada",
+  "commit": "4e7fefcc4923f9e083d5324dc75a7d2f906af77f",
+  "accessed": "2026-10-25",
+  "files": {
+    "README.md": "058d79409690fdd9ef6605dc12f708edd763869020da34b5637d96fb2a60a488",
+    "windows/ad104-msi/profile.c": "e6ec2cef05932cbacb34220e06b34d5148a05d2f961bfa3b90e62992a7eddb59",
+    "windows/ad104-msi/port.h": "7f63926f9e368fbc52ecf46d2cb3d0fbee877fc08e956667a9699c1e15761a1c",
+    "windows/ad104-msi/checks.c": "d0063086eff3693b4e48f6b1bfdbaac1634d49c264084d0ed2f0a0cc442b02e4",
+    "windows/ad104-msi/msi_release.c": "a1a928e5e98c51e69496d1e3df6e8045651ba8b7c110efc2f880a3c554aba86d",
+    "windows/ad104-msi/boot_io.c": "990ebdfa5c9bdb0a3a6e912b0abc9f779d226cb3c7dbc7c86388678d7bb60a60",
+    "windows/ad104-msi/boot_profile.h": "f7e6f181844cc97ee3e9db4c51ef4b122d7f36331c0d9268a6c6011346f6fac7",
+    "windows/ad104-msi/vendor/arch_610.h": "0083606528ad11277b52f2ae7ad2e3b9f501fcf17e2120e6f205804eab0fba5a",
+    "windows/ad104-msi/vendor/unlock_610.c": "76fd78b0b33259647fc2e0e676331342e4eb57e004f1be914c2643ebaedb7830",
+    "windows/ad104-msi/diagnostic/README.md": "7dbfdad3297b228db036659cf5efac76fa4e3838c56a97128a517191d69911dc",
+    "windows/ad104-msi/diagnostic/src/probe.c": "e28887d0641535da5ca8aa159fe2d024e423d99dfe0f170c4998df8d3b80307e",
+    "windows/ad104-msi/diagnostic/src/platform.c": "22a92872897fdcc777b7b2cf4caf096d008ebf75c84ae74da0cfc925bbe4488f",
+    "windows/ad104-msi/benchmark.py": "605b6d4e952689270fd825e764ec74d664bd7362bf91a41ddff5e6e866e82a70",
+    "windows/ad104-msi/compare.py": "836bff39b1f4b2688cc2318ec8839220be218223e5e9e501e095154267b23bd5",
+    "docs/evidence/ad104-windows/SHA256SUMS.json": "45e8d0598b9334e0023b7a58a5fcc2917cd248b2d4f5d9097ab49af6c456e6e0",
+    "docs/ad104-windows-latence-app.md": "ccf74d304d24a9117cbb1fe06fe708429186467832a0a19b8ee109f17be5b802"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "manifest_url": "https://developer.download.nvidia.com/compute/cuda/redist/redistrib_12.6.0.json",
+  "manifest_sha256": "87740b01676b3d18982982ab96ec7fa1a626d03a96df070a6b0f258d01ff5fab",
+  "components": [
+    {
+      "component": "cuda_nvcc",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/cuda_nvcc/windows-x86_64/cuda_nvcc-windows-x86_64-12.6.20-archive.zip",
+      "archive_sha256": "03282a36fb98c2f227877a62efd04c36b1ab01fb1b676d9edbd0b10179e0a40a",
+      "archive_bytes": 79358872,
+      "tool": "ptxas.exe",
+      "tool_sha256": "178ed3bb64af5be72f56ad3fd5749b8721683701de01272a1b86721e73c19a95"
+    },
+    {
+      "component": "cuda_nvdisasm",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/cuda_nvdisasm/windows-x86_64/cuda_nvdisasm-windows-x86_64-12.6.20-archive.zip",
+      "archive_sha256": "9ac787efbcd20c4c871038ee5ca1c0757139990b25ea90d368aa9c1759952be6",
+      "archive_bytes": 50158278,
+      "tool": "nvdisasm.exe",
+      "tool_sha256": "6b38a86a02f30f6c71202af90225efda0f172123d650bd4cdacfbc169a0f0a6a"
+    }
+  ]
+}

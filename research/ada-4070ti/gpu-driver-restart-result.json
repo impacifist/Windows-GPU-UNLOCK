@@ -1,0 +1,54 @@
+{
+  "scope": "one vendor-reported Windows driver restart followed by independent health and compute checks; no unlock transaction",
+  "date": "2026-10-25",
+  "target_bus": "00000000:0B:00.0",
+  "before": {
+    "Vbios": "95.04.31.00.f0",
+    "Driver": "610.88",
+    "PnpProblemCode": 0
+  },
+  "recovery_ready": true,
+  "restart_command_completed": true,
+  "restart_exit_code": null,
+  "restart_timed_out": false,
+  "vendor_stdout": "Driver restarted successfully for NVIDIA GeForce RTX 4070 Ti 00000000:0B:00.0.\nAll done.",
+  "vendor_stderr": "",
+  "boot_session_unchanged": true,
+  "original_controller_health_recovered": false,
+  "reporting_limit": "Original Windows PowerShell process handle was not retained. Exit codes were null, causing all twenty otherwise healthy PnP/kernel snapshots to fail NVML gating. Original exit code cannot be reconstructed; success is vendor-reported, with separate follow-up verification.",
+  "followup_health": [
+    {
+      "problem_code": 0,
+      "nvml_query_exit_code": 0,
+      "pnp_status": "OK",
+      "healthy": true,
+      "kernel_driver_state": "Running",
+      "utc": "2026-10-25T22:30:01.0621863Z",
+      "nvml_identity_ok": true
+    },
+    {
+      "problem_code": 0,
+      "nvml_query_exit_code": 0,
+      "pnp_status": "OK",
+      "healthy": true,
+      "kernel_driver_state": "Running",
+      "utc": "2026-10-25T22:30:03.7043267Z",
+      "nvml_identity_ok": true
+    }
+  ],
+  "recovery_worker": {
+    "EnableAttempted": false,
+    "ProblemCode": 0,
+    "Completed": true,
+    "ResetStillRunning": false
+  },
+  "fresh_compute_reports": [
+    "gpu-smoke-after-driver-restart.json",
+    "gpu-nvapi-after-driver-restart.json",
+    "gpu-cublas-after-driver-restart.json"
+  ],
+  "executed_controller_git_commit": "eae6ced",
+  "later_process_handle_fix_git_commit": "f306a93",
+  "recovery_worker_exited_verified": true,
+  "active_lock_manually_cleared_after_followup": true
+}

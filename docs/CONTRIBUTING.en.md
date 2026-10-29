@@ -50,6 +50,11 @@ Do not attach firmware assets, VBIOS/PROM dumps, BitLocker recovery keys, serial
 Use the [validation record](VALIDATION.en.md) to separate existing observation,
 transaction, Windows recovery, compute and lifecycle evidence. No new run is required.
 
+For an example without an attempted unlock, see the
+[RTX 4070 Ti research report](../research/ada-4070ti/README.md).
+It separates Windows inventory, stock compute measurements and source portability
+gaps; it does not add an EFI profile or establish unlock support.
+
 Inventory reports are investigation inputs. Host mock tests validate software behavior. A supported write profile additionally requires reviewed GPU identity/firmware/layout constraints, pre-boot ownership and failure cleanup, a measured Windows handoff and reproducible hardware evidence. See the [portability design](PORTABILITY.en.md).
 
 Collector reference APIs: Microsoft's [Get-CimInstance](https://learn.microsoft.com/en-us/powershell/module/cimcmdlets/get-ciminstance), [Win32_VideoController](https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-videocontroller) and [PCI identifiers](https://learn.microsoft.com/en-us/windows-hardware/drivers/install/identifiers-for-pci-devices). Windows inventory alone cannot establish pre-boot compatibility.

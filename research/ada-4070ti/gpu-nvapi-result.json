@@ -1,0 +1,67 @@
+{
+  "scope": "documented read-only NVAPI queries; no SM rate/selector inference",
+  "utc": "2026-10-25T22:18:48.279211+00:00",
+  "before": {
+    "name": "NVIDIA GeForce RTX 4070 Ti",
+    "pci.device_id": "0x278210DE",
+    "pci.sub_device_id": "0x51321462",
+    "driver_version": "610.88",
+    "vbios_version": "95.04.31.00.f0",
+    "memory.total": "12282",
+    "memory.used": "3407",
+    "temperature.gpu": "31",
+    "power.draw": "18.50",
+    "power.limit": "285.00",
+    "utilization.gpu": "13"
+  },
+  "gpu": "NVIDIA GeForce RTX 4070 Ti",
+  "bus_id": {
+    "status": 0,
+    "value": 11
+  },
+  "slot_id_raw": {
+    "status": 0,
+    "value": 0
+  },
+  "shader_subpipe_count": {
+    "status": 0,
+    "value": 30
+  },
+  "gpu_core_count": {
+    "status": 0,
+    "value": 7680
+  },
+  "architecture": {
+    "status": 0,
+    "architecture": "0x190",
+    "implementation": "0x4",
+    "revision": "0xa1"
+  },
+  "gsp_query": {
+    "status": -104,
+    "firmware_version": null,
+    "limit": "Unsupported does not distinguish not-running from not-supported."
+  },
+  "client_unloaded": true,
+  "cuda_multiprocessor_count": 60,
+  "counter_limit": "NVAPI shader subpipes are retained raw, not equated to CUDA SM count.",
+  "after": {
+    "name": "NVIDIA GeForce RTX 4070 Ti",
+    "pci.device_id": "0x278210DE",
+    "pci.sub_device_id": "0x51321462",
+    "driver_version": "610.88",
+    "vbios_version": "95.04.31.00.f0",
+    "memory.total": "12282",
+    "memory.used": "3407",
+    "temperature.gpu": "31",
+    "power.draw": "18.50",
+    "power.limit": "285.00",
+    "utilization.gpu": "13"
+  },
+  "nvapi_dll_sha256": "79dfd011ac0e25eb2899af72ffe8f78722738ddf5edccada377007f42aa9e615",
+  "research_source_sha256": {
+    "gpu_nvapi_probe.py": "2ae31ff21942e8b6a440d88f6375f2bb7e67306046648e2c707cb58ae425f6d7",
+    "gpu_smoke.py": "52d1f0c32902947de566a3a5aacf5cfb886e9b05e9d3f6d833a0b7a5732bfa28",
+    "cuda_driver.py": "24fba7f42f5eacd54cbb6209613574883c1ca883e8a8c92eb4cc83c771555d4e"
+  }
+}

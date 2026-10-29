@@ -1,0 +1,9 @@
+{
+  "repository": "https://github.com/NVIDIA/nvapi",
+  "commit": "70d337db9186e968eab622f7e786de7e437faf3d",
+  "files": {
+    "nvapi.h": "4ee1bff7568ceec72124b8b3e43bf65ccb69dbb878b08c634b128f7edcd28f3b",
+    "nvapi_interface.h": "a3e3f84a25926b76b73199e861ee4692875b935cfc2e19e90e7be3e43e7f0756",
+    "nvapi_lite_common.h": "5ddc178d1d504b89907dad59d41d670e92647e5b7847d4de1461e6765d8871e8"
+  }
+}

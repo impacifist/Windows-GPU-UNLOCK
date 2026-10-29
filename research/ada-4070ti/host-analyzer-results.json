@@ -1,0 +1,90 @@
+{
+  "scope": "pure Python analyzer with synthetic host captures",
+  "reviewed_source_commit": "4e7fefcc4923f9e083d5324dc75a7d2f906af77f",
+  "hardware_accessed": false,
+  "test_methods_passed": 8,
+  "characterizations": [
+    {
+      "case": "prom-final-chip-drift",
+      "accepted_as_partial": true,
+      "unlock_ready": false
+    },
+    {
+      "case": "prom-final-chip-failure",
+      "accepted_as_partial": true,
+      "unlock_ready": false
+    },
+    {
+      "case": "prom-final-pci-drift",
+      "accepted_as_partial": true,
+      "unlock_ready": false
+    },
+    {
+      "case": "prom-final-pci-failure",
+      "accepted_as_partial": true,
+      "unlock_ready": false
+    },
+    {
+      "case": "prom-signature-change",
+      "accepted_as_partial": true,
+      "unlock_ready": false
+    },
+    {
+      "case": "register-badf-sentinel",
+      "accepted_as_partial": true,
+      "unlock_ready": false
+    },
+    {
+      "case": "register-chip-all-ones",
+      "accepted_as_partial": true,
+      "unlock_ready": false
+    },
+    {
+      "case": "register-chip-zero",
+      "accepted_as_partial": true,
+      "unlock_ready": false
+    },
+    {
+      "case": "register-final-chip-drift",
+      "accepted_as_partial": true,
+      "unlock_ready": false
+    },
+    {
+      "case": "register-final-chip-failure",
+      "accepted_as_partial": true,
+      "unlock_ready": false
+    },
+    {
+      "case": "graph-agent-absent",
+      "platform_graph_complete": true,
+      "verified_code_captures": 0,
+      "unlock_ready": false
+    },
+    {
+      "case": "graph-binding-missing",
+      "platform_graph_complete": true,
+      "verified_code_captures": 0,
+      "unlock_ready": false
+    },
+    {
+      "case": "graph-code-malformed",
+      "platform_graph_complete": true,
+      "verified_code_captures": 0,
+      "unlock_ready": false
+    },
+    {
+      "case": "graph-image-missing",
+      "platform_graph_complete": true,
+      "verified_code_captures": 0,
+      "unlock_ready": false
+    },
+    {
+      "case": "graph-target-absent",
+      "platform_graph_complete": true,
+      "verified_code_captures": 1,
+      "unlock_ready": false
+    }
+  ],
+  "research_source_sha256": "f343784259542e83ac8018724d245bcc41978c25f2bd8bb00aeeb0a0a71d1f37",
+  "limit": "Partial/graph-complete is inventory metadata; support and unlock readiness remain false."
+}

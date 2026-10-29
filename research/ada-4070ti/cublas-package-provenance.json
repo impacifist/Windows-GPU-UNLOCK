@@ -1,0 +1,26 @@
+{
+  "manifest_url": "https://developer.download.nvidia.com/compute/cuda/redist/redistrib_12.6.0.json",
+  "manifest_sha256": "87740b01676b3d18982982ab96ec7fa1a626d03a96df070a6b0f258d01ff5fab",
+  "components": [
+    {
+      "component": "cuda_cudart",
+      "version": "12.6.37",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/cuda_cudart/windows-x86_64/cuda_cudart-windows-x86_64-12.6.37-archive.zip",
+      "bytes": 2512085,
+      "sha256": "c66badb16921c4acb7abc38f211d530c2f290bd52c2cbdb5fb12095dc6eab0a9"
+    },
+    {
+      "component": "libcublas",
+      "version": "12.6.0.22",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/libcublas/windows-x86_64/libcublas-windows-x86_64-12.6.0.22-archive.zip",
+      "bytes": 404037803,
+      "sha256": "4f38ba0ab036296bcc48727cc3ed27e633911c0fc5dccb60d5131657b1a58002"
+    }
+  ],
+  "installation": "isolated archive extraction only; no installer/driver change",
+  "dll_sha256": {
+    "cuda_cudart/cuda_cudart-windows-x86_64-12.6.37-archive/bin/cudart64_12.dll": "3df50cf48718712f17b8c77ad72c45a1f43ff94781e302a4be7f1d7a9b66c746",
+    "libcublas/libcublas-windows-x86_64-12.6.0.22-archive/bin/cublas64_12.dll": "e26c6a52b7df762633978b282d6f172d0085719b116ff1a8ca4c96ff5786e142",
+    "libcublas/libcublas-windows-x86_64-12.6.0.22-archive/bin/cublasLt64_12.dll": "0fa3aabf2e90f0ba3d331699b95305ee29fe1cda0f4d4b64c883e04f01a35b49"
+  }
+}

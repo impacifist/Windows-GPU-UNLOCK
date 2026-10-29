@@ -1,0 +1,39 @@
+{
+  "scope": "offline arithmetic/hash check of local stock-GPU evidence",
+  "gpu_runs": 3,
+  "timed_launches": 42,
+  "timed_output_values_checked": 20643840,
+  "recorded_output_hashes_match_cpu_pattern": true,
+  "sampled_temperature_range_c": [
+    32.0,
+    34.0
+  ],
+  "pci_bus_id": "0000:0B:00.0",
+  "results": [
+    {
+      "input": "f16",
+      "accumulation": "f32",
+      "process_medians_nominal_tflops": [
+        69.77907465357326,
+        72.30519595094235,
+        66.50368099421549
+      ],
+      "median_of_process_medians_nominal_tflops": 69.77907465357326,
+      "minimum_process_median": 66.50368099421549,
+      "maximum_process_median": 72.30519595094235
+    },
+    {
+      "input": "bf16",
+      "accumulation": "f32",
+      "process_medians_nominal_tflops": [
+        71.81002657763399,
+        71.76395030606558,
+        69.93177529760293
+      ],
+      "median_of_process_medians_nominal_tflops": 71.76395030606558,
+      "minimum_process_median": 69.93177529760293,
+      "maximum_process_median": 71.81002657763399
+    }
+  ],
+  "limit": "Nominal register-work rates under background activity; no unlock, peak, GEMM or application claim."
+}

@@ -1,0 +1,565 @@
+{
+  "scope": "fixed-binary grid/batch characterization; no selector state or unlock inference",
+  "utc": "2026-10-25T22:34:49.552115+00:00",
+  "before": {
+    "name": "NVIDIA GeForce RTX 4070 Ti",
+    "pci.device_id": "0x278210DE",
+    "pci.sub_device_id": "0x51321462",
+    "driver_version": "610.88",
+    "vbios_version": "95.04.31.00.f0",
+    "memory.total": "12282",
+    "memory.used": "1117",
+    "temperature.gpu": "34",
+    "power.draw": "59.12",
+    "power.limit": "285.00",
+    "utilization.gpu": "5"
+  },
+  "grids": [
+    120,
+    360,
+    720
+  ],
+  "block": 256,
+  "iterations": 768,
+  "batch": 16,
+  "pairs_per_grid": 8,
+  "minimum_warmup_seconds_per_mode": 0.25,
+  "verification_limit": "Full final output after each batch; intermediate overwritten outputs are not observed.",
+  "binary_manifest_sha256": "53a8632b94f34996d7425f3eaa5bb49f7279a5e7394c1dba136c2f6c01d8c601",
+  "results": [
+    {
+      "grid": 120,
+      "nominal_flops_per_launch": 12079595520,
+      "pairs": [
+        {
+          "bias": 16,
+          "order": [
+            "f16",
+            "f32"
+          ],
+          "f16": {
+            "milliseconds_per_launch": 0.07743600010871887,
+            "final_output_sha256": "eb73b5c3b38a8dfa756988ddae57fde0b5f1ef216bd17c7e191da900d70e5d75"
+          },
+          "f32": {
+            "milliseconds_per_launch": 0.14091399312019348,
+            "final_output_sha256": "f0e195a3ec872aa1733954f2755f178236117df8c63014fd406690d74f2cf1b8"
+          }
+        },
+        {
+          "bias": 32,
+          "order": [
+            "f32",
+            "f16"
+          ],
+          "f32": {
+            "milliseconds_per_launch": 0.1433439999818802,
+            "final_output_sha256": "e6d3039d39cc6b36d50e4f4a0317fc68e2997e2968f860a8e889576b2bc65873"
+          },
+          "f16": {
+            "milliseconds_per_launch": 0.07484599947929382,
+            "final_output_sha256": "ec22160b47b277b2654a4000832bbaca9ed8ebe7cc5056fab231a96e79b16c4f"
+          }
+        },
+        {
+          "bias": 48,
+          "order": [
+            "f16",
+            "f32"
+          ],
+          "f16": {
+            "milliseconds_per_launch": 0.07266400009393692,
+            "final_output_sha256": "0551da217261f9194498ee431c909c8bdc21b7fc82f65ec20779b46510e0c174"
+          },
+          "f32": {
+            "milliseconds_per_launch": 0.14089199900627136,
+            "final_output_sha256": "71db4250e6793c4a9ccaf9eda85892120a0d41cd370ab3576ab0f24e06693762"
+          }
+        },
+        {
+          "bias": 64,
+          "order": [
+            "f32",
+            "f16"
+          ],
+          "f32": {
+            "milliseconds_per_launch": 0.22514000535011292,
+            "final_output_sha256": "801c7659b5441ffa73fae0f027d0df830f0857d52c58ca228f81d95e5ee16bbf"
+          },
+          "f16": {
+            "milliseconds_per_launch": 0.07355400174856186,
+            "final_output_sha256": "d191820607ac27b379fdc57764379508397d17af6a4f35cbd7b270f66936677b"
+          }
+        },
+        {
+          "bias": 80,
+          "order": [
+            "f16",
+            "f32"
+          ],
+          "f16": {
+            "milliseconds_per_launch": 0.07276999950408936,
+            "final_output_sha256": "c50459e951483a155a4ed00075bac0034ff7abba928c1621227aed2c96b53513"
+          },
+          "f32": {
+            "milliseconds_per_launch": 0.14143800735473633,
+            "final_output_sha256": "fd24e09468967325a2d7fd67f0876625edd6811156afea0601529ef94f272dba"
+          }
+        },
+        {
+          "bias": 96,
+          "order": [
+            "f32",
+            "f16"
+          ],
+          "f32": {
+            "milliseconds_per_launch": 0.14268800616264343,
+            "final_output_sha256": "11329ca37e5ac57bc59cd5d19f2ab4c78e99d6933167c11499988a426d51401b"
+          },
+          "f16": {
+            "milliseconds_per_launch": 0.07280399650335312,
+            "final_output_sha256": "88ec2807b6ef4bc42b774becf03bae754603f79b9f54f1aa238d7c95f18c8777"
+          }
+        },
+        {
+          "bias": 112,
+          "order": [
+            "f16",
+            "f32"
+          ],
+          "f16": {
+            "milliseconds_per_launch": 0.07381799817085266,
+            "final_output_sha256": "18282e20b0dcabce0d89335fc181be7f622621d43e8ac6a768f92de8e2fe372c"
+          },
+          "f32": {
+            "milliseconds_per_launch": 0.1430319994688034,
+            "final_output_sha256": "e704dd1d551564dadb2480b810d601c0614ee4fab41860e7008a0d361e57190e"
+          }
+        },
+        {
+          "bias": 128,
+          "order": [
+            "f32",
+            "f16"
+          ],
+          "f32": {
+            "milliseconds_per_launch": 0.14081400632858276,
+            "final_output_sha256": "0191de266aa139bd9e2df0f1b5862604126ab71d20a33331c362b0dfdfffd709"
+          },
+          "f16": {
+            "milliseconds_per_launch": 0.07844000309705734,
+            "final_output_sha256": "fee596159d5be3dc9cf8af6459d9fd2405992b5dcf1745b6a0838a617ecc2e72"
+          }
+        }
+      ],
+      "median_ms": {
+        "f16": 0.07368599995970726,
+        "f32": 0.14206300675868988
+      },
+      "nominal_tflops": {
+        "f16": 163.9333866216829,
+        "f32": 85.02984552846021
+      },
+      "f16_over_f32_rate_ratio": 1.9279511282519384,
+      "telemetry_before": {
+        "name": "NVIDIA GeForce RTX 4070 Ti",
+        "pci.device_id": "0x278210DE",
+        "pci.sub_device_id": "0x51321462",
+        "driver_version": "610.88",
+        "vbios_version": "95.04.31.00.f0",
+        "memory.total": "12282",
+        "memory.used": "1300",
+        "temperature.gpu": "34",
+        "power.draw": "59.05",
+        "power.limit": "285.00",
+        "utilization.gpu": "14"
+      },
+      "telemetry_after": {
+        "name": "NVIDIA GeForce RTX 4070 Ti",
+        "pci.device_id": "0x278210DE",
+        "pci.sub_device_id": "0x51321462",
+        "driver_version": "610.88",
+        "vbios_version": "95.04.31.00.f0",
+        "memory.total": "12282",
+        "memory.used": "1307",
+        "temperature.gpu": "34",
+        "power.draw": "59.05",
+        "power.limit": "285.00",
+        "utilization.gpu": "14"
+      }
+    },
+    {
+      "grid": 360,
+      "nominal_flops_per_launch": 36238786560,
+      "pairs": [
+        {
+          "bias": 16,
+          "order": [
+            "f16",
+            "f32"
+          ],
+          "f16": {
+            "milliseconds_per_launch": 0.21543200314044952,
+            "final_output_sha256": "858b8a58937f204c9c396d83db28465a9acd9ddd972f10397684e0832f32107c"
+          },
+          "f32": {
+            "milliseconds_per_launch": 0.42528998851776123,
+            "final_output_sha256": "a5577ce0e71de0b0e705b0b68df0a8da9a283ec90418b2a8ad50e04e79b7c659"
+          }
+        },
+        {
+          "bias": 32,
+          "order": [
+            "f32",
+            "f16"
+          ],
+          "f32": {
+            "milliseconds_per_launch": 0.43437400460243225,
+            "final_output_sha256": "2303d22825b134dd6a31b6e1444743f6347ea34408aa84046422309d1eb77375"
+          },
+          "f16": {
+            "milliseconds_per_launch": 0.22433599829673767,
+            "final_output_sha256": "d8f2159221429855ad7f9e980014e9ac6a1b02755b2e85b73fbb13e269cb37de"
+          }
+        },
+        {
+          "bias": 48,
+          "order": [
+            "f16",
+            "f32"
+          ],
+          "f16": {
+            "milliseconds_per_launch": 0.21042999625205994,
+            "final_output_sha256": "f76d558ea63defcf33a60d2275a118ef1230a963423457f5739afa037bdb8f1a"
+          },
+          "f32": {
+            "milliseconds_per_launch": 0.4173380136489868,
+            "final_output_sha256": "f413889bd9e7b71875962448ebdf3a2198599cc42a3385ba2b16dffb01f2a1b9"
+          }
+        },
+        {
+          "bias": 64,
+          "order": [
+            "f32",
+            "f16"
+          ],
+          "f32": {
+            "milliseconds_per_launch": 0.4188539981842041,
+            "final_output_sha256": "996c2e8f13d6859a27a97ffb291cf8f8486908189ac10b4b4abada1375051578"
+          },
+          "f16": {
+            "milliseconds_per_launch": 0.2203740030527115,
+            "final_output_sha256": "f0924e73b210e20829287f6351bebf68bb3ba81b5a3fe898c51cbd4064132b95"
+          }
+        },
+        {
+          "bias": 80,
+          "order": [
+            "f16",
+            "f32"
+          ],
+          "f16": {
+            "milliseconds_per_launch": 0.22466999292373657,
+            "final_output_sha256": "826d98b69981f358cfda8f26e6449d26a4aa5c86a8a2ab3d3fb2983a366e0707"
+          },
+          "f32": {
+            "milliseconds_per_launch": 0.4252240061759949,
+            "final_output_sha256": "3bc5317ef6da0e3524464c002ffe955dabe3b75c176cad40bcc3aea2d2cf6fce"
+          }
+        },
+        {
+          "bias": 96,
+          "order": [
+            "f32",
+            "f16"
+          ],
+          "f32": {
+            "milliseconds_per_launch": 0.43110600113868713,
+            "final_output_sha256": "dc5ad92cd1febf0bcbbb51d14f9d404689593eb571686059117d3f4aed135360"
+          },
+          "f16": {
+            "milliseconds_per_launch": 0.2362920045852661,
+            "final_output_sha256": "68059a5471d6f3abd8e4f92174a714ea4a5251b2a4ffe040e31424535321d627"
+          }
+        },
+        {
+          "bias": 112,
+          "order": [
+            "f16",
+            "f32"
+          ],
+          "f16": {
+            "milliseconds_per_launch": 0.22785399854183197,
+            "final_output_sha256": "547d6a73f5065baf787af50a10c412dd408f9fef4e0ec295dbd375238172ed36"
+          },
+          "f32": {
+            "milliseconds_per_launch": 0.41868799924850464,
+            "final_output_sha256": "066d248643e60dac76e68fd11e89f71b8eda0017c9408f1a76a3d94497270d56"
+          }
+        },
+        {
+          "bias": 128,
+          "order": [
+            "f32",
+            "f16"
+          ],
+          "f32": {
+            "milliseconds_per_launch": 0.4304499924182892,
+            "final_output_sha256": "470d94ab8341d8bd06c3ac6579cbecab81c6e8a1b295cf2406ae7a41ea3a4b61"
+          },
+          "f16": {
+            "milliseconds_per_launch": 0.23032599687576294,
+            "final_output_sha256": "c1a5ddfd42114af4192cd893a654fae8774544edee763c1f5418bec923e55527"
+          }
+        }
+      ],
+      "median_ms": {
+        "f16": 0.22450299561023712,
+        "f32": 0.42525699734687805
+      },
+      "nominal_tflops": {
+        "f16": 161.41783080219864,
+        "f32": 85.2162028751766
+      },
+      "f16_over_f32_rate_ratio": 1.8942152472886056,
+      "telemetry_before": {
+        "name": "NVIDIA GeForce RTX 4070 Ti",
+        "pci.device_id": "0x278210DE",
+        "pci.sub_device_id": "0x51321462",
+        "driver_version": "610.88",
+        "vbios_version": "95.04.31.00.f0",
+        "memory.total": "12282",
+        "memory.used": "1307",
+        "temperature.gpu": "34",
+        "power.draw": "59.05",
+        "power.limit": "285.00",
+        "utilization.gpu": "14"
+      },
+      "telemetry_after": {
+        "name": "NVIDIA GeForce RTX 4070 Ti",
+        "pci.device_id": "0x278210DE",
+        "pci.sub_device_id": "0x51321462",
+        "driver_version": "610.88",
+        "vbios_version": "95.04.31.00.f0",
+        "memory.total": "12282",
+        "memory.used": "1307",
+        "temperature.gpu": "36",
+        "power.draw": "53.12",
+        "power.limit": "285.00",
+        "utilization.gpu": "10"
+      }
+    },
+    {
+      "grid": 720,
+      "nominal_flops_per_launch": 72477573120,
+      "pairs": [
+        {
+          "bias": 16,
+          "order": [
+            "f16",
+            "f32"
+          ],
+          "f16": {
+            "milliseconds_per_launch": 0.4219619929790497,
+            "final_output_sha256": "eed98af636d2684f4b6df27cc4bb24d5656241af2bc98f6d4922170c12409462"
+          },
+          "f32": {
+            "milliseconds_per_launch": 0.9037500023841858,
+            "final_output_sha256": "37e791c077fd2962849752794ae79ff2e17432755c19c7db42d2158f9546b74f"
+          }
+        },
+        {
+          "bias": 32,
+          "order": [
+            "f32",
+            "f16"
+          ],
+          "f32": {
+            "milliseconds_per_launch": 0.8699659705162048,
+            "final_output_sha256": "a9798ea520baf8a27ec8db26cf52cf574f77e85ac80522e902c240e49eeb4e11"
+          },
+          "f16": {
+            "milliseconds_per_launch": 0.4356679916381836,
+            "final_output_sha256": "88055eadc3171f915ca01175239c0699ff04787158ed6208123cd5300730e67b"
+          }
+        },
+        {
+          "bias": 48,
+          "order": [
+            "f16",
+            "f32"
+          ],
+          "f16": {
+            "milliseconds_per_launch": 0.43525201082229614,
+            "final_output_sha256": "4c7ee5be71b2167c209b11441358490e67ce0e36fa124913e73ec8988cc03c5b"
+          },
+          "f32": {
+            "milliseconds_per_launch": 1.0172300338745117,
+            "final_output_sha256": "240f7b6978f3ef55cec3617623719d7584b12e0d2193b67e759cf5a716f5d448"
+          }
+        },
+        {
+          "bias": 64,
+          "order": [
+            "f32",
+            "f16"
+          ],
+          "f32": {
+            "milliseconds_per_launch": 0.8720380067825317,
+            "final_output_sha256": "fbbd2f47d37cd904d2fd02ce813da7391d50e8ba7f6a58bc3f137e911e084755"
+          },
+          "f16": {
+            "milliseconds_per_launch": 0.5870919823646545,
+            "final_output_sha256": "3946f7529281127deac232620e243edb3a61ae5cbf8f302bd57fa987fe2d4ee0"
+          }
+        },
+        {
+          "bias": 80,
+          "order": [
+            "f16",
+            "f32"
+          ],
+          "f16": {
+            "milliseconds_per_launch": 0.4447900056838989,
+            "final_output_sha256": "0743b74b660bd92809d6e47d37f2ed03709d2ffa051b538b4f0d0f80ca750379"
+          },
+          "f32": {
+            "milliseconds_per_launch": 0.8728280067443848,
+            "final_output_sha256": "14be50835dafc3daa54e1b8f4b7887d3a8e3d4e66ed0312a83082f953561c091"
+          }
+        },
+        {
+          "bias": 96,
+          "order": [
+            "f32",
+            "f16"
+          ],
+          "f32": {
+            "milliseconds_per_launch": 0.8598160147666931,
+            "final_output_sha256": "e7fb095289bd35359de62a018dcd45241614369b3fa790774eb913e36e285fc1"
+          },
+          "f16": {
+            "milliseconds_per_launch": 0.4460259974002838,
+            "final_output_sha256": "f010dcaf45991729ae0867cd1ba472164d12c21e8e06c152537bede90d287198"
+          }
+        },
+        {
+          "bias": 112,
+          "order": [
+            "f16",
+            "f32"
+          ],
+          "f16": {
+            "milliseconds_per_launch": 0.6005719900131226,
+            "final_output_sha256": "898d5e14477bafafb30118e84674fe43bbf206b2797bc3455e166dc4accb19c5"
+          },
+          "f32": {
+            "milliseconds_per_launch": 0.8685500025749207,
+            "final_output_sha256": "5cfee29af9cdfebeb2d9a798f59cb80d23c945c4ec6dbfd23537526ad6fc78bd"
+          }
+        },
+        {
+          "bias": 128,
+          "order": [
+            "f32",
+            "f16"
+          ],
+          "f32": {
+            "milliseconds_per_launch": 0.8715459704399109,
+            "final_output_sha256": "36c1fa4a924ba08dc8aac73be6b7a3d0c44f2d23d10a74e0d360862794cb5da4"
+          },
+          "f16": {
+            "milliseconds_per_launch": 0.44665399193763733,
+            "final_output_sha256": "e8578b278286c2c7bca62b9f29d2c9ebb8dccfa46b9ac0914172667aea2bafbb"
+          }
+        }
+      ],
+      "median_ms": {
+        "f16": 0.44540800154209137,
+        "f32": 0.8717919886112213
+      },
+      "nominal_tflops": {
+        "f16": 162.72175818366122,
+        "f32": 83.13631470215498
+      },
+      "f16_over_f32_rate_ratio": 1.9572885659730033,
+      "telemetry_before": {
+        "name": "NVIDIA GeForce RTX 4070 Ti",
+        "pci.device_id": "0x278210DE",
+        "pci.sub_device_id": "0x51321462",
+        "driver_version": "610.88",
+        "vbios_version": "95.04.31.00.f0",
+        "memory.total": "12282",
+        "memory.used": "1307",
+        "temperature.gpu": "36",
+        "power.draw": "53.12",
+        "power.limit": "285.00",
+        "utilization.gpu": "10"
+      },
+      "telemetry_after": {
+        "name": "NVIDIA GeForce RTX 4070 Ti",
+        "pci.device_id": "0x278210DE",
+        "pci.sub_device_id": "0x51321462",
+        "driver_version": "610.88",
+        "vbios_version": "95.04.31.00.f0",
+        "memory.total": "12282",
+        "memory.used": "1307",
+        "temperature.gpu": "37",
+        "power.draw": "60.70",
+        "power.limit": "285.00",
+        "utilization.gpu": "48"
+      }
+    }
+  ],
+  "cuda": {
+    "gpu": "NVIDIA GeForce RTX 4070 Ti",
+    "pci_bus_id": "0000:0B:00.0",
+    "compute_capability": [
+      8,
+      9
+    ],
+    "cuda_driver_api": 13030,
+    "free_bytes_after_context": 11595153408,
+    "total_bytes": 12877955072
+  },
+  "loaded_function_metadata": {
+    "f16": {
+      "registers": 20,
+      "local_bytes_per_thread": 0,
+      "static_shared_bytes": 0,
+      "binary_version": 89,
+      "predicted_max_active_blocks_per_sm_at_256_threads": 6,
+      "limit": "Resource-based occupancy prediction; not measured achieved occupancy."
+    },
+    "f32": {
+      "registers": 28,
+      "local_bytes_per_thread": 0,
+      "static_shared_bytes": 0,
+      "binary_version": 89,
+      "predicted_max_active_blocks_per_sm_at_256_threads": 6,
+      "limit": "Resource-based occupancy prediction; not measured achieved occupancy."
+    }
+  },
+  "cleanup_completed": true,
+  "after": {
+    "name": "NVIDIA GeForce RTX 4070 Ti",
+    "pci.device_id": "0x278210DE",
+    "pci.sub_device_id": "0x51321462",
+    "driver_version": "610.88",
+    "vbios_version": "95.04.31.00.f0",
+    "memory.total": "12282",
+    "memory.used": "1124",
+    "temperature.gpu": "37",
+    "power.draw": "60.70",
+    "power.limit": "285.00",
+    "utilization.gpu": "48"
+  },
+  "research_source_sha256": {
+    "gpu_binary_sweep.py": "406bc9a96f5813929dec0a19343dc55bec3b1ef879be53a9c6acfb576e32c8b0",
+    "gpu_binary_probe.py": "b4a6937f9204fab3036b4f7602bacf61f3733e876f3cf4f6e724561889324964",
+    "gpu_accumulation_probe.py": "ef88d57d0c2de93445b78fe2cc3977f10796a7aa3ac44f87cbd18876cf8a75eb",
+    "gpu_tensor_probe.py": "afecf4413df338ae2375212a81b9d85a7fb84265a3b6942caa5a1cab631b8dc3",
+    "gpu_smoke.py": "52d1f0c32902947de566a3a5aacf5cfb886e9b05e9d3f6d833a0b7a5732bfa28",
+    "cuda_driver.py": "24fba7f42f5eacd54cbb6209613574883c1ca883e8a8c92eb4cc83c771555d4e"
+  }
+}

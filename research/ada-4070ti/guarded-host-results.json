@@ -1,0 +1,66 @@
+{
+  "scope": "Windows console executables; synthetic UEFI callbacks and ROMs only",
+  "reviewed_source_commit": "4e7fefcc4923f9e083d5324dc75a7d2f906af77f",
+  "source_inputs_checked": 68,
+  "compiler_version": "14.29.30133",
+  "research_source_sha256": {
+    "run_host_tests.py": "7f20afbd73f632f785c1f6ea89c4d33724ae999c88ea1459f442f5bcea3598b1",
+    "host_capture_cases.c": "997c31433d4f6b1c884b015e6a6473c9aaf533bda7324e191284a3de992803aa",
+    "host_guarded_rom_cases.c": "dfad77a119b51b6103bfb32a571d72eefe0ccb8c58f962e9a13e5b00b315dce5",
+    "host_parser_cases.c": "d1fc159b4a73a2cf984cfcc87743e3084764a71ec79d363f76ae5c11cc4f3af2",
+    "host_platform_cases.c": "14759069092dc6b0ffd79f058378e7a010ca8999e2c4d1e34aac12fb0a09b774"
+  },
+  "firmware_built": false,
+  "hardware_accessed": false,
+  "targets": [
+    {
+      "target": "upstream-host",
+      "exit_code": 0,
+      "pe_subsystem": "Windows console (3)",
+      "summary": "PASS: 5530 checks; full EFI application executed against host mocks; no GPU hardware accessed.",
+      "binary_sha256": "55e762f9249e0b705f0206fa73dc47072a62ae0340dd719a87272089f8cad48a"
+    },
+    {
+      "target": "upstream-platform",
+      "exit_code": 0,
+      "pe_subsystem": "Windows console (3)",
+      "summary": "PASS: 179 platform PE/ownership checks; read-only host mocks.",
+      "binary_sha256": "41abee08f9033a338b45034fee3733492af366cf5bc6b186025da837e45e1347"
+    },
+    {
+      "target": "upstream-vbios",
+      "exit_code": 0,
+      "pe_subsystem": "Windows console (3)",
+      "summary": "vbios valid-chain, malformed range, patch and signature checks passed",
+      "binary_sha256": "99bf67a5ebb13bb73177717430a41bd04d3ed33933bf3d934e395fb879ecf551"
+    },
+    {
+      "target": "capture-cases",
+      "exit_code": 0,
+      "pe_subsystem": "Windows console (3)",
+      "summary": "PASS: 10 new synthetic capture failure scenarios; 2832 assertions; no device access.",
+      "binary_sha256": "f6a17228d87f17ec9f270018ca018a3ecd49dc7705edba9dd9200e7a3d847bfc"
+    },
+    {
+      "target": "platform-cases",
+      "exit_code": 0,
+      "pe_subsystem": "Windows console (3)",
+      "summary": "PASS: 5 graph-observation cases, 13 malformed PE cases, 1 relocation-overlap characterization; 103 assertions.",
+      "binary_sha256": "6ea06b189538214d862345d804acf4d9803b1b7f4fd96a449459f7247728cc60"
+    },
+    {
+      "target": "parser-cases",
+      "exit_code": 0,
+      "pe_subsystem": "Windows console (3)",
+      "summary": "PASS: 14 extra synthetic signature/descriptor checks; no board ROM or firmware execution.",
+      "binary_sha256": "4b956d893e17b3898eb16a7876cde64befe9ed0a20831edcba47df53d8e9a218"
+    },
+    {
+      "target": "guarded-rom-cases",
+      "exit_code": 0,
+      "pe_subsystem": "Windows console (3)",
+      "summary": "PASS: 36904 guard-backed ROM calls (32268 accepted, 4636 rejected); 0 exceptions; read-only inputs and output canaries.",
+      "binary_sha256": "9799dbfe634ff0679e7785923f1beb2c0999c82a8d3324000d5c22c39a26d8f8"
+    }
+  ]
+}

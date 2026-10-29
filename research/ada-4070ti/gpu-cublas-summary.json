@@ -1,0 +1,42 @@
+{
+  "scope": "offline verification of three local current-GPU cuBLAS runs",
+  "fresh_processes": 3,
+  "timed_matrices_checked": 63,
+  "elements_per_matrix": 16777216,
+  "full_output_fp32_values_covered_by_hashes": 1056964608,
+  "cpu_expected_output_hashes_match": true,
+  "sampled_temperature_range_c": [
+    31.0,
+    47.0
+  ],
+  "results": [
+    {
+      "mode": "fp32_pedantic",
+      "process_medians_tflops": [
+        30.53091566587951,
+        29.37432615617237,
+        29.74972058664062
+      ],
+      "median_of_process_medians_tflops": 29.74972058664062
+    },
+    {
+      "mode": "fp16_fp32",
+      "process_medians_tflops": [
+        77.47753499876666,
+        75.52520149549078,
+        76.72872874646517
+      ],
+      "median_of_process_medians_tflops": 76.72872874646517
+    },
+    {
+      "mode": "bf16_fp32",
+      "process_medians_tflops": [
+        75.33180132605065,
+        75.80245813975249,
+        73.80556821269326
+      ],
+      "median_of_process_medians_tflops": 75.33180132605065
+    }
+  ],
+  "limit": "Uniform-fixture local baseline; not general numerical accuracy, selector state or unlock uplift."
+}

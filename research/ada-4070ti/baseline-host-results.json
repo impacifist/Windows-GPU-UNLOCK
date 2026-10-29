@@ -1,0 +1,28 @@
+{
+  "scope": "Windows console executables; synthetic UEFI callbacks and ROMs only",
+  "reviewed_source_commit": "4e7fefcc4923f9e083d5324dc75a7d2f906af77f",
+  "source_inputs_checked": 68,
+  "compiler_version": "14.29.30133",
+  "firmware_built": false,
+  "hardware_accessed": false,
+  "targets": [
+    {
+      "target": "upstream-host",
+      "exit_code": 0,
+      "summary": "PASS: 5530 checks; full EFI application executed against host mocks; no GPU hardware accessed.",
+      "binary_sha256": "7916a14eaec86db43ed9fcfbae083249a957ab6090ad956202945ecb736e053a"
+    },
+    {
+      "target": "upstream-platform",
+      "exit_code": 0,
+      "summary": "PASS: 179 platform PE/ownership checks; read-only host mocks.",
+      "binary_sha256": "822c35f5cdf6ac5c00d0e787bc384abda0ee23ea362595d34385321b84b3c899"
+    },
+    {
+      "target": "upstream-vbios",
+      "exit_code": 0,
+      "summary": "vbios valid-chain, malformed range, patch and signature checks passed",
+      "binary_sha256": "58cd32b4ca75a4bec8d8c862eb32c776ad4feac9920d87dc56155468b20c95ba"
+    }
+  ]
+}

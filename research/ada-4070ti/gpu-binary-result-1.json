@@ -1,0 +1,207 @@
+{
+  "scope": "exact offline-compiled cubin accumulation comparison; no selector inference",
+  "utc": "2026-10-25T22:33:29.246197+00:00",
+  "before": {
+    "name": "NVIDIA GeForce RTX 4070 Ti",
+    "pci.device_id": "0x278210DE",
+    "pci.sub_device_id": "0x51321462",
+    "driver_version": "610.88",
+    "vbios_version": "95.04.31.00.f0",
+    "memory.total": "12282",
+    "memory.used": "1117",
+    "temperature.gpu": "31",
+    "power.draw": "18.16",
+    "power.limit": "285.00",
+    "utilization.gpu": "24",
+    "clocks.sm": "210",
+    "clocks.mem": "405",
+    "pstate": "P8"
+  },
+  "grid": 120,
+  "threads_per_block": 256,
+  "iterations_per_chain": 768,
+  "ptx_chains": 4,
+  "sample_pairs": 7,
+  "device_buffer_bytes": 1966080,
+  "nominal_flops_per_launch": 12079595520,
+  "pairs": [
+    {
+      "order": [
+        "f16",
+        "f32"
+      ],
+      "initial_bias": 16,
+      "f16_ms": 0.1974720060825348,
+      "f32_ms": 0.271807998418808
+    },
+    {
+      "order": [
+        "f32",
+        "f16"
+      ],
+      "initial_bias": 32,
+      "f32_ms": 0.29020801186561584,
+      "f16_ms": 0.2455040067434311
+    },
+    {
+      "order": [
+        "f16",
+        "f32"
+      ],
+      "initial_bias": 48,
+      "f16_ms": 0.23948800563812256,
+      "f32_ms": 0.258432000875473
+    },
+    {
+      "order": [
+        "f32",
+        "f16"
+      ],
+      "initial_bias": 64,
+      "f32_ms": 0.26025599241256714,
+      "f16_ms": 0.18582400679588318
+    },
+    {
+      "order": [
+        "f16",
+        "f32"
+      ],
+      "initial_bias": 80,
+      "f16_ms": 0.18745599687099457,
+      "f32_ms": 0.3121599853038788
+    },
+    {
+      "order": [
+        "f32",
+        "f16"
+      ],
+      "initial_bias": 96,
+      "f32_ms": 0.32953599095344543,
+      "f16_ms": 0.20204800367355347
+    },
+    {
+      "order": [
+        "f16",
+        "f32"
+      ],
+      "initial_bias": 112,
+      "f16_ms": 0.2575039863586426,
+      "f32_ms": 0.30079999566078186
+    }
+  ],
+  "results": [
+    {
+      "input": "f16",
+      "accumulation": "f16",
+      "milliseconds": [
+        0.1974720060825348,
+        0.2455040067434311,
+        0.23948800563812256,
+        0.18582400679588318,
+        0.18745599687099457,
+        0.20204800367355347,
+        0.2575039863586426
+      ],
+      "median_ms": 0.20204800367355347,
+      "nominal_tflops": 59.78577021486863,
+      "output_values_per_launch": 491520,
+      "full_output_verified_every_launch": true,
+      "last_output_sha256": "18282e20b0dcabce0d89335fc181be7f622621d43e8ac6a768f92de8e2fe372c",
+      "ptx_sha256": "936063f263d9a5a541ffb2b0484f1d9d410327b38b0d83aa6908695299dab46a"
+    },
+    {
+      "input": "f16",
+      "accumulation": "f32",
+      "milliseconds": [
+        0.271807998418808,
+        0.29020801186561584,
+        0.258432000875473,
+        0.26025599241256714,
+        0.3121599853038788,
+        0.32953599095344543,
+        0.30079999566078186
+      ],
+      "median_ms": 0.29020801186561584,
+      "nominal_tflops": 41.623921553184395,
+      "output_values_per_launch": 491520,
+      "full_output_verified_every_launch": true,
+      "last_output_sha256": "e704dd1d551564dadb2480b810d601c0614ee4fab41860e7008a0d361e57190e",
+      "ptx_sha256": "7bb689a1a23ceed223a3a881104187f6905f366347cc15937de7288b4ff5bd09"
+    }
+  ],
+  "cuda": {
+    "gpu": "NVIDIA GeForce RTX 4070 Ti",
+    "pci_bus_id": "0000:0B:00.0",
+    "compute_capability": [
+      8,
+      9
+    ],
+    "cuda_driver_api": 13030,
+    "free_bytes_after_context": 11595153408,
+    "total_bytes": 12877955072
+  },
+  "before_samples": {
+    "name": "NVIDIA GeForce RTX 4070 Ti",
+    "pci.device_id": "0x278210DE",
+    "pci.sub_device_id": "0x51321462",
+    "driver_version": "610.88",
+    "vbios_version": "95.04.31.00.f0",
+    "memory.total": "12282",
+    "memory.used": "1297",
+    "temperature.gpu": "31",
+    "power.draw": "18.45",
+    "power.limit": "285.00",
+    "utilization.gpu": "28",
+    "clocks.sm": "210",
+    "clocks.mem": "405",
+    "pstate": "P0"
+  },
+  "fp16_accum_over_fp32_accum_nominal_rate_ratio": 1.4363319933341259,
+  "cleanup_completed": true,
+  "after": {
+    "name": "NVIDIA GeForce RTX 4070 Ti",
+    "pci.device_id": "0x278210DE",
+    "pci.sub_device_id": "0x51321462",
+    "driver_version": "610.88",
+    "vbios_version": "95.04.31.00.f0",
+    "memory.total": "12282",
+    "memory.used": "1124",
+    "temperature.gpu": "32",
+    "power.draw": "40.71",
+    "power.limit": "285.00",
+    "utilization.gpu": "5",
+    "clocks.sm": "2745",
+    "clocks.mem": "10501",
+    "pstate": "P0"
+  },
+  "research_source_sha256": {
+    "gpu_accumulation_probe.py": "ef88d57d0c2de93445b78fe2cc3977f10796a7aa3ac44f87cbd18876cf8a75eb",
+    "cuda_driver.py": "24fba7f42f5eacd54cbb6209613574883c1ca883e8a8c92eb4cc83c771555d4e",
+    "gpu_tensor_probe.py": "afecf4413df338ae2375212a81b9d85a7fb84265a3b6942caa5a1cab631b8dc3",
+    "gpu_smoke.py": "52d1f0c32902947de566a3a5aacf5cfb886e9b05e9d3f6d833a0b7a5732bfa28",
+    "gpu_binary_probe.py": "b4a6937f9204fab3036b4f7602bacf61f3733e876f3cf4f6e724561889324964"
+  },
+  "binary_manifest_sha256": "53a8632b94f34996d7425f3eaa5bb49f7279a5e7394c1dba136c2f6c01d8c601",
+  "loaded_function_metadata": {
+    "f16": {
+      "registers": 20,
+      "local_bytes_per_thread": 0,
+      "static_shared_bytes": 0,
+      "binary_version": 89,
+      "predicted_max_active_blocks_per_sm_at_256_threads": 6,
+      "limit": "Resource-based occupancy prediction; not measured achieved occupancy."
+    },
+    "f32": {
+      "registers": 28,
+      "local_bytes_per_thread": 0,
+      "static_shared_bytes": 0,
+      "binary_version": 89,
+      "predicted_max_active_blocks_per_sm_at_256_threads": 6,
+      "limit": "Resource-based occupancy prediction; not measured achieved occupancy."
+    }
+  },
+  "executed_cubin_sha256": {
+    "f16": "c51a68f26f54b179c3787197b649496e2efdf055325e0d2b4d440267659107ba",
+    "f32": "6f4a5982dbc01ab6d4ed0fc12efc17c6f1bcf690d97d2c1a2a2059b7e4a333e0"
+  }
+}

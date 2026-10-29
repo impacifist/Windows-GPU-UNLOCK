@@ -1,0 +1,240 @@
+{
+  "scope": "literal field/code coverage of synthetic host fixtures",
+  "hardware_accessed": false,
+  "fixtures_checked": 16,
+  "open_roles_interpreted": false,
+  "release_authorized": false,
+  "hardware_support_validated": false,
+  "unlock_ready": false,
+  "capture_origin_authenticated": false,
+  "results": [
+    {
+      "fixture": "host-capture",
+      "fixture_sha256": "2e59d702852d7037139ff0568018d43688a493a0ee75b37a28f314ec07a77484",
+      "observations": {
+        "platform_enumeration_reported_complete": false,
+        "target_handle_resolved": null,
+        "all_recorded_edge_indices_resolved": null,
+        "recorded_gpu_agent_code_coverage": null,
+        "matching_recorded_code_hashes": 0,
+        "register_snapshot_reported_complete": true,
+        "physical_prom_reported_complete": true,
+        "null_or_unresolved_reference_slots": 0
+      }
+    },
+    {
+      "fixture": "graph-agent-absent",
+      "fixture_sha256": "ee44afe781d6392d7469bcc865551e4f6bcce9aef468abe16069918138866020",
+      "observations": {
+        "platform_enumeration_reported_complete": true,
+        "target_handle_resolved": true,
+        "all_recorded_edge_indices_resolved": false,
+        "recorded_gpu_agent_code_coverage": false,
+        "matching_recorded_code_hashes": 0,
+        "register_snapshot_reported_complete": true,
+        "physical_prom_reported_complete": true,
+        "null_or_unresolved_reference_slots": 3
+      }
+    },
+    {
+      "fixture": "graph-binding-missing",
+      "fixture_sha256": "377d4946a8ac4d60f11913bd04299e949cd07a3c611a93672f0ee2983797b1cf",
+      "observations": {
+        "platform_enumeration_reported_complete": true,
+        "target_handle_resolved": true,
+        "all_recorded_edge_indices_resolved": true,
+        "recorded_gpu_agent_code_coverage": false,
+        "matching_recorded_code_hashes": 0,
+        "register_snapshot_reported_complete": true,
+        "physical_prom_reported_complete": true,
+        "null_or_unresolved_reference_slots": 0
+      }
+    },
+    {
+      "fixture": "graph-code-malformed",
+      "fixture_sha256": "ac2e5dc3a76d641efc5c9df73900126e8c58902e67b489a1b5bd54061513657b",
+      "observations": {
+        "platform_enumeration_reported_complete": true,
+        "target_handle_resolved": true,
+        "all_recorded_edge_indices_resolved": true,
+        "recorded_gpu_agent_code_coverage": false,
+        "matching_recorded_code_hashes": 0,
+        "register_snapshot_reported_complete": true,
+        "physical_prom_reported_complete": true,
+        "null_or_unresolved_reference_slots": 0
+      }
+    },
+    {
+      "fixture": "graph-image-missing",
+      "fixture_sha256": "2cad2d507c5fea82a7c1f12127677aadedfd8f62b7b0dea8b630fe6c33459a72",
+      "observations": {
+        "platform_enumeration_reported_complete": true,
+        "target_handle_resolved": true,
+        "all_recorded_edge_indices_resolved": true,
+        "recorded_gpu_agent_code_coverage": false,
+        "matching_recorded_code_hashes": 0,
+        "register_snapshot_reported_complete": true,
+        "physical_prom_reported_complete": true,
+        "null_or_unresolved_reference_slots": 0
+      }
+    },
+    {
+      "fixture": "graph-target-absent",
+      "fixture_sha256": "f9fd20fcaa8e5b69317431d3d71bba3cb5ee09c601468f658954bbc867360589",
+      "observations": {
+        "platform_enumeration_reported_complete": true,
+        "target_handle_resolved": false,
+        "all_recorded_edge_indices_resolved": true,
+        "recorded_gpu_agent_code_coverage": true,
+        "matching_recorded_code_hashes": 1,
+        "register_snapshot_reported_complete": true,
+        "physical_prom_reported_complete": true,
+        "null_or_unresolved_reference_slots": 0
+      }
+    },
+    {
+      "fixture": "prom-final-chip-drift",
+      "fixture_sha256": "d1a0728ac37cdb505a596455bb24f4bff48275c2343aa28df7897b569250a1bb",
+      "observations": {
+        "platform_enumeration_reported_complete": false,
+        "target_handle_resolved": null,
+        "all_recorded_edge_indices_resolved": null,
+        "recorded_gpu_agent_code_coverage": null,
+        "matching_recorded_code_hashes": 0,
+        "register_snapshot_reported_complete": true,
+        "physical_prom_reported_complete": false,
+        "null_or_unresolved_reference_slots": 0
+      }
+    },
+    {
+      "fixture": "prom-final-chip-failure",
+      "fixture_sha256": "d1a0728ac37cdb505a596455bb24f4bff48275c2343aa28df7897b569250a1bb",
+      "observations": {
+        "platform_enumeration_reported_complete": false,
+        "target_handle_resolved": null,
+        "all_recorded_edge_indices_resolved": null,
+        "recorded_gpu_agent_code_coverage": null,
+        "matching_recorded_code_hashes": 0,
+        "register_snapshot_reported_complete": true,
+        "physical_prom_reported_complete": false,
+        "null_or_unresolved_reference_slots": 0
+      }
+    },
+    {
+      "fixture": "prom-final-pci-drift",
+      "fixture_sha256": "04441b5c16ae2feb98da6e27cd02490a9cc17dc3e4699536b55a9ea742cd58e8",
+      "observations": {
+        "platform_enumeration_reported_complete": false,
+        "target_handle_resolved": null,
+        "all_recorded_edge_indices_resolved": null,
+        "recorded_gpu_agent_code_coverage": null,
+        "matching_recorded_code_hashes": 0,
+        "register_snapshot_reported_complete": true,
+        "physical_prom_reported_complete": false,
+        "null_or_unresolved_reference_slots": 0
+      }
+    },
+    {
+      "fixture": "prom-final-pci-failure",
+      "fixture_sha256": "04441b5c16ae2feb98da6e27cd02490a9cc17dc3e4699536b55a9ea742cd58e8",
+      "observations": {
+        "platform_enumeration_reported_complete": false,
+        "target_handle_resolved": null,
+        "all_recorded_edge_indices_resolved": null,
+        "recorded_gpu_agent_code_coverage": null,
+        "matching_recorded_code_hashes": 0,
+        "register_snapshot_reported_complete": true,
+        "physical_prom_reported_complete": false,
+        "null_or_unresolved_reference_slots": 0
+      }
+    },
+    {
+      "fixture": "prom-signature-change",
+      "fixture_sha256": "9c2f7e211caf47298d1fd08d0417ff6df7b728e8eead8ac48d3f306056b3ab5a",
+      "observations": {
+        "platform_enumeration_reported_complete": false,
+        "target_handle_resolved": null,
+        "all_recorded_edge_indices_resolved": null,
+        "recorded_gpu_agent_code_coverage": null,
+        "matching_recorded_code_hashes": 0,
+        "register_snapshot_reported_complete": true,
+        "physical_prom_reported_complete": false,
+        "null_or_unresolved_reference_slots": 0
+      }
+    },
+    {
+      "fixture": "register-badf-sentinel",
+      "fixture_sha256": "2b2a703aea25bde1289950b7fabbc13e88863df45a6f190f0f662ace3cab7fa9",
+      "observations": {
+        "platform_enumeration_reported_complete": false,
+        "target_handle_resolved": null,
+        "all_recorded_edge_indices_resolved": null,
+        "recorded_gpu_agent_code_coverage": null,
+        "matching_recorded_code_hashes": 0,
+        "register_snapshot_reported_complete": false,
+        "physical_prom_reported_complete": true,
+        "null_or_unresolved_reference_slots": 0
+      }
+    },
+    {
+      "fixture": "register-chip-all-ones",
+      "fixture_sha256": "46c1325d682b5dc5e740ee8f46923f035833cd1505dbd6b6911e132f358d696b",
+      "observations": {
+        "platform_enumeration_reported_complete": false,
+        "target_handle_resolved": null,
+        "all_recorded_edge_indices_resolved": null,
+        "recorded_gpu_agent_code_coverage": null,
+        "matching_recorded_code_hashes": 0,
+        "register_snapshot_reported_complete": false,
+        "physical_prom_reported_complete": true,
+        "null_or_unresolved_reference_slots": 0
+      }
+    },
+    {
+      "fixture": "register-chip-zero",
+      "fixture_sha256": "feb59123faccd4a325cf8b6fe3bc878d08c52400db8062edc7ec086bb5e35832",
+      "observations": {
+        "platform_enumeration_reported_complete": false,
+        "target_handle_resolved": null,
+        "all_recorded_edge_indices_resolved": null,
+        "recorded_gpu_agent_code_coverage": null,
+        "matching_recorded_code_hashes": 0,
+        "register_snapshot_reported_complete": false,
+        "physical_prom_reported_complete": true,
+        "null_or_unresolved_reference_slots": 0
+      }
+    },
+    {
+      "fixture": "register-final-chip-drift",
+      "fixture_sha256": "4e23198b80ec3a99e3593999f8ca13ab9f54fe0fe8f77d751b9dba558d2d98f1",
+      "observations": {
+        "platform_enumeration_reported_complete": false,
+        "target_handle_resolved": null,
+        "all_recorded_edge_indices_resolved": null,
+        "recorded_gpu_agent_code_coverage": null,
+        "matching_recorded_code_hashes": 0,
+        "register_snapshot_reported_complete": false,
+        "physical_prom_reported_complete": true,
+        "null_or_unresolved_reference_slots": 0
+      }
+    },
+    {
+      "fixture": "register-final-chip-failure",
+      "fixture_sha256": "a1799caf93344e88b640c996baaafea5acd12d243cfab467432a29738eb66e07",
+      "observations": {
+        "platform_enumeration_reported_complete": false,
+        "target_handle_resolved": null,
+        "all_recorded_edge_indices_resolved": null,
+        "recorded_gpu_agent_code_coverage": null,
+        "matching_recorded_code_hashes": 0,
+        "register_snapshot_reported_complete": false,
+        "physical_prom_reported_complete": true,
+        "null_or_unresolved_reference_slots": 0
+      }
+    }
+  ],
+  "research_source_sha256": {
+    "capture_observations.py": "b4d5fa7b175f5b9e76d0f6bb822c4256c52969d20f0d3ba3193280e2cc307290",
+    "run_observation_cases.py": "eee34dfba12a8f6c210eded587941e6bfc879676680d10ce67959c9c88691777"
+  }
+}

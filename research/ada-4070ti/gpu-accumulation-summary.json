@@ -1,0 +1,25 @@
+{
+  "scope": "offline check of current-GPU numerical/control evidence",
+  "precision_cases": 14,
+  "control_processes": 3,
+  "nominal_tflops_by_accumulator": {
+    "f16": [
+      61.35013111446748,
+      65.01676917417619,
+      53.86520692968131
+    ],
+    "f32": [
+      40.7301865050215,
+      40.87130559949605,
+      45.551753471735715
+    ]
+  },
+  "fp16_over_fp32_rate_ratios": [
+    1.5062570633430272,
+    1.5907681005173924,
+    1.182505673752032
+  ],
+  "median_ratio": 1.5062570633430272,
+  "cpu_output_hashes_match": true,
+  "limit": "Different register/output traffic and short contended timings; not selector state or an unlock percentage."
+}
