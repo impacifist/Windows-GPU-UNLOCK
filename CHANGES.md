@@ -1,5 +1,22 @@
 # Changes
 
+## Unreleased — ASUS PRIME B760M-K / RTX 3060 12GB GA106 headless USB profile
+
+- Add the exact-machine USB-only profile `b760mk-3060`: ASUS PRIME B760M-K BIOS 1663,
+  i5-13500 with the iGPU off, and a Zotac GA106 RTX 3060 12GB (`10de:2504` / `19da:2630`,
+  VBIOS 94.06.2f.40.e3) on a single-child AMI aggregate console. The profile is pinned to three
+  read-only captures. console_text differs from the BIOS 4003 build, so it gets its own firmware
+  entry, `GU_FIRMWARE_AMI_B760MK_1663`.
+- Add a capture test, a capture replay and an aggregate-graph replay. Wire the profile into
+  `build.ps1`, `build-usb.ps1`, local-profile staging and the cold-precheck, PROM, capture-model
+  and PCI-layout tests.
+- Make `test_3090_preflight.c` case 10 move BAR0 relative to the selected profile, because
+  `0x84000000` is this profile's real BAR0.
+- Add an RTX 3060 target to the cuBLAS benchmark.
+- Contributor-reported evidence: two clean cold-boot transactions with direct Windows entry.
+  Matched cuBLAS medians reach about 1.85–1.9× for FP16, BF16 and TF32.
+  See `evidence/b760mk-3060-usb/`.
+
 ## Unreleased — preserve captured state in host qualification fixtures
 
 - Initialize the app mock's PCI attributes from its captured command, including

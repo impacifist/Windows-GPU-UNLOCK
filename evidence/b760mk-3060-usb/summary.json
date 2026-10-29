@@ -1,0 +1,83 @@
+{
+  "profile": "b760mk-3060",
+  "source_revision": "pre-rebase revision of this PR branch (on main 38b3629)",
+  "evidence_source": "contributor-reported; original build only",
+  "integrated_build_hardware_tested": false,
+  "hardware": {
+    "board": "ASUS PRIME B760M-K",
+    "bios": "1663",
+    "cpu": "Intel Core i5-13500 (iGPU disabled in BIOS)",
+    "gpu": "Zotac RTX 3060 12 GiB (GA106) 10de:2504 / 19da:2630",
+    "vbios": "94.06.2f.40.e3",
+    "display": "one monitor on the RTX (AMI aggregate console, single display child)"
+  },
+  "bios_settings": {
+    "secure_boot": "off",
+    "csm": "off",
+    "igpu": "off",
+    "primary_display": "PEG",
+    "fast_boot": "off"
+  },
+  "software": {
+    "windows": "Windows 11 Pro build 26200",
+    "nvidia_driver": "617.14",
+    "toolchain": "clang 20.1.8 + lld-link",
+    "benchmark": "repository benchmark/run-benchmark.ps1 -Card 3060: cuBLAS n=4096, FP32 accumulation, 2 s warm-up, 3 trials x 30 samples, median; same machine, driver and 170 W power limit before and after"
+  },
+  "route": "headless USB (GU_USB_MEDIA), FAT32 stick, firmware boot menu (F8)",
+  "efi": {
+    "child_sha256": "1a4ad8c36df6ac84471475eac4f260bc5ed27ccccadab78fbc928e0d628c5f13",
+    "wrapper_sha256": "07561613b6c6a6f7665f51082924ff012f96b4a44b10e49c82e0f6c0bab91bc9",
+    "reproducible": "Built with research/headless/build-usb.ps1 -HardwareProfile b760mk-3060 before this branch was rebased; this is not a current-main hash claim. The wrapper embeds the builder's Windows ESP GUID."
+  },
+  "probe": {
+    "captures": 3,
+    "note": "three cold boots of the generic read-only probe; identical identity, BAR0, PROM digest, display path and driver fingerprints",
+    "fwsec_frts": {
+      "prom_offset": "0x416bc",
+      "bytes": "0xea00"
+    }
+  },
+  "runs": [
+    {
+      "log": "HLS000000 / AUTO000000",
+      "boot": "full shutdown",
+      "entry_ss0": "0x5024024",
+      "entry_ss1": "0x5",
+      "final": "status=0 clean=1 FLR=1",
+      "windows": "direct start, display recovered"
+    },
+    {
+      "log": "HLS000001 / AUTO000001",
+      "boot": "full shutdown",
+      "entry_ss0": "0x5020024",
+      "entry_ss1": "0x5",
+      "final": "status=0 clean=1 FLR=1",
+      "windows": "direct start, display recovered"
+    }
+  ],
+  "selectors_after": {
+    "ss0": "0x88888888",
+    "ss1": "0x8"
+  },
+  "tflops_medians": {
+    "locked_baseline": {
+      "fp32": 8.04,
+      "tf32": 12.92,
+      "fp16": 25.60,
+      "bf16": 25.54
+    },
+    "after_AUTO000000_run1": {
+      "fp32": 8.04,
+      "tf32": 23.74,
+      "fp16": 44.60,
+      "bf16": 47.70
+    },
+    "after_AUTO000000_run2": {
+      "fp32": 8.06,
+      "tf32": 24.85,
+      "fp16": 47.34,
+      "bf16": 48.32
+    }
+  }
+}

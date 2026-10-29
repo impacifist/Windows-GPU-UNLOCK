@@ -2,14 +2,15 @@
 
 **English** | [한국어](COMPATIBILITY.ko.md)
 
-The current source contains six exact-machine profiles with recorded hardware
-results: three internal headless configurations and three headless USB configurations.
+The current source contains seven exact-machine profiles with recorded hardware
+results: three internal headless configurations and four headless USB configurations.
 The original B650M run was performed by the maintainer; B660M, X870 and B660-PLUS evidence
 comes from contributors ([PR #5](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/5),
 [PR #10](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/10),
 [PR #24](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/24),
 [PR #30](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/30),
-[PR #77](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/77)). Fixed-profile builds compile
+[PR #77](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/77),
+[PR #PR_NUMBER](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/PR_NUMBER)). Fixed-profile builds compile
 for exactly one reviewed profile selected at build time in
 [internal-boot/unlock/machine-profile.h](../internal-boot/unlock/machine-profile.h);
 other GPUs or platforms cannot use those fixed profiles. Experimental LOCAL
@@ -23,6 +24,7 @@ generation and its separate contributor reports are described below.
 | `b660plus-3060` | ASUS PRIME B660-PLUS D4 BIOS 3010 / i5-12600KF (no iGPU) / GA104 RTX 3060 12GB | USB only, two display children, CSM off; contributor report |
 | `h610m-3060` | Gigabyte H610M H BIOS FC / i5-14400 (iGPU enabled, no GOP) / Gigabyte GA106 RTX 3060 12GB | USB only, two display children; contributor report |
 | `b660m-3090ti` | ASUS TUF GAMING B660M-E D4 BIOS 4003 / i7-12700F (no iGPU) / Colorful RTX 3090 Ti | Internal; one contributor-reported cold boot |
+| `b760mk-3060` | ASUS PRIME B760M-K BIOS 1663 / i5-13500 (iGPU off) / Zotac GA106 RTX 3060 12GB | USB only, single-child aggregate console, CSM off; two contributor-reported cold boots |
 
 The latest tag is the source-only pre-release v0.3.1; this source tree includes
 later work, including the USB route and X870 profile. Hardware reports describe
@@ -191,6 +193,24 @@ Cold/full-flow tests and compile regressions are available. Full private-fixture
 transaction replay through `test-all.ps1` is not wired for this profile; the public
 evidence does not provide its exact FWSEC image offset/size or private inputs.
 Those tests remain blocked rather than accepting an inferred firmware layout.
+
+## Profile 7: ASUS PRIME B760M-K / RTX 3060 12GB GA106 (headless USB)
+
+[PR #PR_NUMBER](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/PR_NUMBER) contributes PCI `10de:2504`, subsystem `19da:2630`, VBIOS
+94.06.2f.40.e3, 12 GiB (`0x3000`), on ASUS PRIME B760M-K BIOS 1663 with an i5-13500.
+The iGPU, CSM, Secure Boot and Fast Boot are off, and Primary Display is PEG. One monitor is on
+the RTX, which gives a single-child AMI aggregate console. The chip is the same as Profile 5,
+but the console differs. console_text is a different build from Profile 2's BIOS 4003, so the
+profile has its own firmware entry.
+
+Build with `research/headless/build-usb.ps1 -HardwareProfile b760mk-3060`. Only the
+[headless USB route](HEADLESS-USB.en.md) is shipped.
+
+The contributor reports two clean transactions from full shutdowns, each with direct Windows
+entry and the display restored. Repository cuBLAS n=4096 medians (locked → unlocked) were:
+FP16 25.60 → 47.34, BF16 25.54 → 48.32, TF32 12.92 → 24.85 and FP32 8.04 → 8.06 TFLOPS.
+These reports and hashes identify the pre-rebase build of the PR. They are not a physical test
+of a later main build. [Evidence and limits](../evidence/b760mk-3060-usb/README.md).
 
 ## Reported local-profile success
 

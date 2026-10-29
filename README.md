@@ -25,7 +25,7 @@ GPU model.** Check the linked motherboard, BIOS and card requirements before bui
 
 | GPU | Current status | Details |
 |---|---|---|
-| **RTX 3060 12GB (GA104 / GA106)** | Hardware success reported; headless USB only | [GA104](docs/COMPATIBILITY.en.md#profile-4-asus-prime-b660-plus-d4--rtx-3060-12gb-headless-usb) · [GA106](docs/COMPATIBILITY.en.md#profile-5-gigabyte-h610m-h--rtx-3060-12gb-ga106-headless-usb) |
+| **RTX 3060 12GB (GA104 / GA106)** | Hardware success reported; headless USB only | [GA104](docs/COMPATIBILITY.en.md#profile-4-asus-prime-b660-plus-d4--rtx-3060-12gb-headless-usb) · [GA106 H610M](docs/COMPATIBILITY.en.md#profile-5-gigabyte-h610m-h--rtx-3060-12gb-ga106-headless-usb) · [GA106 B760M-K](docs/COMPATIBILITY.en.md#profile-7-asus-prime-b760m-k--rtx-3060-12gb-ga106-headless-usb) |
 | **RTX 3060 Ti 8GB (24c9 / GA104)** | Contributor LOCAL USB success reported; experimental automatic profile | [Exact conditions](docs/COMPATIBILITY.en.md#reported-local-profile-success) |
 | **RTX 3070 8GB (2484 / GA104)** | Contributor LOCAL USB success reported; experimental automatic profile | [Exact conditions](docs/COMPATIBILITY.en.md#reported-local-profile-success) |
 | **RTX 3070 Ti 8GB** | Hardware success reported; internal headless | [Supported configuration](docs/COMPATIBILITY.en.md#profile-2-asus-tuf-b660m-e-d4--rtx-3070-ti-aggregate-console) |

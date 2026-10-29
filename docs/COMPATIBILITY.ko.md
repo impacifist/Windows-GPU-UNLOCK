@@ -2,14 +2,15 @@
 
 [English](COMPATIBILITY.en.md) | **한국어**
 
-현재 소스에는 실기기 결과가 기록된 정확한 장비 프로필 여섯 개가 있습니다.
-내부 headless 세 구성과 headless USB 세 구성입니다. 최초 B650M은 유지관리자가
+현재 소스에는 실기기 결과가 기록된 정확한 장비 프로필 일곱 개가 있습니다.
+내부 headless 세 구성과 headless USB 네 구성입니다. 최초 B650M은 유지관리자가
 시험했고, B660M·X870·B660-PLUS의 근거는 기여자의 보고입니다
 ([PR #5](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/5),
 [PR #10](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/10),
 [PR #24](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/24),
 [PR #30](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/30),
-[PR #77](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/77)).
+[PR #77](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/77),
+[PR #PR_NUMBER](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/PR_NUMBER)).
 고정 프로필 빌드는 [internal-boot/unlock/machine-profile.h](../internal-boot/unlock/machine-profile.h)에서
 선택한 정확한 구성 전용입니다. 다른 GPU·플랫폼에는 이 고정 프로필을 적용할 수 없습니다.
 실험적 LOCAL 생성 경로와 별도의 기여자 성공 보고는 아래에 설명합니다.
@@ -22,6 +23,7 @@
 | `b660plus-3060` | ASUS PRIME B660-PLUS D4 BIOS 3010 / iGPU 없는 i5-12600KF / GA104 RTX 3060 12GB | USB 전용, 디스플레이 child 두 개, CSM 끔; 기여자 보고 |
 | `h610m-3060` | Gigabyte H610M H BIOS FC / i5-14400(iGPU 켜짐, GOP 없음) / Gigabyte GA106 RTX 3060 12GB | USB 전용, 디스플레이 child 두 개; 기여자 보고 |
 | `b660m-3090ti` | ASUS TUF GAMING B660M-E D4 BIOS 4003 / iGPU 없는 i7-12700F / Colorful RTX 3090 Ti | 내부; 기여자가 cold boot 1회 보고 |
+| `b760mk-3060` | ASUS PRIME B760M-K BIOS 1663 / i5-13500(iGPU 끔) / Zotac GA106 RTX 3060 12GB | USB 전용, 단일 child aggregate 콘솔, CSM 끔; 기여자가 cold boot 2회 보고 |
 
 최신 태그 v0.3.1은 소스 전용 사전 릴리스이며, 현재 소스에는 그 이후의 USB 경로와
 X870 프로필 등이 포함됩니다. 실기기 보고는 각 기록의 빌드에 해당합니다. 현재 cold
@@ -188,6 +190,24 @@ main 소스에서 `internal-boot/Configure.ps1`과 `research/headless/build-unlo
 Cold/full-flow와 컴파일 회귀 검사를 제공하지만 `test-all.ps1`의 전체 개인 fixture
 트랜잭션 재현은 아직 연결하지 않았습니다. 공개 근거에 정확한 FWSEC 이미지 offset·size와
 개인 입력이 없으므로 펌웨어 배치를 추정해 통과시키지 않고 해당 검증을 차단합니다.
+
+## 프로필 7: ASUS PRIME B760M-K / RTX 3060 12GB GA106(headless USB)
+
+[PR #PR_NUMBER](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/PR_NUMBER)의 PCI `10de:2504`, subsystem `19da:2630`, VBIOS 94.06.2f.40.e3,
+12 GiB(`0x3000`) 구성입니다. ASUS PRIME B760M-K BIOS 1663과 i5-13500을 사용합니다.
+iGPU·CSM·Secure Boot·Fast Boot를 끄고 Primary Display는 PEG로 둡니다. 모니터 한 대를
+RTX에 연결하며, 단일 child AMI aggregate 콘솔을 사용합니다. 칩은 프로필 5와 같지만 콘솔
+구성은 다릅니다. console_text가 프로필 2의 BIOS 4003과 다른 빌드여서 별도의 펌웨어 항목을
+사용합니다.
+
+`research/headless/build-usb.ps1 -HardwareProfile b760mk-3060`와
+[headless USB 절차](HEADLESS-USB.en.md)만 지원합니다.
+
+기여자는 완전 종료 후 부팅에서 깨끗한 트랜잭션 두 번을 보고했습니다. 두 번 모두 Windows가
+바로 시작되었고 화면도 복구되었습니다. 저장소 cuBLAS n=4096 중앙값(잠금 → 해제)은
+FP16 25.60 → 47.34, BF16 25.54 → 48.32, TF32 12.92 → 24.85, FP32 8.04 → 8.06 TFLOPS입니다.
+실기기 보고와 해시는 PR의 rebase 전 빌드에 해당하며, 이후 main 빌드의 실기기 시험이
+아닙니다. [근거와 한계](../evidence/b760mk-3060-usb/README.md)를 참고하세요.
 
 ## 로컬 프로필 성공 보고
 
