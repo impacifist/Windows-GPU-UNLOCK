@@ -6,6 +6,9 @@ typedef struct CAPTURE_S {
   EFI_SYSTEM_TABLE *Table;
   EFI_FILE_PROTOCOL *File;
   EFI_FILE_PROTOCOL *DumpRoot; /* Borrowed, validated launch volume; never rediscovered or closed. */
+#ifdef GU_AD104_PROM_FULL_TEST
+  EFI_FILE_PROTOCOL *Witness; /* Borrowed independent status file; never closed here. */
+#endif
   EFI_STATUS Io;
   BOOLEAN Complete;
   UINTN Used,Total;

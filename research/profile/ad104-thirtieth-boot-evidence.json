@@ -1,0 +1,15 @@
+{
+  "run": 30,
+  "files": 36,
+  "diag_bytes": 427897,
+  "diag_sha256": "084bfa4e0c94c651b48523cc485acb454dda03d84c7af0778eb688f7d7a77a83",
+  "optional_reads": 9,
+  "bcr_value": "0xbadf5620",
+  "bcr_transport_status": 0,
+  "deliberate_hold_logged": true,
+  "decode_off_reached": false,
+  "windows_startimage_reached": false,
+  "operator_recovery": "uncertain recollection; exact recovery sequence unconfirmed",
+  "firmware_executed": false,
+  "unlock_executed": false
+}

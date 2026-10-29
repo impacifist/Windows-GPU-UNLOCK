@@ -1,0 +1,20 @@
+{
+  "run": 28,
+  "files": 36,
+  "diag_bytes": 429249,
+  "diag_sha256": "7a454d2ce9f4053f4cb2ff443d0c439fc156960d23da101f1ff38d6dfdb840d9",
+  "batch_attempts": [
+    9,
+    0
+  ],
+  "engine_value": 0,
+  "riscv_cpuctl_value": "0xbadf5620",
+  "riscv_cpuctl_transport_status": 0,
+  "bcr_ctrl_read": false,
+  "deliberate_hold_logged": true,
+  "decode_off_reached": false,
+  "windows_startimage_reached": false,
+  "windows_return": "user-confirmed forced shutdown and manual boot",
+  "firmware_executed": false,
+  "unlock_executed": false
+}

@@ -1,0 +1,21 @@
+{
+  "run": 27,
+  "files": 36,
+  "diag_bytes": 434590,
+  "diag_sha256": "6862a61b64e4bf8415916a105428dfe4c30fbaae85771d41d48f31d5db5c9dee",
+  "batch_attempts": [
+    11,
+    11
+  ],
+  "irqstat": "0x10",
+  "hwcfg2": "0x47b7",
+  "hwcfg": "0x80420100",
+  "riscv_capability_field": 1,
+  "scrubbing_field": 0,
+  "imem_size_field": 256,
+  "dmactl_read": false,
+  "decode_off_status": 0,
+  "windows_return": "user-confirmed automatic",
+  "firmware_executed": false,
+  "unlock_executed": false
+}

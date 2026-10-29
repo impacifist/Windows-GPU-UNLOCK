@@ -1,0 +1,53 @@
+{
+  "active_edges_total": 140,
+  "consumers": [
+    {
+      "image_index": 8,
+      "active_edges": 3,
+      "opened_protocol_handles": 2,
+      "outside_gpu_handles": 1,
+      "protocols": [
+        "1c0c34f6-d380-41fa-a049-8ad06c1a66aa",
+        "31878c87-0b75-11d5-9a4f-0090273fc14d",
+        "8d59d32b-c655-4ae9-9b15-f25904992a43"
+      ],
+      "shared_edid_pointer_role": true
+    },
+    {
+      "image_index": 14,
+      "active_edges": 2,
+      "opened_protocol_handles": 1,
+      "outside_gpu_handles": 0,
+      "protocols": [
+        "387477c2-69c7-11d2-8e39-00a0c969723b"
+      ],
+      "shared_edid_pointer_role": false
+    },
+    {
+      "image_index": 17,
+      "active_edges": 1,
+      "opened_protocol_handles": 1,
+      "outside_gpu_handles": 0,
+      "protocols": [
+        "9042a9de-23dc-4a38-96fb-7aded080516a"
+      ],
+      "shared_edid_pointer_role": false
+    },
+    {
+      "image_index": 29,
+      "active_edges": 2,
+      "opened_protocol_handles": 1,
+      "outside_gpu_handles": 0,
+      "protocols": [
+        "4cf5b200-68b8-4ca5-9eec-b23e3f50029a"
+      ],
+      "shared_edid_pointer_role": false
+    }
+  ],
+  "runtime_disconnect_authorized": false,
+  "limitations": [
+    "Roles are observed opens, not a Stop side-effect trace.",
+    "Keyboard dependencies and all indirect calls remain unresolved."
+  ],
+  "log_sha256": "3de00f0e4a1c8b6452fae265de5b3f969e7c3eec0d523f2a7d30c4674e2f9368"
+}

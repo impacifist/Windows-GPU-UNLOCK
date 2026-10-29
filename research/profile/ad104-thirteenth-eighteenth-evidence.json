@@ -1,0 +1,1270 @@
+{
+  "schema": 1,
+  "machine": "MSI RTX 4070 Ti AD104 10de:2782 / 1462:5132",
+  "date": "2026-10-27",
+  "scope": "Sanitized physical observations; no raw firmware, handles or platform identifiers",
+  "runs": {
+    "thirteenth": {
+      "file_count": 34,
+      "diag_bytes": 414444,
+      "diag_sha256": "0888c65bb548abdb8b4fe4ea1467e5e9120c18041210c7430c5684db1d9c802f",
+      "stages": {
+        "initial": "0x0000000000000000",
+        "input-before": "0x0000000000000000",
+        "disconnect-return": "0x0000000000000000",
+        "post": "0x0000000000000000",
+        "post-repeat": "0x0000000000000000",
+        "gop-precheck": "0x0000000000000000",
+        "gop-disconnect-return": "0x0000000000000000",
+        "gop-post": "0x0000000000000000",
+        "gop-post-repeat": "0x0000000000000000",
+        "gop-protocols-absent": "0x0000000000000000",
+        "edid-precheck": "0x0000000000000000",
+        "edid-disconnect-return": "0x0000000000000000",
+        "edid-post": "0x0000000000000000",
+        "edid-post-repeat": "0x0000000000000000",
+        "edid-protocols-absent": "0x0000000000000000",
+        "owner-child-return": "0x0000000000000000",
+        "owner-child-post": "0x0000000000000000",
+        "owner-child-repeat": "0x0000000000000000",
+        "owner-child-absent": "0x0000000000000000",
+        "parent-return": "0x0000000000000000",
+        "parent-post": "0x0000000000000000",
+        "parent-repeat": "0x0000000000000000",
+        "parent-child-absent": "0x0000000000000000",
+        "parent-input-after": "0x0000000000000000",
+        "parent-final-post": "0x0000000000000000",
+        "parent-final-absent": "0x0000000000000000",
+        "windows-eligible": "0x0000000000000000",
+        "experiment-result": "0x0000000000000000"
+      },
+      "register_batches": {}
+    },
+    "fourteenth": {
+      "file_count": 34,
+      "diag_bytes": 417803,
+      "diag_sha256": "e6403e64f248f44a20981f3528dcd2f6070bf0d0df1da3236b6dc53f84ea07e2",
+      "stages": {
+        "initial": "0x0000000000000000",
+        "input-before": "0x0000000000000000",
+        "disconnect-return": "0x0000000000000000",
+        "post": "0x0000000000000000",
+        "post-repeat": "0x0000000000000000",
+        "gop-precheck": "0x0000000000000000",
+        "gop-disconnect-return": "0x0000000000000000",
+        "gop-post": "0x0000000000000000",
+        "gop-post-repeat": "0x0000000000000000",
+        "gop-protocols-absent": "0x0000000000000000",
+        "edid-precheck": "0x0000000000000000",
+        "edid-disconnect-return": "0x0000000000000000",
+        "edid-post": "0x0000000000000000",
+        "edid-post-repeat": "0x0000000000000000",
+        "edid-protocols-absent": "0x0000000000000000",
+        "owner-child-return": "0x0000000000000000",
+        "owner-child-post": "0x0000000000000000",
+        "owner-child-repeat": "0x0000000000000000",
+        "owner-child-absent": "0x0000000000000000",
+        "parent-return": "0x0000000000000000",
+        "parent-post": "0x0000000000000000",
+        "parent-repeat": "0x0000000000000000",
+        "parent-child-absent": "0x0000000000000000",
+        "decode-return": "0x0000000000000000",
+        "decode-post": "0x0000000000000000",
+        "decode-repeat": "0x0000000000000000",
+        "register-capture": "0x8000000000000006",
+        "experiment-result": "0x8000000000000006"
+      },
+      "register_batches": {
+        "1": [
+          {
+            "offset": "0x00000000",
+            "status": "0x0000000000000000",
+            "value": "0x194000a1"
+          },
+          {
+            "offset": "0x00118128",
+            "status": "0x0000000000000000",
+            "value": "0x00008b8f"
+          },
+          {
+            "offset": "0x00118234",
+            "status": "0x0000000000000000",
+            "value": "0x000003ff"
+          },
+          {
+            "offset": "0x00110100",
+            "status": "0x0000000000000000",
+            "value": "0x00000010"
+          },
+          {
+            "offset": "0x001fa824",
+            "status": "0x0000000000000000",
+            "value": "0x1ffffe00"
+          },
+          {
+            "offset": "0x001fa828",
+            "status": "0x0000000000000000",
+            "value": "0x00000000"
+          },
+          {
+            "offset": "0x001fa7cc",
+            "status": "0x0000000000000000",
+            "value": "0x0004cb8f"
+          },
+          {
+            "offset": "0x001fa7c4",
+            "status": "0x0000000000000000",
+            "value": "0x0004cb8f"
+          },
+          {
+            "offset": "0x009a0148",
+            "status": "0x0000000000000000",
+            "value": "0xffffff0f"
+          },
+          {
+            "offset": "0x00823804",
+            "status": "0x0000000000000000",
+            "value": "0xffffff8f"
+          },
+          {
+            "offset": "0x00823814",
+            "status": "0x0000000000000000",
+            "value": "0x00000233"
+          },
+          {
+            "offset": "0x00823818",
+            "status": "0x0000000000000000",
+            "value": "0x00410080"
+          },
+          {
+            "offset": "0x0082381c",
+            "status": "0x0000000000000000",
+            "value": "0x24020000"
+          },
+          {
+            "offset": "0x00823820",
+            "status": "0x0000000000000000",
+            "value": "0x00000005"
+          },
+          {
+            "offset": "0x001183a4",
+            "status": "0x0000000000000000",
+            "value": "0x00002ffa"
+          },
+          {
+            "offset": "0x00625f04",
+            "status": "0x0000000000000000",
+            "value": "0x00010e09"
+          },
+          {
+            "offset": "0x001fa7c8",
+            "status": "0x0000000000000000",
+            "value": "0x0045cb8f"
+          },
+          {
+            "offset": "0x001fa82c",
+            "status": "0x0000000000000000",
+            "value": "0x00100000"
+          },
+          {
+            "offset": "0x001fa830",
+            "status": "0x0000000000000000",
+            "value": "0x02ef9ff0"
+          },
+          {
+            "offset": "0x00824148",
+            "status": "0x0000000000000000",
+            "value": "0x00000001"
+          },
+          {
+            "offset": "0x008241e0",
+            "status": "0x0000000000000000",
+            "value": "0x00000001"
+          },
+          {
+            "offset": "0x00840100",
+            "status": "0x0000000000000000",
+            "value": "0xbadf5620"
+          }
+        ]
+      }
+    },
+    "fifteenth": {
+      "file_count": 34,
+      "diag_bytes": 419719,
+      "diag_sha256": "7d30b0cc15ca26f363eb84335360f9f39f8a55bc195631d012e4a14dc7c85178",
+      "stages": {
+        "initial": "0x0000000000000000",
+        "input-before": "0x0000000000000000",
+        "disconnect-return": "0x0000000000000000",
+        "post": "0x0000000000000000",
+        "post-repeat": "0x0000000000000000",
+        "gop-precheck": "0x0000000000000000",
+        "gop-disconnect-return": "0x0000000000000000",
+        "gop-post": "0x0000000000000000",
+        "gop-post-repeat": "0x0000000000000000",
+        "gop-protocols-absent": "0x0000000000000000",
+        "edid-precheck": "0x0000000000000000",
+        "edid-disconnect-return": "0x0000000000000000",
+        "edid-post": "0x0000000000000000",
+        "edid-post-repeat": "0x0000000000000000",
+        "edid-protocols-absent": "0x0000000000000000",
+        "owner-child-return": "0x0000000000000000",
+        "owner-child-post": "0x0000000000000000",
+        "owner-child-repeat": "0x0000000000000000",
+        "owner-child-absent": "0x0000000000000000",
+        "parent-return": "0x0000000000000000",
+        "parent-post": "0x0000000000000000",
+        "parent-repeat": "0x0000000000000000",
+        "parent-child-absent": "0x0000000000000000",
+        "decode-return": "0x0000000000000000",
+        "decode-post": "0x0000000000000000",
+        "decode-repeat": "0x0000000000000000",
+        "register-capture": "0x0000000000000000",
+        "decode-input-after": "0x0000000000000000",
+        "decode-final-post": "0x0000000000000000",
+        "windows-eligible": "0x0000000000000000",
+        "experiment-result": "0x0000000000000000"
+      },
+      "register_batches": {
+        "1": [
+          {
+            "offset": "0x00000000",
+            "status": "0x0000000000000000",
+            "value": "0x194000a1"
+          },
+          {
+            "offset": "0x00118128",
+            "status": "0x0000000000000000",
+            "value": "0x00008b8f"
+          },
+          {
+            "offset": "0x00118234",
+            "status": "0x0000000000000000",
+            "value": "0x000003ff"
+          },
+          {
+            "offset": "0x00110100",
+            "status": "0x0000000000000000",
+            "value": "0x00000010"
+          },
+          {
+            "offset": "0x001fa824",
+            "status": "0x0000000000000000",
+            "value": "0x1ffffe00"
+          },
+          {
+            "offset": "0x001fa828",
+            "status": "0x0000000000000000",
+            "value": "0x00000000"
+          },
+          {
+            "offset": "0x001fa7cc",
+            "status": "0x0000000000000000",
+            "value": "0x0004cb8f"
+          },
+          {
+            "offset": "0x001fa7c4",
+            "status": "0x0000000000000000",
+            "value": "0x0004cb8f"
+          },
+          {
+            "offset": "0x009a0148",
+            "status": "0x0000000000000000",
+            "value": "0xffffff0f"
+          },
+          {
+            "offset": "0x00823804",
+            "status": "0x0000000000000000",
+            "value": "0xffffff8f"
+          },
+          {
+            "offset": "0x00823814",
+            "status": "0x0000000000000000",
+            "value": "0x00000233"
+          },
+          {
+            "offset": "0x00823818",
+            "status": "0x0000000000000000",
+            "value": "0x00410080"
+          },
+          {
+            "offset": "0x0082381c",
+            "status": "0x0000000000000000",
+            "value": "0x24020010"
+          },
+          {
+            "offset": "0x00823820",
+            "status": "0x0000000000000000",
+            "value": "0x00000005"
+          },
+          {
+            "offset": "0x001183a4",
+            "status": "0x0000000000000000",
+            "value": "0x00002ffa"
+          },
+          {
+            "offset": "0x00625f04",
+            "status": "0x0000000000000000",
+            "value": "0x00010e09"
+          },
+          {
+            "offset": "0x001fa7c8",
+            "status": "0x0000000000000000",
+            "value": "0x0045cb8f"
+          },
+          {
+            "offset": "0x001fa82c",
+            "status": "0x0000000000000000",
+            "value": "0x00100000"
+          },
+          {
+            "offset": "0x001fa830",
+            "status": "0x0000000000000000",
+            "value": "0x02ef9ff0"
+          },
+          {
+            "offset": "0x00824148",
+            "status": "0x0000000000000000",
+            "value": "0x00000001"
+          },
+          {
+            "offset": "0x008241e0",
+            "status": "0x0000000000000000",
+            "value": "0x00000001"
+          },
+          {
+            "offset": "0x00000000",
+            "status": "0x0000000000000000",
+            "value": "0x194000a1"
+          }
+        ],
+        "2": [
+          {
+            "offset": "0x00000000",
+            "status": "0x0000000000000000",
+            "value": "0x194000a1"
+          },
+          {
+            "offset": "0x00118128",
+            "status": "0x0000000000000000",
+            "value": "0x00008b8f"
+          },
+          {
+            "offset": "0x00118234",
+            "status": "0x0000000000000000",
+            "value": "0x000003ff"
+          },
+          {
+            "offset": "0x00110100",
+            "status": "0x0000000000000000",
+            "value": "0x00000010"
+          },
+          {
+            "offset": "0x001fa824",
+            "status": "0x0000000000000000",
+            "value": "0x1ffffe00"
+          },
+          {
+            "offset": "0x001fa828",
+            "status": "0x0000000000000000",
+            "value": "0x00000000"
+          },
+          {
+            "offset": "0x001fa7cc",
+            "status": "0x0000000000000000",
+            "value": "0x0004cb8f"
+          },
+          {
+            "offset": "0x001fa7c4",
+            "status": "0x0000000000000000",
+            "value": "0x0004cb8f"
+          },
+          {
+            "offset": "0x009a0148",
+            "status": "0x0000000000000000",
+            "value": "0xffffff0f"
+          },
+          {
+            "offset": "0x00823804",
+            "status": "0x0000000000000000",
+            "value": "0xffffff8f"
+          },
+          {
+            "offset": "0x00823814",
+            "status": "0x0000000000000000",
+            "value": "0x00000233"
+          },
+          {
+            "offset": "0x00823818",
+            "status": "0x0000000000000000",
+            "value": "0x00410080"
+          },
+          {
+            "offset": "0x0082381c",
+            "status": "0x0000000000000000",
+            "value": "0x24020010"
+          },
+          {
+            "offset": "0x00823820",
+            "status": "0x0000000000000000",
+            "value": "0x00000005"
+          },
+          {
+            "offset": "0x001183a4",
+            "status": "0x0000000000000000",
+            "value": "0x00002ffa"
+          },
+          {
+            "offset": "0x00625f04",
+            "status": "0x0000000000000000",
+            "value": "0x00010e09"
+          },
+          {
+            "offset": "0x001fa7c8",
+            "status": "0x0000000000000000",
+            "value": "0x0045cb8f"
+          },
+          {
+            "offset": "0x001fa82c",
+            "status": "0x0000000000000000",
+            "value": "0x00100000"
+          },
+          {
+            "offset": "0x001fa830",
+            "status": "0x0000000000000000",
+            "value": "0x02ef9ff0"
+          },
+          {
+            "offset": "0x00824148",
+            "status": "0x0000000000000000",
+            "value": "0x00000001"
+          },
+          {
+            "offset": "0x008241e0",
+            "status": "0x0000000000000000",
+            "value": "0x00000001"
+          },
+          {
+            "offset": "0x00000000",
+            "status": "0x0000000000000000",
+            "value": "0x194000a1"
+          }
+        ]
+      }
+    },
+    "sixteenth": {
+      "file_count": 34,
+      "diag_bytes": 421243,
+      "diag_sha256": "3fe484c42ddcedc10ec46842acc6773a9386afc2a1125e0ccfb5c6bf603757b1",
+      "stages": {
+        "initial": "0x0000000000000000",
+        "input-before": "0x0000000000000000",
+        "disconnect-return": "0x0000000000000000",
+        "post": "0x0000000000000000",
+        "post-repeat": "0x0000000000000000",
+        "gop-precheck": "0x0000000000000000",
+        "gop-disconnect-return": "0x0000000000000000",
+        "gop-post": "0x0000000000000000",
+        "gop-post-repeat": "0x0000000000000000",
+        "gop-protocols-absent": "0x0000000000000000",
+        "edid-precheck": "0x0000000000000000",
+        "edid-disconnect-return": "0x0000000000000000",
+        "edid-post": "0x0000000000000000",
+        "edid-post-repeat": "0x0000000000000000",
+        "edid-protocols-absent": "0x0000000000000000",
+        "owner-child-return": "0x0000000000000000",
+        "owner-child-post": "0x0000000000000000",
+        "owner-child-repeat": "0x0000000000000000",
+        "owner-child-absent": "0x0000000000000000",
+        "parent-return": "0x0000000000000000",
+        "parent-post": "0x0000000000000000",
+        "parent-repeat": "0x0000000000000000",
+        "parent-child-absent": "0x0000000000000000",
+        "decode-return": "0x0000000000000000",
+        "decode-post": "0x0000000000000000",
+        "decode-repeat": "0x0000000000000000",
+        "register-capture": "0x0000000000000000",
+        "decode-input-after": "0x0000000000000000",
+        "decode-final-post": "0x0000000000000000",
+        "windows-eligible": "0x0000000000000000",
+        "experiment-result": "0x0000000000000000"
+      },
+      "register_batches": {
+        "1": [
+          {
+            "offset": "0x00000000",
+            "status": "0x0000000000000000",
+            "value": "0x194000a1"
+          },
+          {
+            "offset": "0x00118128",
+            "status": "0x0000000000000000",
+            "value": "0x00008b8f"
+          },
+          {
+            "offset": "0x00118234",
+            "status": "0x0000000000000000",
+            "value": "0x000003ff"
+          },
+          {
+            "offset": "0x00110100",
+            "status": "0x0000000000000000",
+            "value": "0x00000010"
+          },
+          {
+            "offset": "0x001fa824",
+            "status": "0x0000000000000000",
+            "value": "0x1ffffe00"
+          },
+          {
+            "offset": "0x001fa828",
+            "status": "0x0000000000000000",
+            "value": "0x00000000"
+          },
+          {
+            "offset": "0x001fa7cc",
+            "status": "0x0000000000000000",
+            "value": "0x0004cb8f"
+          },
+          {
+            "offset": "0x001fa7c4",
+            "status": "0x0000000000000000",
+            "value": "0x0004cb8f"
+          },
+          {
+            "offset": "0x009a0148",
+            "status": "0x0000000000000000",
+            "value": "0xffffff0f"
+          },
+          {
+            "offset": "0x00823804",
+            "status": "0x0000000000000000",
+            "value": "0xffffff8f"
+          },
+          {
+            "offset": "0x00823814",
+            "status": "0x0000000000000000",
+            "value": "0x00000233"
+          },
+          {
+            "offset": "0x00823818",
+            "status": "0x0000000000000000",
+            "value": "0x00410080"
+          },
+          {
+            "offset": "0x0082381c",
+            "status": "0x0000000000000000",
+            "value": "0x24020000"
+          },
+          {
+            "offset": "0x00823820",
+            "status": "0x0000000000000000",
+            "value": "0x00000005"
+          },
+          {
+            "offset": "0x001183a4",
+            "status": "0x0000000000000000",
+            "value": "0x00002ffa"
+          },
+          {
+            "offset": "0x00625f04",
+            "status": "0x0000000000000000",
+            "value": "0x00010e09"
+          },
+          {
+            "offset": "0x001fa7c8",
+            "status": "0x0000000000000000",
+            "value": "0x0045cb8f"
+          },
+          {
+            "offset": "0x001fa82c",
+            "status": "0x0000000000000000",
+            "value": "0x00100000"
+          },
+          {
+            "offset": "0x001fa830",
+            "status": "0x0000000000000000",
+            "value": "0x02ef9ff0"
+          },
+          {
+            "offset": "0x00824148",
+            "status": "0x0000000000000000",
+            "value": "0x00000001"
+          },
+          {
+            "offset": "0x008241e0",
+            "status": "0x0000000000000000",
+            "value": "0x00000001"
+          },
+          {
+            "offset": "0x00000000",
+            "status": "0x0000000000000000",
+            "value": "0x194000a1"
+          }
+        ],
+        "2": [
+          {
+            "offset": "0x00000000",
+            "status": "0x0000000000000000",
+            "value": "0x194000a1"
+          },
+          {
+            "offset": "0x00118128",
+            "status": "0x0000000000000000",
+            "value": "0x00008b8f"
+          },
+          {
+            "offset": "0x00118234",
+            "status": "0x0000000000000000",
+            "value": "0x000003ff"
+          },
+          {
+            "offset": "0x00110100",
+            "status": "0x0000000000000000",
+            "value": "0x00000010"
+          },
+          {
+            "offset": "0x001fa824",
+            "status": "0x0000000000000000",
+            "value": "0x1ffffe00"
+          },
+          {
+            "offset": "0x001fa828",
+            "status": "0x0000000000000000",
+            "value": "0x00000000"
+          },
+          {
+            "offset": "0x001fa7cc",
+            "status": "0x0000000000000000",
+            "value": "0x0004cb8f"
+          },
+          {
+            "offset": "0x001fa7c4",
+            "status": "0x0000000000000000",
+            "value": "0x0004cb8f"
+          },
+          {
+            "offset": "0x009a0148",
+            "status": "0x0000000000000000",
+            "value": "0xffffff0f"
+          },
+          {
+            "offset": "0x00823804",
+            "status": "0x0000000000000000",
+            "value": "0xffffff8f"
+          },
+          {
+            "offset": "0x00823814",
+            "status": "0x0000000000000000",
+            "value": "0x00000233"
+          },
+          {
+            "offset": "0x00823818",
+            "status": "0x0000000000000000",
+            "value": "0x00410080"
+          },
+          {
+            "offset": "0x0082381c",
+            "status": "0x0000000000000000",
+            "value": "0x24020000"
+          },
+          {
+            "offset": "0x00823820",
+            "status": "0x0000000000000000",
+            "value": "0x00000005"
+          },
+          {
+            "offset": "0x001183a4",
+            "status": "0x0000000000000000",
+            "value": "0x00002ffa"
+          },
+          {
+            "offset": "0x00625f04",
+            "status": "0x0000000000000000",
+            "value": "0x00010e09"
+          },
+          {
+            "offset": "0x001fa7c8",
+            "status": "0x0000000000000000",
+            "value": "0x0045cb8f"
+          },
+          {
+            "offset": "0x001fa82c",
+            "status": "0x0000000000000000",
+            "value": "0x00100000"
+          },
+          {
+            "offset": "0x001fa830",
+            "status": "0x0000000000000000",
+            "value": "0x02ef9ff0"
+          },
+          {
+            "offset": "0x00824148",
+            "status": "0x0000000000000000",
+            "value": "0x00000001"
+          },
+          {
+            "offset": "0x008241e0",
+            "status": "0x0000000000000000",
+            "value": "0x00000001"
+          },
+          {
+            "offset": "0x00000000",
+            "status": "0x0000000000000000",
+            "value": "0x194000a1"
+          }
+        ]
+      }
+    },
+    "seventeenth": {
+      "file_count": 35,
+      "diag_bytes": 421071,
+      "diag_sha256": "5dd171c589bdc2ede8cfa2ba2b1145772ca7cfe7e05b663475652a95cb8f296f",
+      "stages": {
+        "initial": "0x0000000000000000",
+        "input-before": "0x0000000000000000",
+        "disconnect-return": "0x0000000000000000",
+        "post": "0x0000000000000000",
+        "post-repeat": "0x0000000000000000",
+        "gop-precheck": "0x0000000000000000",
+        "gop-disconnect-return": "0x0000000000000000",
+        "gop-post": "0x0000000000000000",
+        "gop-post-repeat": "0x0000000000000000",
+        "gop-protocols-absent": "0x0000000000000000",
+        "edid-precheck": "0x0000000000000000",
+        "edid-disconnect-return": "0x0000000000000000",
+        "edid-post": "0x0000000000000000",
+        "edid-post-repeat": "0x0000000000000000",
+        "edid-protocols-absent": "0x0000000000000000",
+        "owner-child-return": "0x0000000000000000",
+        "owner-child-post": "0x0000000000000000",
+        "owner-child-repeat": "0x0000000000000000",
+        "owner-child-absent": "0x0000000000000000",
+        "parent-return": "0x0000000000000000",
+        "parent-post": "0x0000000000000000",
+        "parent-repeat": "0x0000000000000000",
+        "parent-child-absent": "0x0000000000000000",
+        "decode-return": "0x0000000000000000",
+        "decode-post": "0x0000000000000000",
+        "decode-repeat": "0x0000000000000000",
+        "register-capture": "0x0000000000000000",
+        "decode-input-after": "0x0000000000000000",
+        "decode-final-post": "0x0000000000000000",
+        "windows-eligible": "0x0000000000000000",
+        "experiment-result": "0x0000000000000000"
+      },
+      "register_batches": {
+        "1": [
+          {
+            "offset": "0x00000000",
+            "status": "0x0000000000000000",
+            "value": "0x194000a1"
+          },
+          {
+            "offset": "0x00118128",
+            "status": "0x0000000000000000",
+            "value": "0x00008b8f"
+          },
+          {
+            "offset": "0x00118234",
+            "status": "0x0000000000000000",
+            "value": "0x000003ff"
+          },
+          {
+            "offset": "0x00110100",
+            "status": "0x0000000000000000",
+            "value": "0x00000010"
+          },
+          {
+            "offset": "0x001fa824",
+            "status": "0x0000000000000000",
+            "value": "0x1ffffe00"
+          },
+          {
+            "offset": "0x001fa828",
+            "status": "0x0000000000000000",
+            "value": "0x00000000"
+          },
+          {
+            "offset": "0x001fa7cc",
+            "status": "0x0000000000000000",
+            "value": "0x0004cb8f"
+          },
+          {
+            "offset": "0x001fa7c4",
+            "status": "0x0000000000000000",
+            "value": "0x0004cb8f"
+          },
+          {
+            "offset": "0x009a0148",
+            "status": "0x0000000000000000",
+            "value": "0xffffff0f"
+          },
+          {
+            "offset": "0x00823804",
+            "status": "0x0000000000000000",
+            "value": "0xffffff8f"
+          },
+          {
+            "offset": "0x00823814",
+            "status": "0x0000000000000000",
+            "value": "0x00000233"
+          },
+          {
+            "offset": "0x00823818",
+            "status": "0x0000000000000000",
+            "value": "0x00410080"
+          },
+          {
+            "offset": "0x0082381c",
+            "status": "0x0000000000000000",
+            "value": "0x24020000"
+          },
+          {
+            "offset": "0x00823820",
+            "status": "0x0000000000000000",
+            "value": "0x00000005"
+          },
+          {
+            "offset": "0x001183a4",
+            "status": "0x0000000000000000",
+            "value": "0x00002ffa"
+          },
+          {
+            "offset": "0x00625f04",
+            "status": "0x0000000000000000",
+            "value": "0x00010e09"
+          },
+          {
+            "offset": "0x001fa7c8",
+            "status": "0x0000000000000000",
+            "value": "0x0045cb8f"
+          },
+          {
+            "offset": "0x001fa82c",
+            "status": "0x0000000000000000",
+            "value": "0x00100000"
+          },
+          {
+            "offset": "0x001fa830",
+            "status": "0x0000000000000000",
+            "value": "0x02ef9ff0"
+          },
+          {
+            "offset": "0x00824148",
+            "status": "0x0000000000000000",
+            "value": "0x00000001"
+          },
+          {
+            "offset": "0x008241e0",
+            "status": "0x0000000000000000",
+            "value": "0x00000001"
+          },
+          {
+            "offset": "0x00000000",
+            "status": "0x0000000000000000",
+            "value": "0x194000a1"
+          }
+        ],
+        "2": [
+          {
+            "offset": "0x00000000",
+            "status": "0x0000000000000000",
+            "value": "0x194000a1"
+          },
+          {
+            "offset": "0x00118128",
+            "status": "0x0000000000000000",
+            "value": "0x00008b8f"
+          },
+          {
+            "offset": "0x00118234",
+            "status": "0x0000000000000000",
+            "value": "0x000003ff"
+          },
+          {
+            "offset": "0x00110100",
+            "status": "0x0000000000000000",
+            "value": "0x00000010"
+          },
+          {
+            "offset": "0x001fa824",
+            "status": "0x0000000000000000",
+            "value": "0x1ffffe00"
+          },
+          {
+            "offset": "0x001fa828",
+            "status": "0x0000000000000000",
+            "value": "0x00000000"
+          },
+          {
+            "offset": "0x001fa7cc",
+            "status": "0x0000000000000000",
+            "value": "0x0004cb8f"
+          },
+          {
+            "offset": "0x001fa7c4",
+            "status": "0x0000000000000000",
+            "value": "0x0004cb8f"
+          },
+          {
+            "offset": "0x009a0148",
+            "status": "0x0000000000000000",
+            "value": "0xffffff0f"
+          },
+          {
+            "offset": "0x00823804",
+            "status": "0x0000000000000000",
+            "value": "0xffffff8f"
+          },
+          {
+            "offset": "0x00823814",
+            "status": "0x0000000000000000",
+            "value": "0x00000233"
+          },
+          {
+            "offset": "0x00823818",
+            "status": "0x0000000000000000",
+            "value": "0x00410080"
+          },
+          {
+            "offset": "0x0082381c",
+            "status": "0x0000000000000000",
+            "value": "0x24020000"
+          },
+          {
+            "offset": "0x00823820",
+            "status": "0x0000000000000000",
+            "value": "0x00000005"
+          },
+          {
+            "offset": "0x001183a4",
+            "status": "0x0000000000000000",
+            "value": "0x00002ffa"
+          },
+          {
+            "offset": "0x00625f04",
+            "status": "0x0000000000000000",
+            "value": "0x00010e09"
+          },
+          {
+            "offset": "0x001fa7c8",
+            "status": "0x0000000000000000",
+            "value": "0x0045cb8f"
+          },
+          {
+            "offset": "0x001fa82c",
+            "status": "0x0000000000000000",
+            "value": "0x00100000"
+          },
+          {
+            "offset": "0x001fa830",
+            "status": "0x0000000000000000",
+            "value": "0x02ef9ff0"
+          },
+          {
+            "offset": "0x00824148",
+            "status": "0x0000000000000000",
+            "value": "0x00000001"
+          },
+          {
+            "offset": "0x008241e0",
+            "status": "0x0000000000000000",
+            "value": "0x00000001"
+          },
+          {
+            "offset": "0x00000000",
+            "status": "0x0000000000000000",
+            "value": "0x194000a1"
+          }
+        ]
+      },
+      "handoff_status": [
+        "witness-open-before-detach status=0x0000000000000000",
+        "windows-root-close-next status=0x0000000000000000",
+        "windows-root-close-returned status=0x0000000000000000",
+        "main-log-close-next status=0x0000000000000000",
+        "main-log-close-returned status=0x0000000000000000",
+        "windows-StartImage-next status=0x0000000000000000"
+      ]
+    },
+    "eighteenth": {
+      "file_count": 35,
+      "diag_bytes": 422373,
+      "diag_sha256": "98ccf75ba45dfa00a2d06058ba86c66b7c596d688c3d778f51d672489ede3454",
+      "stages": {
+        "initial": "0x0000000000000000",
+        "input-before": "0x0000000000000000",
+        "disconnect-return": "0x0000000000000000",
+        "post": "0x0000000000000000",
+        "post-repeat": "0x0000000000000000",
+        "gop-precheck": "0x0000000000000000",
+        "gop-disconnect-return": "0x0000000000000000",
+        "gop-post": "0x0000000000000000",
+        "gop-post-repeat": "0x0000000000000000",
+        "gop-protocols-absent": "0x0000000000000000",
+        "edid-precheck": "0x0000000000000000",
+        "edid-disconnect-return": "0x0000000000000000",
+        "edid-post": "0x0000000000000000",
+        "edid-post-repeat": "0x0000000000000000",
+        "edid-protocols-absent": "0x0000000000000000",
+        "owner-child-return": "0x0000000000000000",
+        "owner-child-post": "0x0000000000000000",
+        "owner-child-repeat": "0x0000000000000000",
+        "owner-child-absent": "0x0000000000000000",
+        "parent-return": "0x0000000000000000",
+        "parent-post": "0x0000000000000000",
+        "parent-repeat": "0x0000000000000000",
+        "parent-child-absent": "0x0000000000000000",
+        "decode-return": "0x0000000000000000",
+        "decode-post": "0x0000000000000000",
+        "decode-repeat": "0x0000000000000000",
+        "register-capture": "0x0000000000000000",
+        "decode-input-after": "0x0000000000000000",
+        "decode-final-post": "0x0000000000000000",
+        "decode-off-return": "0x0000000000000000",
+        "decode-off-post": "0x0000000000000000",
+        "decode-off-repeat": "0x0000000000000000",
+        "windows-eligible": "0x0000000000000000",
+        "experiment-result": "0x0000000000000000"
+      },
+      "register_batches": {
+        "1": [
+          {
+            "offset": "0x00000000",
+            "status": "0x0000000000000000",
+            "value": "0x194000a1"
+          },
+          {
+            "offset": "0x00118128",
+            "status": "0x0000000000000000",
+            "value": "0x00008b8f"
+          },
+          {
+            "offset": "0x00118234",
+            "status": "0x0000000000000000",
+            "value": "0x000003ff"
+          },
+          {
+            "offset": "0x00110100",
+            "status": "0x0000000000000000",
+            "value": "0x00000010"
+          },
+          {
+            "offset": "0x001fa824",
+            "status": "0x0000000000000000",
+            "value": "0x1ffffe00"
+          },
+          {
+            "offset": "0x001fa828",
+            "status": "0x0000000000000000",
+            "value": "0x00000000"
+          },
+          {
+            "offset": "0x001fa7cc",
+            "status": "0x0000000000000000",
+            "value": "0x0004cb8f"
+          },
+          {
+            "offset": "0x001fa7c4",
+            "status": "0x0000000000000000",
+            "value": "0x0004cb8f"
+          },
+          {
+            "offset": "0x009a0148",
+            "status": "0x0000000000000000",
+            "value": "0xffffff0f"
+          },
+          {
+            "offset": "0x00823804",
+            "status": "0x0000000000000000",
+            "value": "0xffffff8f"
+          },
+          {
+            "offset": "0x00823814",
+            "status": "0x0000000000000000",
+            "value": "0x00000233"
+          },
+          {
+            "offset": "0x00823818",
+            "status": "0x0000000000000000",
+            "value": "0x00410080"
+          },
+          {
+            "offset": "0x0082381c",
+            "status": "0x0000000000000000",
+            "value": "0x24020000"
+          },
+          {
+            "offset": "0x00823820",
+            "status": "0x0000000000000000",
+            "value": "0x00000005"
+          },
+          {
+            "offset": "0x001183a4",
+            "status": "0x0000000000000000",
+            "value": "0x00002ffa"
+          },
+          {
+            "offset": "0x00625f04",
+            "status": "0x0000000000000000",
+            "value": "0x00010e09"
+          },
+          {
+            "offset": "0x001fa7c8",
+            "status": "0x0000000000000000",
+            "value": "0x0045cb8f"
+          },
+          {
+            "offset": "0x001fa82c",
+            "status": "0x0000000000000000",
+            "value": "0x00100000"
+          },
+          {
+            "offset": "0x001fa830",
+            "status": "0x0000000000000000",
+            "value": "0x02ef9ff0"
+          },
+          {
+            "offset": "0x00824148",
+            "status": "0x0000000000000000",
+            "value": "0x00000001"
+          },
+          {
+            "offset": "0x008241e0",
+            "status": "0x0000000000000000",
+            "value": "0x00000001"
+          },
+          {
+            "offset": "0x00000000",
+            "status": "0x0000000000000000",
+            "value": "0x194000a1"
+          }
+        ],
+        "2": [
+          {
+            "offset": "0x00000000",
+            "status": "0x0000000000000000",
+            "value": "0x194000a1"
+          },
+          {
+            "offset": "0x00118128",
+            "status": "0x0000000000000000",
+            "value": "0x00008b8f"
+          },
+          {
+            "offset": "0x00118234",
+            "status": "0x0000000000000000",
+            "value": "0x000003ff"
+          },
+          {
+            "offset": "0x00110100",
+            "status": "0x0000000000000000",
+            "value": "0x00000010"
+          },
+          {
+            "offset": "0x001fa824",
+            "status": "0x0000000000000000",
+            "value": "0x1ffffe00"
+          },
+          {
+            "offset": "0x001fa828",
+            "status": "0x0000000000000000",
+            "value": "0x00000000"
+          },
+          {
+            "offset": "0x001fa7cc",
+            "status": "0x0000000000000000",
+            "value": "0x0004cb8f"
+          },
+          {
+            "offset": "0x001fa7c4",
+            "status": "0x0000000000000000",
+            "value": "0x0004cb8f"
+          },
+          {
+            "offset": "0x009a0148",
+            "status": "0x0000000000000000",
+            "value": "0xffffff0f"
+          },
+          {
+            "offset": "0x00823804",
+            "status": "0x0000000000000000",
+            "value": "0xffffff8f"
+          },
+          {
+            "offset": "0x00823814",
+            "status": "0x0000000000000000",
+            "value": "0x00000233"
+          },
+          {
+            "offset": "0x00823818",
+            "status": "0x0000000000000000",
+            "value": "0x00410080"
+          },
+          {
+            "offset": "0x0082381c",
+            "status": "0x0000000000000000",
+            "value": "0x24020000"
+          },
+          {
+            "offset": "0x00823820",
+            "status": "0x0000000000000000",
+            "value": "0x00000005"
+          },
+          {
+            "offset": "0x001183a4",
+            "status": "0x0000000000000000",
+            "value": "0x00002ffa"
+          },
+          {
+            "offset": "0x00625f04",
+            "status": "0x0000000000000000",
+            "value": "0x00010e09"
+          },
+          {
+            "offset": "0x001fa7c8",
+            "status": "0x0000000000000000",
+            "value": "0x0045cb8f"
+          },
+          {
+            "offset": "0x001fa82c",
+            "status": "0x0000000000000000",
+            "value": "0x00100000"
+          },
+          {
+            "offset": "0x001fa830",
+            "status": "0x0000000000000000",
+            "value": "0x02ef9ff0"
+          },
+          {
+            "offset": "0x00824148",
+            "status": "0x0000000000000000",
+            "value": "0x00000001"
+          },
+          {
+            "offset": "0x008241e0",
+            "status": "0x0000000000000000",
+            "value": "0x00000001"
+          },
+          {
+            "offset": "0x00000000",
+            "status": "0x0000000000000000",
+            "value": "0x194000a1"
+          }
+        ]
+      },
+      "handoff_status": [
+        "witness-open-before-detach status=0x0000000000000000",
+        "windows-root-close-next status=0x0000000000000000",
+        "windows-root-close-returned status=0x0000000000000000",
+        "main-log-close-next status=0x0000000000000000",
+        "main-log-close-returned status=0x0000000000000000",
+        "windows-StartImage-next status=0x0000000000000000"
+      ]
+    }
+  },
+  "unlock_transaction_executed": false,
+  "unlock_proven": false
+}

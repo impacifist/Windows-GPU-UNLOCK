@@ -1,0 +1,19 @@
+{
+  "run": 23,
+  "date": "2026-10-27",
+  "files": 36,
+  "diag_bytes": 430578,
+  "diag_sha256": "805a671695bc65729e2fb5ba6cecabd4e8c9e7c1b130872441011344b98f52a3",
+  "prom_sha256": "accf2a054de0ec394078f933f74356ed7c4057ee0bd1ce6734cacda54ca9e1e1",
+  "source_unchanged": true,
+  "patch_match": true,
+  "selector_matrix": true,
+  "scratch_intact": true,
+  "changed_bytes": 9,
+  "patched_ram_sha256": "0bca65c5d5f41cec855acd8009340a86a1e08d117cb9c1a716cb444f3d0a2d52",
+  "live_fuse_read": false,
+  "firmware_uploaded": false,
+  "firmware_executed": false,
+  "execution_authority": false,
+  "windows_return": "user-confirmed automatic"
+}

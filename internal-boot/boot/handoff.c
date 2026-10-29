@@ -17,6 +17,9 @@
 #include "../unlock/sha256.h"
 #ifdef GU_DIAGNOSTIC_ONLY
 #include "diagnostic.h"
+#if defined(GU_AD104_EDID_TEST) || defined(GU_AD104_TEXT_TEST)
+#include "probe.h"
+#endif
 #endif
 #ifdef GU_CONSOLE_PREPARE
 #include "prepare-console.h"
@@ -40,6 +43,21 @@
 #error GU_USB_PROBE is the read-only diagnostic probe only
 #endif
 
+#if defined(GU_AD104_FWSEC_AUDIT_TEST) && !defined(GU_AD104_PROM_FULL_TEST)
+#error FWSEC RAM audit requires full PROM capture
+#endif
+#if defined(GU_AD104_PROM_FULL_TEST) && !defined(GU_AD104_PROM_HEADER_TEST)
+#error Full PROM requires header and recovery tests
+#endif
+#if defined(GU_AD104_PROM_HEADER_TEST) && !defined(GU_AD104_DELAYED_READ_TEST)
+#error PROM header requires delayed read recovery
+#endif
+#if defined(GU_AD104_DELAYED_READ_TEST) && !defined(GU_AD104_DECODE_OFF_TEST)
+#error Delayed reads require decode off recovery
+#endif
+#if defined(GU_AD104_DECODE_OFF_TEST) && !defined(GU_AD104_DECODE_READ_TEST)
+#error Decode off requires the decode read experiment
+#endif
 static EFI_GUID LoadedGuid=EFI_LOADED_IMAGE_PROTOCOL_GUID,FsGuid=EFI_SIMPLE_FILE_SYSTEM_PROTOCOL_GUID;
 static EFI_GUID PathGuid=EFI_DEVICE_PATH_PROTOCOL_GUID;
 #ifndef GU_DIAGNOSTIC_ONLY
@@ -53,6 +71,7 @@ static EFI_HANDLE UnlockImage;
 static EFI_FILE_PROTOCOL *Root,*Log;
 /* Close each owned handle once, even when the first close fails. A failed
  * close forbids StartImage; retain the first failure for the caller. */
+#ifndef GU_AD104_DECODE_READ_TEST
 static EFI_STATUS CloseBootFiles(EFI_STATUS *LogStatus,EFI_STATUS *RootStatus) {
   EFI_FILE_PROTOCOL *log=Log,*root=Root;Log=NULL;Root=NULL;
   EFI_STATUS a=log && log->Close?log->Close(log):EFI_INVALID_PARAMETER;
@@ -61,11 +80,15 @@ static EFI_STATUS CloseBootFiles(EFI_STATUS *LogStatus,EFI_STATUS *RootStatus) {
   if(RootStatus)*RootStatus=b;
   return a!=EFI_SUCCESS?a:b;
 }
+#endif
 #ifdef GU_SINGLE_RTX_CONSOLE
 static BOOLEAN ResearchOutputDisabled;
 #endif
 
 static VOID Say(const CHAR16 *Text) {
+#ifdef GU_AD104_TEXT_TEST
+  if(GuTextOutputDisabled)return;
+#endif
 #ifdef GU_SINGLE_RTX_CONSOLE
   if(ResearchOutputDisabled)return;
 #endif
@@ -93,13 +116,14 @@ static EFI_STATUS PathFor(EFI_HANDLE Device,EFI_DEVICE_PATH_PROTOCOL **Out) {
   EFI_STATUS s=Table->BootServices->HandleProtocol(Device,&PathGuid,(VOID **)Out);
   return s==EFI_SUCCESS && *Out?EFI_SUCCESS:EFI_UNSUPPORTED;
 }
-static EFI_STATUS FindPartition(const EFI_GUID *Guid,EFI_HANDLE *Out) {
+static EFI_STATUS FindPartition(const EFI_GUID *Guid,EFI_HANDLE *Out,BOOLEAN WindowsVolume) {
   EFI_HANDLE *handles=NULL;UINTN count=0,matches=0;*Out=NULL;
   EFI_STATUS s=Table->BootServices->LocateHandleBuffer(ByProtocol,&FsGuid,NULL,&count,&handles);
   if(s!=EFI_SUCCESS)return s;
   for(UINTN i=0;i<count;i++) {
     EFI_DEVICE_PATH_PROTOCOL *p=NULL;
-    if(PathFor(handles[i],&p)==EFI_SUCCESS && GuPathIsPartition(p,Guid)){matches++;*Out=handles[i];}
+    if(PathFor(handles[i],&p)==EFI_SUCCESS &&
+       (WindowsVolume?GuWindowsVolumePath(p):GuPathIsPartition(p,Guid))){matches++;*Out=handles[i];}
   }
   if(handles)Table->BootServices->FreePool(handles);
   return matches==1?EFI_SUCCESS:matches?EFI_COMPROMISED_DATA:EFI_NOT_FOUND;
@@ -179,6 +203,36 @@ static EFI_STATUS Record(VOID *Context,const char *Event,EFI_STATUS Status) {
   if(s!=EFI_SUCCESS || written!=n)return EFI_DEVICE_ERROR;
   return Log->Flush(Log);
 }
+#ifdef GU_AD104_DECODE_READ_TEST
+static EFI_FILE_PROTOCOL *Witness;
+static EFI_EVENT WitnessExitEvent;
+static volatile BOOLEAN WitnessExited;
+static UINTN WitnessRecords;
+static VOID EFIAPI WitnessExit(EFI_EVENT event,VOID *context) {
+  (void)event;(void)context;WitnessExited=TRUE;
+}
+static EFI_STATUS WitnessRecord(const char *event,EFI_STATUS status) {
+  if(WitnessExited || !Witness || !Witness->Write || !Witness->Flush || WitnessRecords>=16)return EFI_NOT_READY;
+  WitnessRecords++;
+  EFI_FILE_PROTOCOL *saved=Log;Log=Witness;
+  EFI_STATUS s=Record(NULL,event,status);Log=saved;return s;
+}
+#ifdef GU_AD104_FALCON_REFUSAL_TEST
+EFI_STATUS GuRefusalWitness(const char *event,EFI_STATUS status){return WitnessRecord(event,status);}
+#endif
+static EFI_STATUS WitnessOpen(VOID) {
+  if(Witness || !Root || !Root->Open || !Table->BootServices->CreateEvent)return EFI_UNSUPPORTED;
+  EFI_FILE_PROTOCOL *existing=NULL;
+  EFI_STATUS s=Root->Open(Root,&existing,L"\\RTX3090-UNLOCK\\STATUS.TXT",EFI_FILE_MODE_READ,0);
+  if(s==EFI_SUCCESS){if(existing && existing!=Root && existing!=Log && existing->Close)(void)existing->Close(existing);return EFI_ALREADY_STARTED;}
+  if(s!=EFI_NOT_FOUND || existing)return s==EFI_NOT_FOUND?EFI_COMPROMISED_DATA:s;
+  s=Root->Open(Root,&Witness,L"\\RTX3090-UNLOCK\\STATUS.TXT",EFI_FILE_MODE_READ|EFI_FILE_MODE_WRITE|EFI_FILE_MODE_CREATE,0);
+  if(s!=EFI_SUCCESS || !Witness || Witness==Root || Witness==Log || !Witness->Write || !Witness->Flush){Witness=NULL;return EFI_DEVICE_ERROR;}
+  s=Table->BootServices->CreateEvent(EVT_SIGNAL_EXIT_BOOT_SERVICES,TPL_NOTIFY,WitnessExit,NULL,&WitnessExitEvent);
+  if(s!=EFI_SUCCESS || !WitnessExitEvent)return s==EFI_SUCCESS?EFI_DEVICE_ERROR:s;
+  return WitnessRecord("witness-open-before-detach",EFI_SUCCESS);
+}
+#endif
 #ifndef GU_DIAGNOSTIC_ONLY
 static EFI_STATUS LoadUnlock(VOID) {
   EFI_FILE_PROTOCOL *file=NULL;
@@ -221,6 +275,43 @@ static EFI_STATUS LoadUnlock(VOID) {
   return EFI_SUCCESS;
 }
 #endif
+#ifdef GU_WINDOWS_MBR_SIGNATURE
+static EFI_STATUS LoadMbrWindows(EFI_HANDLE Device,EFI_DEVICE_PATH_PROTOCOL *Path,UINTN ExpectedBytes,const char *ExpectedHash) {
+  static EFI_GUID fileInfo=EFI_FILE_INFO_ID;
+  EFI_SIMPLE_FILE_SYSTEM_PROTOCOL *fs=NULL;EFI_FILE_PROTOCOL *root=NULL,*file=NULL;
+  EFI_STATUS s=Table->BootServices->HandleProtocol(Device,&FsGuid,(VOID **)&fs);
+  if(s!=EFI_SUCCESS || !fs || !fs->OpenVolume)return EFI_UNSUPPORTED;
+  s=fs->OpenVolume(fs,&root);
+  if(s!=EFI_SUCCESS || !root || !root->Open || !root->Close) {
+    if(root && root->Close)(void)root->Close(root);
+    return EFI_UNSUPPORTED;
+  }
+  s=root->Open(root,&file,L"\\EFI\\Microsoft\\Boot\\bootmgfw.efi",EFI_FILE_MODE_READ,0);
+  if(s==EFI_SUCCESS && (!file || !file->GetInfo || !file->Read || !file->Close))s=EFI_UNSUPPORTED;
+  union {EFI_FILE_INFO info;UINT8 bytes[512];} metadata;UINTN bytes=sizeof(metadata);
+  UINT8 *data=NULL;
+  if(s==EFI_SUCCESS)s=file->GetInfo(file,&fileInfo,&bytes,&metadata);
+  if(s==EFI_SUCCESS && (bytes<sizeof(EFI_FILE_INFO) || bytes>sizeof(metadata) ||
+     metadata.info.Size<sizeof(EFI_FILE_INFO) || metadata.info.Size>bytes ||
+     metadata.info.FileSize!=ExpectedBytes || !metadata.info.FileSize ||
+     metadata.info.FileSize>8U*1024U*1024U || (metadata.info.Attribute&EFI_FILE_DIRECTORY)))s=EFI_BAD_BUFFER_SIZE;
+  if(s==EFI_SUCCESS)s=Table->BootServices->AllocatePool(EfiBootServicesData,ExpectedBytes,(VOID **)&data);
+  if(s==EFI_SUCCESS && !data)s=EFI_OUT_OF_RESOURCES;
+  if(s==EFI_SUCCESS) {
+    bytes=ExpectedBytes;s=file->Read(file,&bytes,data);
+    if(s==EFI_SUCCESS && bytes!=ExpectedBytes)s=EFI_END_OF_FILE;
+  }
+  if(file && file->Close){EFI_STATUS closed=file->Close(file);if(s==EFI_SUCCESS)s=closed;}
+  EFI_STATUS closed=root->Close(root);if(s==EFI_SUCCESS)s=closed;
+  if(s==EFI_SUCCESS && !GuHashMatches(data,ExpectedBytes,ExpectedHash))s=EFI_CRC_ERROR;
+  EFI_DEVICE_PATH_PROTOCOL *fresh=NULL;
+  if(s==EFI_SUCCESS && (PathFor(Device,&fresh)!=EFI_SUCCESS || !GuWindowsVolumePath(fresh)))s=EFI_COMPROMISED_DATA;
+  /* Load the hashed buffer, not a second filesystem read. No StartImage here. */
+  if(s==EFI_SUCCESS)s=Table->BootServices->LoadImage(FALSE,Self,Path,data,ExpectedBytes,&WindowsImage);
+  if(data && Table->BootServices->FreePool(data)!=EFI_SUCCESS && s==EFI_SUCCESS)s=EFI_DEVICE_ERROR;
+  return s;
+}
+#endif
 static EFI_STATUS Prepare(VOID *Context) {
   (void)Context;EFI_HANDLE own=NULL,windows=NULL;
 #if defined(GU_USB_PROBE) || defined(GU_USB_MEDIA)
@@ -231,19 +322,26 @@ static EFI_STATUS Prepare(VOID *Context) {
   if(s!=EFI_SUCCESS || !GuInspectPath(ownPath,NULL,NULL,&usb,NULL) || !usb)return EFI_COMPROMISED_DATA;
   own=OwnDevice;
 #else
-  EFI_STATUS s=FindPartition(&GuInternalPartition,&own);
+  EFI_STATUS s=FindPartition(&GuInternalPartition,&own,FALSE);
   if(s!=EFI_SUCCESS || own!=OwnDevice)return EFI_COMPROMISED_DATA;
 #endif
-  s=FindPartition(&GuWindowsPartition,&windows);
+  s=FindPartition(&GuWindowsPartition,&windows,TRUE);
   if(s!=EFI_SUCCESS || windows==own)return EFI_COMPROMISED_DATA;
   s=OpenLog();if(s!=EFI_SUCCESS)return s;
+#ifdef GU_AD104_DECODE_READ_TEST
+  s=WitnessOpen();if(s!=EFI_SUCCESS)return s;
+#endif
   s=Record(NULL,"internal-handoff-v1",EFI_SUCCESS);if(s!=EFI_SUCCESS)return s;
 #ifndef GU_DIAGNOSTIC_ONLY
   s=LoadUnlock();if(s!=EFI_SUCCESS)return s;
 #endif
   EFI_DEVICE_PATH_PROTOCOL *path=NULL;
   s=FilePath(windows,L"\\EFI\\Microsoft\\Boot\\bootmgfw.efi",&path);
+#ifdef GU_WINDOWS_MBR_SIGNATURE
+  if(s==EFI_SUCCESS)s=LoadMbrWindows(windows,path,GU_WINDOWS_BOOT_BYTES,GU_WINDOWS_BOOT_SHA256);
+#else
   if(s==EFI_SUCCESS)s=Table->BootServices->LoadImage(FALSE,Self,path,NULL,0,&WindowsImage);
+#endif
   if(path)Table->BootServices->FreePool(path);
   if(s!=EFI_SUCCESS)return s;
   EFI_LOADED_IMAGE_PROTOCOL *loaded=NULL;
@@ -350,8 +448,36 @@ static EFI_STATUS FullWindows(VOID *Context) {
 static EFI_STATUS Windows(VOID *Context) {
   (void)Context;
   Say(L"Starting Windows Boot Manager directly. No reset.\r\n");
+#ifdef GU_AD104_DECODE_READ_TEST
+  /* Keep the log open while closing the root so the next physical run can
+   * distinguish root Close from the final log-Close/StartImage boundary. */
+  EFI_STATUS s=WitnessRecord("windows-root-close-next",EFI_SUCCESS);
+  if(s!=EFI_SUCCESS)return s;
+  EFI_FILE_PROTOCOL *root=Root;Root=NULL;
+  s=root && root->Close?root->Close(root):EFI_INVALID_PARAMETER;
+  EFI_STATUS recorded=WitnessRecord("windows-root-close-returned",s);
+  if(s!=EFI_SUCCESS)return s;
+  if(recorded!=EFI_SUCCESS)return recorded;
+  s=WitnessRecord("main-log-close-next",EFI_SUCCESS);
+  if(s!=EFI_SUCCESS)return s;
+  EFI_FILE_PROTOCOL *log=Log;Log=NULL;
+  s=log && log->Close?log->Close(log):EFI_INVALID_PARAMETER;
+  recorded=WitnessRecord("main-log-close-returned",s);
+  if(s!=EFI_SUCCESS)return s;
+  if(recorded!=EFI_SUCCESS)return recorded;
+  s=WitnessRecord("windows-StartImage-next",EFI_SUCCESS);
+  if(s!=EFI_SUCCESS)return s;
+#else
   EFI_STATUS s=CloseBootFiles(NULL,NULL);if(s!=EFI_SUCCESS)return s;
+#endif
+#ifdef GU_AD104_DECODE_READ_TEST
+  s=Table->BootServices->StartImage(WindowsImage,NULL,NULL);
+  if(WitnessExited)return EFI_ABORTED; /* No protocol/file access after EBS. */
+  recorded=WitnessRecord("windows-StartImage-returned",s);
+  return recorded==EFI_SUCCESS?s:recorded;
+#else
   return Table->BootServices->StartImage(WindowsImage,NULL,NULL);
+#endif
 }
 #endif
 #ifdef GU_CONSOLE_PREPARE
@@ -396,6 +522,24 @@ static EFI_STATUS DetachConsole(VOID *Context) {
 #endif
 }
 #endif
+#if defined(GU_AD104_EDID_TEST) || defined(GU_AD104_TEXT_TEST)
+static EFI_STATUS EdidThenWindows(EFI_STATUS captured,EFI_STATUS recorded) {
+  if(recorded!=EFI_SUCCESS)return recorded;
+  if(captured!=EFI_NOT_READY || !WindowsImage)return EFI_NOT_READY;
+#ifdef GU_AD104_PROM_FULL_TEST
+  EFI_STATUS s=GuEdidExperimentOnVolume(Table,Log,Root,Witness);
+#else
+  EFI_STATUS s=GuEdidExperiment(Table,Log);
+#endif
+#ifdef GU_AD104_TEXT_TEST
+  recorded=Record(NULL,"text-experiment-result",s);
+#else
+  recorded=Record(NULL,"edid-experiment-result",s);
+#endif
+  if(recorded!=EFI_SUCCESS)return recorded;
+  return s==EFI_SUCCESS?Windows(NULL):s;
+}
+#endif
 EFI_STATUS EFIAPI efi_main(EFI_HANDLE Image,EFI_SYSTEM_TABLE *St) {
   Table=St;Self=Image;
   if(!St || !St->BootServices)Stop();
@@ -411,19 +555,38 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE Image,EFI_SYSTEM_TABLE *St) {
   GU_CONSOLE_FLOW_OPS ops={NULL,Prepare,PrepareChoice,CaptureConsole,DetachConsole,ReadyConsoleWindows,VerifyConsole,StartConsoleWindows,Record};
   s=GuConsoleFlow(&ops);
 #elif defined(GU_DIAGNOSTIC_ONLY)
+#if defined(GU_AD104_EDID_TEST) || defined(GU_AD104_TEXT_TEST)
+  Say(L"Attended AD104 test. No unlock.\r\nCollecting baseline; please wait.\r\n");
+#else
   Say(L"GPU console diagnostic only. No unlock or driver detach. Collecting graph...\r\n");
+#endif
   s=Prepare(NULL);
   if(s==EFI_SUCCESS) {
     s=GuCaptureGraphOnVolume(Table,Log,Root);
-    /* Partial observations never authorize unlock. Normal Windows boot is
-     * permitted because this separate image has not touched GPU state. */
+    /* Metadata incompleteness is not release authorization. The separate
+     * EDID test must qualify its own post-state before Windows handoff. */
     EFI_STATUS recorded=Record(NULL,"diagnostic-result",s);
+#if defined(GU_AD104_EDID_TEST) || defined(GU_AD104_TEXT_TEST)
+    /* Expected metadata incompleteness is separate from experiment success.
+     * No failure in this mode may fall through to firmware BootOrder. */
+    s=EdidThenWindows(s,recorded);
+#else
     if(recorded==EFI_SUCCESS)s=Windows(NULL);
     else s=recorded;
+#endif
   }
 #else
   GU_HANDOFF_OPS ops={NULL,Prepare,Select,Record,Unlock,Windows};
   s=GuHandoffFlow(&ops);
+#endif
+#ifdef GU_AD104_DECODE_READ_TEST
+  if(WitnessExited)for(;;)__asm__ volatile("pause");
+  (void)WitnessRecord("handoff-stopped-manual-power-off",s);
+#endif
+#if defined(GU_AD104_TEXT_TEST)
+  /* Console protocols may already be gone. Persist the recovery instruction;
+   * do not call detached display protocols just to announce the stop. */
+  (void)Record(NULL,"manual-power-off-required-no-key-can-resume",s);
 #endif
   (void)Record(NULL,"handoff-stopped",s);
 #ifdef GU_FULL_UNLOCK
@@ -439,7 +602,7 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE Image,EFI_SYSTEM_TABLE *St) {
     return s==EFI_SUCCESS || s==EFI_ABORTED?EFI_NOT_STARTED:s;
   }
 #endif
-#if defined(GU_DIAGNOSTIC_ONLY) && defined(GU_USB_MEDIA)
+#if defined(GU_DIAGNOSTIC_ONLY) && defined(GU_USB_MEDIA) && !defined(GU_AD104_EDID_TEST) && !defined(GU_AD104_TEXT_TEST)
   /* Observation stick: this image never releases a driver or writes GPU state,
    * so a failed capture or Windows load hands back to the firmware BootOrder. */
   if(Log){(void)Log->Close(Log);Log=NULL;}

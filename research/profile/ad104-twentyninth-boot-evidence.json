@@ -1,0 +1,15 @@
+{
+  "run": 29,
+  "files": 36,
+  "diag_bytes": 433738,
+  "diag_sha256": "d0384b5c23515b9937afc7c5614a796796a98b34aad822ddc5e796bdc14ab0af",
+  "observation_complete": false,
+  "observation_status": "EFI_NOT_READY",
+  "refused_address": "0x111388",
+  "refused_value": "0xbadf5620",
+  "recovery_batch_attempts": [7, 7],
+  "decode_off_success": true,
+  "windows_return": "user-confirmed automatic",
+  "firmware_executed": false,
+  "unlock_executed": false
+}

@@ -184,6 +184,7 @@ static EFI_STATUS GenericRun(int mode,BOOLEAN withRoot) {
   Check(RootCloses==0,"borrowed root is never closed");
   return s;
 }
+#ifndef GU_PROBE_TEST_REUSE
 int main(void) {
 #ifdef GU_PROBE_GENERIC
   GenericSetup(G_OK);TestId=0x999910deU;
@@ -295,3 +296,4 @@ int main(void) {
   printf("PASS generic probe checks: %d; RAM-only mock files, no hardware access\n",Checks);
   return 0;
 }
+#endif

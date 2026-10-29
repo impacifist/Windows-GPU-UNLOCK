@@ -1,0 +1,22 @@
+{
+  "run": 22,
+  "date": "2026-10-27",
+  "files": 36,
+  "diag_bytes": 431330,
+  "diag_sha256": "bc01b63e6a92e0e88da650cf6a8f9c88a6245db7d45ff15f660f14573016a676",
+  "prom_bytes": 1048576,
+  "prom_sha256": "accf2a054de0ec394078f933f74356ed7c4057ee0bd1ce6734cacda54ca9e1e1",
+  "prom_equal_test21": true,
+  "audit": {
+    "prom_match": true,
+    "parsed": true,
+    "geometry_match": true,
+    "image_match": true,
+    "signature_region_match": true
+  },
+  "firmware_authenticated": false,
+  "cold_entry_admitted": false,
+  "execution_authority": false,
+  "unlock_executed": false,
+  "windows_return": "user-confirmed automatic"
+}

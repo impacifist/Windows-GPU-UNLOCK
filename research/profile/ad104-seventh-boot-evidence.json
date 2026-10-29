@@ -1,0 +1,55 @@
+{
+  "date": "2026-10-26",
+  "mode": "one-shot-edid-lifecycle",
+  "efi_sha256": "5503b5fc3cda5cac2d9bc852d669ec509890f94800a205510da54b099b9d69f7",
+  "log_bytes": 400491,
+  "log_sha256": "3746cbe874eb563a6e1fe824b2afc1283f7fd6307216fc75745b2cee9ae764ab",
+  "capture_files": 33,
+  "usb_archive_hashes_match": true,
+  "stages": {
+    "initial": "0000000000000000",
+    "input-before": "0000000000000000",
+    "disconnect-return": "0000000000000000",
+    "post": "0000000000000000",
+    "post-repeat": "0000000000000000",
+    "input-after": "0000000000000000",
+    "final-post": "0000000000000000",
+    "windows-eligible": "0000000000000000",
+    "experiment-result": "0000000000000000"
+  },
+  "observed_transition": {
+    "relevant_edges_before": 8,
+    "relevant_edges_after": 7,
+    "shared_byte_before": 1,
+    "shared_byte_after": 0,
+    "pointer_counts_before": [
+      1,
+      1
+    ],
+    "pointer_counts_after": [
+      1,
+      1
+    ],
+    "attributes_before": "0x718",
+    "attributes_after": "0x718",
+    "supported": "0x1b77b",
+    "pci_command": "0x0007",
+    "full_256_byte_pci_config_equal": true,
+    "pre_and_post_keyboard_challenges_passed": true
+  },
+  "limits": {
+    "pointer_movement_tested": false,
+    "pci_owner_released": false,
+    "cold_gpu_state_proven": false,
+    "unlock_proven": false,
+    "general_recovery_reliability_proven": false
+  },
+  "windows_readback": {
+    "gpu": "NVIDIA GeForce RTX 4070 Ti",
+    "bdf": "00000000:0B:00.0",
+    "driver": "610.88",
+    "vbios": "95.04.31.00.f0",
+    "source": "nvidia-smi query after return; user explicitly reports Windows starts booting when EFI test exits",
+    "user_reported_windows_boot_after_efi_exit": true
+  }
+}

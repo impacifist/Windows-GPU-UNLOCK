@@ -1,0 +1,18 @@
+{
+  "run": 24,
+  "date": "2026-10-27",
+  "files": 36,
+  "diag_bytes": 432202,
+  "diag_sha256": "9377ab508b8204f92e82d0ec42a136305e5f053fba129926888f5fddd03b162d",
+  "sample_raw": 1,
+  "version": 1,
+  "signature_offset": 384,
+  "image_match": true,
+  "changed_bytes": 393,
+  "selected_signature_sha256": "7806dc110f1bbf58f3b41f4414c4e0426000b0d985a66013d035a6ea4d0e6dd5",
+  "assembled_ram_sha256": "5004460ab7fea25b83cc95b6468456d830b98700926ed0c8696e49505eb19d07",
+  "firmware_authenticated": false,
+  "firmware_executed": false,
+  "execution_authority": false,
+  "windows_return": "user-confirmed automatic"
+}

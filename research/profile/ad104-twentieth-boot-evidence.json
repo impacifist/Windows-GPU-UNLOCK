@@ -1,0 +1,19 @@
+{
+  "run": 20,
+  "date": "2026-10-27",
+  "file_count": 35,
+  "diag_bytes": 430501,
+  "diag_sha256": "319990f081ac487436d2505075ad5d47e793886f9cd29eabb1894bd77f599fbf",
+  "prefix_bytes": 512,
+  "prefix_sha256": "7860719945ae7f43fc7a565551c97788176d6113384068f2ea0c3e52beb130ee",
+  "prefix_matches_firmware_ram_rom": true,
+  "pcir_offset": 368,
+  "vendor": "10de",
+  "device": "2782",
+  "first_image_bytes": 64512,
+  "header_status": "0",
+  "windows_return": "user-confirmed direct boot",
+  "full_prom_verified": false,
+  "fwsec_verified": false,
+  "unlock_transaction_executed": false
+}

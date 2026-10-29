@@ -1,0 +1,26 @@
+{
+  "source_run": 30,
+  "source_batch": 2,
+  "source_diag_sha256": "084bfa4e0c94c651b48523cc485acb454dda03d84c7af0778eb688f7d7a77a83",
+  "raw_inputs": {
+    "0x823820": "0x5",
+    "0x1183a4": "0x2ffa",
+    "0x625f04": "0x10e09",
+    "0x1fa7c8": "0x45cb8f",
+    "0x1fa82c": "0x100000",
+    "0x1fa830": "0x2ef9ff0"
+  },
+  "fb": "0x2ffa00000",
+  "raw_vga": "0x10e0000",
+  "reference_algorithm_vga": "0x2ff9e0000",
+  "mmu_low": "0x10000000",
+  "mmu_high": "0x2ef9ff000",
+  "mmu_rounded_top": "0x2efa00000",
+  "top_lock": false,
+  "fb_minus_mmu_top": "0x10000000",
+  "reference_ss1_match": false,
+  "reference_vga_match": false,
+  "full_layout_qualified": false,
+  "profile_admitted": false,
+  "execution_authority": false
+}

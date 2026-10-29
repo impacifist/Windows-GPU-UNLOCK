@@ -1,0 +1,30 @@
+{
+  "buffer_bytes": 150016,
+  "sha256": "0ec450dce01cfc8f8b599b165f2de00c0fc6e2d2683c1be491251078c6a3a9fd",
+  "images": [
+    {
+      "offset": 0,
+      "bytes": 64512,
+      "code_type": 0,
+      "checksum_mod256": 0,
+      "last": false,
+      "sha256": "7cc870e023ecbf35f21e30a789d508b6481ebfdb64edd5b80f4a8fd1a51847aa"
+    },
+    {
+      "offset": 64512,
+      "bytes": 85504,
+      "code_type": 3,
+      "checksum_mod256": 0,
+      "last": true,
+      "sha256": "9c887409a8f8b8c35573018575e61c5dc1ac37c9111de2dfec993c4c01c34515",
+      "machine": 34404,
+      "subsystem": 11,
+      "compression": 1,
+      "payload_offset": 80,
+      "compressed_stream_bytes": 85254,
+      "decompressed_bytes_declared": 163824
+    }
+  ],
+  "physical_prom_complete": false,
+  "images_executed": false
+}

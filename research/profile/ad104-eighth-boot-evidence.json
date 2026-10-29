@@ -1,0 +1,155 @@
+{
+  "date": "2026-10-26",
+  "mode": "output-and-pcd-observation",
+  "log_bytes": 398582,
+  "log_sha256": "8142dcfca55d2a9511c6f810d6036fd6414e4c3cc4eb43adf1d9946bd134a43c",
+  "capture_files": 33,
+  "usb_archive_hashes_match": true,
+  "snapshot_status": "EFI_SUCCESS",
+  "pcd": {
+    "token": "0x4ac",
+    "first_status": "EFI_SUCCESS",
+    "second_status": "EFI_SUCCESS",
+    "enumeration_steps_each": 1152,
+    "first_value": false,
+    "second_value": false,
+    "semantic_name_known": false,
+    "future_stop_value_proven": false
+  },
+  "console": {
+    "conout_equals_stderr": true,
+    "text_mode": 0,
+    "text_max_mode": 4,
+    "attribute": "0x0f",
+    "cursor_column": 0,
+    "cursor_row": 1,
+    "cursor_visible": false
+  },
+  "gop": {
+    "mode": 2,
+    "max_mode": 5,
+    "width": 1024,
+    "height": 768,
+    "pixel_format": 1,
+    "stride_pixels": 1024,
+    "framebuffer_base": "0xd0000000",
+    "framebuffer_bytes": 3145728,
+    "contents_read": false
+  },
+  "callbacks": [
+    {
+      "name": "out-string",
+      "image_bytes": 30912,
+      "rva": "0x34fc",
+      "containing_images": 1,
+      "dump_indices": [
+        14,
+        15,
+        16
+      ],
+      "section_matches": [
+        {
+          "dump_index": 14,
+          "section": ".text",
+          "executable": true
+        },
+        {
+          "dump_index": 15,
+          "section": ".text",
+          "executable": true
+        },
+        {
+          "dump_index": 16,
+          "section": ".text",
+          "executable": true
+        }
+      ]
+    },
+    {
+      "name": "err-string",
+      "image_bytes": 30912,
+      "rva": "0x34fc",
+      "containing_images": 1,
+      "dump_indices": [
+        14,
+        15,
+        16
+      ],
+      "section_matches": [
+        {
+          "dump_index": 14,
+          "section": ".text",
+          "executable": true
+        },
+        {
+          "dump_index": 15,
+          "section": ".text",
+          "executable": true
+        },
+        {
+          "dump_index": 16,
+          "section": ".text",
+          "executable": true
+        }
+      ]
+    },
+    {
+      "name": "out-set-mode",
+      "image_bytes": 30912,
+      "rva": "0x378c",
+      "containing_images": 1,
+      "dump_indices": [
+        14,
+        15,
+        16
+      ],
+      "section_matches": [
+        {
+          "dump_index": 14,
+          "section": ".text",
+          "executable": true
+        },
+        {
+          "dump_index": 15,
+          "section": ".text",
+          "executable": true
+        },
+        {
+          "dump_index": 16,
+          "section": ".text",
+          "executable": true
+        }
+      ]
+    },
+    {
+      "name": "gop-set-mode",
+      "image_bytes": 18432,
+      "rva": "0x1ea0",
+      "containing_images": 1,
+      "dump_indices": [
+        29
+      ],
+      "section_matches": [
+        {
+          "dump_index": 29,
+          "section": ".text",
+          "executable": true
+        }
+      ]
+    },
+    {
+      "name": "pcd-get-bool",
+      "image_bytes": 11840,
+      "rva": "0x4f4",
+      "containing_images": 1,
+      "dump_indices": [],
+      "section_matches": []
+    }
+  ],
+  "limits": {
+    "text_detach_performed": false,
+    "pcd_producer_dump_available": false,
+    "cold_gpu_state_proven": false,
+    "unlock_proven": false
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "run": 26,
+  "files": 36,
+  "diag_bytes": 433891,
+  "diag_sha256": "44473ea84c3acb51ea731510e77d7e0130296509a8d96df9c15665cbf9483713",
+  "prom_sha256": "accf2a054de0ec394078f933f74356ed7c4057ee0bd1ce6734cacda54ca9e1e1",
+  "falcon_batch_attempts": [
+    8,
+    8
+  ],
+  "mailbox_values": [
+    0,
+    0
+  ],
+  "cpuctl": "0x10",
+  "ss0": "0x24020000",
+  "ss1": 5,
+  "vga_base_raw": "0x10e09",
+  "mailbox_stable": true,
+  "dmactl_read": false,
+  "decode_off_status": 0,
+  "windows_eligible_status": 0,
+  "windows_return": "user-confirmed automatic",
+  "firmware_executed": false,
+  "unlock_executed": false
+}

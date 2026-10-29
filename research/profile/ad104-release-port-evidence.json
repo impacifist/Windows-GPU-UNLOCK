@@ -1,0 +1,33 @@
+{
+  "reference": "gpu-unlock-ada@4e7fefcc/windows/ad104-msi/msi_release.c",
+  "observed_bdf": "0:b:0:0",
+  "command": 7,
+  "observed_owner": {
+    "version": 36,
+    "image_bytes": 18432,
+    "stop_rva": 1988
+  },
+  "reference_owner": {
+    "version": 458763,
+    "image_bytes": 162016,
+    "stop_rva": 1772
+  },
+  "null_image_callbacks_within_captured_images": [
+    {
+      "image_index": 29,
+      "stop_rva": 11064
+    }
+  ],
+  "mismatches": [
+    "reference-requires-0000:01:00.0",
+    "reference-rejects-active-bus-mastering",
+    "observed-owner-does-not-match-reference-native-nvidia-fingerprint"
+  ],
+  "runtime_release_authorized": false,
+  "limitations": [
+    "Snapshot mismatches are not a runtime preflight.",
+    "IMG29 association is specific to this capture family.",
+    "Matching these fields alone cannot authorize release."
+  ],
+  "log_sha256": "f9813a372a0e097ff2db2347a2bf49cdc5a8f16f9b1d1653c0df0b0fbcff4d52"
+}

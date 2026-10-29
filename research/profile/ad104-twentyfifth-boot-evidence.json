@@ -1,0 +1,17 @@
+{
+  "run": 25,
+  "files": 36,
+  "diag_bytes": 427531,
+  "diag_sha256": "bf2898dc283bf185f08b279a1ecad2c35fede58255f08938aad6a024741da075",
+  "falcon_batch1_attempted": 5,
+  "falcon_batch2_attempted": 0,
+  "dmactl_value": "0xbadf5620",
+  "dmactl_transport_status": 0,
+  "experiment_status": "0x8000000000000006",
+  "deliberate_hold_logged": true,
+  "decode_off_reached": false,
+  "windows_startimage_reached": false,
+  "windows_return": "user-confirmed forced shutdown and manual boot",
+  "firmware_executed": false,
+  "unlock_executed": false
+}

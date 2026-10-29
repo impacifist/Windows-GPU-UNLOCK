@@ -27,8 +27,10 @@ int main(int argc, char **argv) {
   int ret = gpu_unlock_vbios_fwsec(rom, n, &fw);
   if (ret) { fprintf(stderr, "FWSEC-FRTS not found (%d)\n", ret); return 1; }
   printf("{\"image_off\":%u,\"image_size\":%u,\"dmem_size\":%u,\"data_off\":%u,\"pkc_off\":%u,"
-         "\"ucode_id\":%u,\"engine_mask\":%u,\"sig_count\":%u,\"sig_versions\":%u,\"sig_bytes\":%u}\n",
+         "\"ucode_id\":%u,\"engine_mask\":%u,\"sig_count\":%u,\"sig_versions\":%u,\"sig_bytes\":%u,"
+         "\"imem_pa\":%u,\"imem_size\":%u,\"imem_va\":%u,\"dmem_pa\":%u,\"interface_off\":%u,\"sig_off\":%u}\n",
          fw.image_off, fw.image_size, fw.dmem_size, fw.data_off, fw.pkc_off,
-         fw.ucode_id, fw.engine_mask, fw.sig_count, fw.sig_versions, fw.sig_bytes);
+         fw.ucode_id, fw.engine_mask, fw.sig_count, fw.sig_versions, fw.sig_bytes,
+         fw.imem_pa, fw.imem_size, fw.imem_va, fw.dmem_pa, fw.interface_off, fw.sig_off);
   return 0;
 }

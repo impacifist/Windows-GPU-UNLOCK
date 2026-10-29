@@ -1,0 +1,222 @@
+{
+  "schema_version": 1,
+  "log_sha256": "cbe8a11d478aaeed9e8ce023ca2e609bf5b6866f52bf35f76d5332658865d8e4",
+  "images": [
+    {
+      "index": 0,
+      "bytes": 10816,
+      "sha256": "c005d54df654afc3306bf9e141ba7ea64dd5a529634c76a3754d175bbe055323",
+      "hints": []
+    },
+    {
+      "index": 1,
+      "bytes": 71296,
+      "sha256": "43ccf7fe3db2db616d6cb3fefe427bbf8dd5ad2ac5681aef26c2d55577bedaa8",
+      "hints": []
+    },
+    {
+      "index": 2,
+      "bytes": 71296,
+      "sha256": "43ccf7fe3db2db616d6cb3fefe427bbf8dd5ad2ac5681aef26c2d55577bedaa8",
+      "hints": []
+    },
+    {
+      "index": 3,
+      "bytes": 71296,
+      "sha256": "43ccf7fe3db2db616d6cb3fefe427bbf8dd5ad2ac5681aef26c2d55577bedaa8",
+      "hints": []
+    },
+    {
+      "index": 4,
+      "bytes": 71296,
+      "sha256": "43ccf7fe3db2db616d6cb3fefe427bbf8dd5ad2ac5681aef26c2d55577bedaa8",
+      "hints": []
+    },
+    {
+      "index": 5,
+      "bytes": 11584,
+      "sha256": "118fb83425d1a192b6041c9a7a8a06a7ee3bf4b2d262226dc56a66e43b441b5a",
+      "hints": []
+    },
+    {
+      "index": 6,
+      "bytes": 53248,
+      "sha256": "044e26f9752f2f1d0fdbb586c7e8cdbc07d186eca8a61a273d1096413d66d6f5",
+      "hints": []
+    },
+    {
+      "index": 7,
+      "bytes": 23840,
+      "sha256": "7d60942ebdcdea32e8fb77ec05709f312f734f5e13195301498a265cc1e927aa",
+      "hints": []
+    },
+    {
+      "index": 8,
+      "bytes": 36864,
+      "sha256": "0f49b8c567837c40878b37529ce5b4a1bdbdc5aa0d0cb721785b08a97a8fe7a0",
+      "hints": []
+    },
+    {
+      "index": 9,
+      "bytes": 35648,
+      "sha256": "0f897f7f1c22f311a25311c97ec5546a1418d2a3e6ea35a349dc4587a3d37023",
+      "hints": []
+    },
+    {
+      "index": 10,
+      "bytes": 32000,
+      "sha256": "45cdba0228c292e1528ca7637d3fd2fb65ba4076da9e638c4fa66999ae25e76d",
+      "hints": []
+    },
+    {
+      "index": 11,
+      "bytes": 81440,
+      "sha256": "3abf6040d6cca10baf539870059965f49c2ff43d3aa2a08412334df2575e1068",
+      "hints": []
+    },
+    {
+      "index": 12,
+      "bytes": 10464,
+      "sha256": "db4ca3f7c7f6f1b603dd9de14301c13158934076f06739fd2ff22e43295aa82b",
+      "hints": []
+    },
+    {
+      "index": 13,
+      "bytes": 14016,
+      "sha256": "0a1f259478305e44f370ab0a7113bd1837aaa826eeb936f6d839faf341503ab1",
+      "hints": []
+    },
+    {
+      "index": 14,
+      "bytes": 30912,
+      "sha256": "df6c6abd453bd5db166d0a742021d1a1292a6d8c35d913655641de236c5efeea",
+      "hints": []
+    },
+    {
+      "index": 15,
+      "bytes": 30912,
+      "sha256": "df6c6abd453bd5db166d0a742021d1a1292a6d8c35d913655641de236c5efeea",
+      "hints": []
+    },
+    {
+      "index": 16,
+      "bytes": 30912,
+      "sha256": "df6c6abd453bd5db166d0a742021d1a1292a6d8c35d913655641de236c5efeea",
+      "hints": []
+    },
+    {
+      "index": 17,
+      "bytes": 22080,
+      "sha256": "01ee33225ed926efd7c913e069d25f265d901761e334ab1842b74c870fbd3d79",
+      "hints": []
+    },
+    {
+      "index": 18,
+      "bytes": 7808,
+      "sha256": "a7ccdf443b22e65c6b80f0ec79522dfed87f8cb6c57d67a17437f43a363e6120",
+      "hints": []
+    },
+    {
+      "index": 19,
+      "bytes": 16384,
+      "sha256": "c7d8682429d837adbe9e5c84e6230ce28ee5433afb1e38f5f80232a7390728be",
+      "hints": []
+    },
+    {
+      "index": 20,
+      "bytes": 9184,
+      "sha256": "2581e090df81ed3f0eea4306a900931594dbcf9d0273f2efb28dcd725e14e498",
+      "hints": []
+    },
+    {
+      "index": 21,
+      "bytes": 27648,
+      "sha256": "0f135af22ce5bd959d7077ee201e847c2c03977eaa5257e0f09df527a75a2f5f",
+      "hints": []
+    },
+    {
+      "index": 22,
+      "bytes": 34208,
+      "sha256": "0af775570ca7c68f77984abd8c8a9e318b8dbeed25145791a9407adb1fa11fc3",
+      "hints": []
+    },
+    {
+      "index": 23,
+      "bytes": 82752,
+      "sha256": "0da33cec6a50ebc856c42106792daba228ea99fcd29e050e07d0c158ac5e1bb3",
+      "hints": []
+    },
+    {
+      "index": 24,
+      "bytes": 24384,
+      "sha256": "a46df77823f3537324703e58e1c1c8bd700b7c169158dbbd283909259585f05c",
+      "hints": []
+    },
+    {
+      "index": 25,
+      "bytes": 27840,
+      "sha256": "548b45a84df504dc3ba1bf0900ca3ba7c06cd61083eb9aea18499df51d0dc985",
+      "hints": []
+    },
+    {
+      "index": 26,
+      "bytes": 15936,
+      "sha256": "08d0d346a1165487bb8c2fffbacb88997af42688a256c8a73e31409e78494e08",
+      "hints": []
+    },
+    {
+      "index": 27,
+      "bytes": 15936,
+      "sha256": "08d0d346a1165487bb8c2fffbacb88997af42688a256c8a73e31409e78494e08",
+      "hints": []
+    },
+    {
+      "index": 28,
+      "bytes": 13536,
+      "sha256": "cfcd303c578ed1b53d8af1f7b70c44c2b8072816c26e699ec9e2c8bb24721e6a",
+      "hints": []
+    },
+    {
+      "index": 29,
+      "bytes": 18432,
+      "sha256": "6978c561cfc119be29c3832d47fc51e471b02e86dc84b3a4eac6524a65de502c",
+      "hints": [
+        "BIOS[INT10] Video Driver"
+      ]
+    },
+    {
+      "index": 30,
+      "bytes": 43264,
+      "sha256": "a0303d33a972e21bf10e63cac6044d266e60f7d66e7cbbc04f78da1f5095efb3",
+      "hints": []
+    },
+    {
+      "index": 31,
+      "bytes": 43264,
+      "sha256": "a0303d33a972e21bf10e63cac6044d266e60f7d66e7cbbc04f78da1f5095efb3",
+      "hints": []
+    }
+  ],
+  "unique_image_hashes": 25,
+  "ownership": [
+    {
+      "role": "gpu-pci-by-driver",
+      "image_indices": [
+        29
+      ]
+    },
+    {
+      "role": "gpu-owner-to-gop-child",
+      "established": true
+    },
+    {
+      "role": "gop-child-protocol-to-console-child",
+      "protocol": "387477c2-69c7-11d2-8e39-00a0c969723b",
+      "image_indices": [
+        14
+      ]
+    }
+  ],
+  "release_authorized": false,
+  "complete_loaded_image_coverage": false
+}

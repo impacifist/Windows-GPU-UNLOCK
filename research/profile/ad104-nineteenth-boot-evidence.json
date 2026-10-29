@@ -1,0 +1,41 @@
+{
+  "run": 19,
+  "date": "2026-10-27",
+  "file_count": 35,
+  "diag_sha256": "60354306d47a23973c3224eb5e749b7e13aa360fbb8f897c140fbac818e476fb",
+  "diag_bytes": 423881,
+  "delay_requested_us": 1000000,
+  "delay_status": "0",
+  "wall_clock_verified": false,
+  "batch_read_counts": [
+    22,
+    22
+  ],
+  "batches_identical": true,
+  "registers": {
+    "0x00000000": "0x194000a1",
+    "0x00118128": "0x00008b8f",
+    "0x00118234": "0x000003ff",
+    "0x00110100": "0x00000010",
+    "0x001fa824": "0x1ffffe00",
+    "0x001fa828": "0x00000000",
+    "0x001fa7cc": "0x0004cb8f",
+    "0x001fa7c4": "0x0004cb8f",
+    "0x009a0148": "0xffffff0f",
+    "0x00823804": "0xffffff8f",
+    "0x00823814": "0x00000233",
+    "0x00823818": "0x00410080",
+    "0x0082381c": "0x24020000",
+    "0x00823820": "0x00000005",
+    "0x001183a4": "0x00002ffa",
+    "0x00625f04": "0x00010e09",
+    "0x001fa7c8": "0x0045cb8f",
+    "0x001fa82c": "0x00100000",
+    "0x001fa830": "0x02ef9ff0",
+    "0x00824148": "0x00000001",
+    "0x008241e0": "0x00000001"
+  },
+  "decode_off_verified": true,
+  "windows_return": "user-confirmed direct boot",
+  "unlock_transaction_executed": false
+}

@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-26",
+  "artifact_commit": "33670b1ec93dd05e1ac4d7c8989905d8f57cee7b",
+  "efi_sha256": "ce222b6034453da0a53532a39d36afdc6f2741bd0ca482d45ec19aa5ba6880f4",
+  "evidence_kind": "physical diagnostic boot; partial capture",
+  "pci": {
+    "bdf": "0000:0b:00.0",
+    "vendor_device": "10de:2782",
+    "subsystem": "1462:5132",
+    "class_revision": "030000a1",
+    "command_status": "00100007",
+    "bar0_config": "fb000000",
+    "bus_master_enabled": true
+  },
+  "result": {
+    "capture_complete": false,
+    "reason": "ad104-envelope",
+    "reason_status": "8000000000000003",
+    "diagnostic_status": "8000000000000006",
+    "prom_present": false,
+    "ad104_mmio_admission_passed": false,
+    "unlock_attempted": false,
+    "automatic_windows_return_proven": false
+  },
+  "archive": {
+    "file_count": 33,
+    "log_bytes": 394904,
+    "log_sha256": "cbe8a11d478aaeed9e8ce023ca2e609bf5b6866f52bf35f76d5332658865d8e4",
+    "image_count": 32,
+    "image_bytes": 1090496,
+    "driver_bindings": 33,
+    "null_binding_image_handles": 1,
+    "implementation_image_limit": 100,
+    "usb_copy_hashes_matched": true,
+    "archive_hashes_rechecked": true,
+    "image_sizes_matched_log": true,
+    "raw_files_published": false
+  },
+  "limitations": [
+    "BME is sufficient to refuse; BAR resource descriptor and subsequent GPU reads remain untested.",
+    "Driver-binding image snapshots do not establish coverage of all loaded images.",
+    "No firmware transaction eligibility or unlock support established."
+  ]
+}

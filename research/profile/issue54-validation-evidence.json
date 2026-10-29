@@ -1,0 +1,174 @@
+{
+  "review_date": "2026-10-27",
+  "gist_id": "31c18ec34eea889dce4222c59b7a2cdf",
+  "gist_revision": "09ab194a9d9446c2bd56318815e459984a46d5ad",
+  "gist_files": [
+    {
+      "name": "Makefile",
+      "sha256": "15821fdd668eb9452d5ea9bea1835b17a2c9e0494ffd60668bc6664c26931c0d"
+    },
+    {
+      "name": "build-c.sh",
+      "sha256": "24614390a8004a29c55c28690e29d6b6cbac4f77c235b8d327041b8321791fdb"
+    },
+    {
+      "name": "linux_env.c",
+      "sha256": "f03b82dece0e6b1b8a4acea49794442fa4b56cfec78c16ff7f228750e8804755"
+    },
+    {
+      "name": "linux_shim.h",
+      "sha256": "58adfa820a8990bd789c6b32b7b1c1ece18f90451dce17dd2454fb84f172b668"
+    },
+    {
+      "name": "probe.c",
+      "sha256": "72b2f42b2e33fe23376ee79eb02b3f35d3d0ae3b6e8738e406cc8c1b284e3ec8"
+    },
+    {
+      "name": "regdiff_snippet.c",
+      "sha256": "378ae7c94ce9a0dfd829b8cd0258f84cb9c03a4ab87dc4a7417af09d1653258d"
+    },
+    {
+      "name": "romtest.c",
+      "sha256": "4a48162e1c10f6a0f17712016f25682465593b7edf06da865481a45f07a20553"
+    },
+    {
+      "name": "stage-c.sh",
+      "sha256": "711cde3f4694c0e447327953268b9a10f063df09a86ba39d749b968793dfd026"
+    },
+    {
+      "name": "uefi_lib.c",
+      "sha256": "dfb1593a7e209cdd20278ada014b7062c2c83625e8d77a12f0f533cbaf714091"
+    },
+    {
+      "name": "uefi_lib.h",
+      "sha256": "45e10eb2f47ec5ce2c9565fee9157ff1ce939863b4dea6a0bed42fa2581e7ef7"
+    },
+    {
+      "name": "unlock_uefi.c",
+      "sha256": "253473f7cd961ba4c4f7688413936823abffff9acd7b4ab21fc44e9453e6f4cb"
+    }
+  ],
+  "read_timing_math": {
+    "byte_read_count": 1048576,
+    "computed_seconds": 0.524288,
+    "reported_nine_minutes_seconds": 540,
+    "reported_wide_read_seconds": 0.567,
+    "reported_ratio": 952.3809523809525,
+    "width_only_transaction_reduction": 8,
+    "per_read_latency_assumption_ns": 500
+  },
+  "register_list_entries": 260,
+  "capture_summaries": [
+    {
+      "run": 25,
+      "files_hash_verified": 36,
+      "diag_sha256": "bf2898dc283bf185f08b279a1ecad2c35fede58255f08938aad6a024741da075",
+      "summary": {
+        "schema_version": 1,
+        "log_classification": "explicit_guard_hold",
+        "returned_refused_observations": [
+          {
+            "offset": "0x0011010c",
+            "value": "0xbadf5620",
+            "transport_status": "success",
+            "usable_data": false
+          }
+        ],
+        "guard_hold_recorded": true,
+        "windows_handoff_intent_recorded": false,
+        "refusal_rechecks_recorded": false,
+        "refusal_decode_off_recorded": false,
+        "operator_return": "manual",
+        "automatic_windows_return_supported": false,
+        "microcode_crash_established": false,
+        "hardware_call_hang_established": false,
+        "unlock_established": false,
+        "limitations": "Markers are evidence, not hardware attestation. Missing records do not prove a hang; StartImage-next does not prove Windows boot. Review provenance and complete logs separately."
+      }
+    },
+    {
+      "run": 28,
+      "files_hash_verified": 36,
+      "diag_sha256": "7a454d2ce9f4053f4cb2ff443d0c439fc156960d23da101f1ff38d6dfdb840d9",
+      "summary": {
+        "schema_version": 1,
+        "log_classification": "explicit_guard_hold",
+        "returned_refused_observations": [
+          {
+            "offset": "0x00111388",
+            "value": "0xbadf5620",
+            "transport_status": "success",
+            "usable_data": false
+          }
+        ],
+        "guard_hold_recorded": true,
+        "windows_handoff_intent_recorded": false,
+        "refusal_rechecks_recorded": false,
+        "refusal_decode_off_recorded": false,
+        "operator_return": "manual",
+        "automatic_windows_return_supported": false,
+        "microcode_crash_established": false,
+        "hardware_call_hang_established": false,
+        "unlock_established": false,
+        "limitations": "Markers are evidence, not hardware attestation. Missing records do not prove a hang; StartImage-next does not prove Windows boot. Review provenance and complete logs separately."
+      }
+    },
+    {
+      "run": 29,
+      "files_hash_verified": 36,
+      "diag_sha256": "d0384b5c23515b9937afc7c5614a796796a98b34aad822ddc5e796bdc14ab0af",
+      "summary": {
+        "schema_version": 1,
+        "log_classification": "handoff_intent_recorded",
+        "returned_refused_observations": [
+          {
+            "offset": "0x00111388",
+            "value": "0xbadf5620",
+            "transport_status": "success",
+            "usable_data": false
+          }
+        ],
+        "guard_hold_recorded": false,
+        "windows_handoff_intent_recorded": true,
+        "refusal_rechecks_recorded": true,
+        "refusal_decode_off_recorded": true,
+        "operator_return": "automatic",
+        "automatic_windows_return_supported": true,
+        "microcode_crash_established": false,
+        "hardware_call_hang_established": false,
+        "unlock_established": false,
+        "limitations": "Markers are evidence, not hardware attestation. Missing records do not prove a hang; StartImage-next does not prove Windows boot. Review provenance and complete logs separately."
+      }
+    },
+    {
+      "run": 30,
+      "files_hash_verified": 36,
+      "diag_sha256": "084bfa4e0c94c651b48523cc485acb454dda03d84c7af0778eb688f7d7a77a83",
+      "summary": {
+        "schema_version": 1,
+        "log_classification": "explicit_guard_hold",
+        "returned_refused_observations": [
+          {
+            "offset": "0x00111668",
+            "value": "0xbadf5620",
+            "transport_status": "success",
+            "usable_data": false
+          }
+        ],
+        "guard_hold_recorded": true,
+        "windows_handoff_intent_recorded": false,
+        "refusal_rechecks_recorded": false,
+        "refusal_decode_off_recorded": false,
+        "operator_return": "unknown",
+        "automatic_windows_return_supported": false,
+        "microcode_crash_established": false,
+        "hardware_call_hang_established": false,
+        "unlock_established": false,
+        "limitations": "Markers are evidence, not hardware attestation. Missing records do not prove a hang; StartImage-next does not prove Windows boot. Review provenance and complete logs separately."
+      }
+    }
+  ],
+  "hardware_executed_for_review": false,
+  "third_party_code_executed": false,
+  "issue_updated_at": "2026-10-27T15:24:52Z"
+}

@@ -1,0 +1,93 @@
+{
+  "board": "10de:2782 / 1462:5132",
+  "captures": {
+    "tenth": {
+      "files": 35,
+      "log_bytes": 406889,
+      "log_sha256": "be5318485e7d640715fd2301597f88d6be84f09c977775134b4bd0fa613bcc77",
+      "stages": {
+        "initial": "0x0000000000000000",
+        "input-before": "0x0000000000000000",
+        "disconnect-return": "0x0000000000000000",
+        "post": "0x0000000000000000",
+        "post-repeat": "0x0000000000000000",
+        "gop-precheck": "0x0000000000000000",
+        "gop-disconnect-return": "0x0000000000000000",
+        "gop-post": "0x0000000000000000",
+        "gop-post-repeat": "0x0000000000000000",
+        "gop-protocols-absent": "0x0000000000000000",
+        "input-after": "0x8000000000000015",
+        "final-protocols": "0x0000000000000000",
+        "final-post": "0x0000000000000000",
+        "windows-eligible": "0x8000000000000006",
+        "experiment-result": "0x8000000000000006"
+      }
+    },
+    "tenth-retest": {
+      "files": 34,
+      "log_bytes": 406846,
+      "log_sha256": "89b0067fd47054f3a1412ed9790d679efcdb5b9d80b3247208273c174ff221aa",
+      "stages": {
+        "initial": "0x0000000000000000",
+        "input-before": "0x0000000000000000",
+        "disconnect-return": "0x0000000000000000",
+        "post": "0x0000000000000000",
+        "post-repeat": "0x0000000000000000",
+        "gop-precheck": "0x0000000000000000",
+        "gop-disconnect-return": "0x0000000000000000",
+        "gop-post": "0x0000000000000000",
+        "gop-post-repeat": "0x0000000000000000",
+        "gop-protocols-absent": "0x0000000000000000",
+        "input-after": "0x0000000000000000",
+        "final-protocols": "0x0000000000000000",
+        "final-post": "0x0000000000000000",
+        "windows-eligible": "0x0000000000000000",
+        "experiment-result": "0x0000000000000000"
+      }
+    },
+    "eleventh": {
+      "files": 34,
+      "log_bytes": 407645,
+      "log_sha256": "9c402279a3a3dd4d46aba81e4fa275017a9c57f4e85d1008efd703b712527d1a",
+      "stages": {
+        "initial": "0x0000000000000000",
+        "input-before": "0x0000000000000000",
+        "disconnect-return": "0x0000000000000000",
+        "post": "0x0000000000000000",
+        "post-repeat": "0x0000000000000000",
+        "gop-precheck": "0x0000000000000000",
+        "gop-disconnect-return": "0x0000000000000000",
+        "gop-post": "0x0000000000000000",
+        "gop-post-repeat": "0x0000000000000000",
+        "gop-protocols-absent": "0x0000000000000000",
+        "edid-precheck": "0x0000000000000000",
+        "edid-disconnect-return": "0x0000000000000000",
+        "edid-post": "0x0000000000000000",
+        "edid-post-repeat": "0x0000000000000000",
+        "edid-protocols-absent": "0x0000000000000000",
+        "input-after": "0x0000000000000000",
+        "final-protocols": "0x0000000000000000",
+        "final-post": "0x0000000000000000",
+        "windows-eligible": "0x0000000000000000",
+        "experiment-result": "0x0000000000000000"
+      }
+    }
+  },
+  "eleventh_edges": [
+    8,
+    6,
+    5,
+    4
+  ],
+  "final_shared_flag": 0,
+  "pointer_counts": [
+    1,
+    1
+  ],
+  "pci_command": "0007",
+  "attributes": "0718",
+  "supported": "1b77b",
+  "pci_config_snapshots_identical": 8,
+  "windows_return": "user-confirmed after eleventh run",
+  "unlock_proven": false
+}

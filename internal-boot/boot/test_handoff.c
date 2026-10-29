@@ -99,9 +99,9 @@ static VOID service_tests(VOID) {
   table.BootServices=&bs;Table=&table;Root=&root;OwnDevice=own;Self=(VOID*)5;
   root.Open=open_file;file.GetInfo=get_info;file.Read=read_file;file.Close=close_file;
   EFI_HANDLE found=NULL;
-  CHECK(FindPartition(&GuInternalPartition,&found)==EFI_SUCCESS && found==own);
-  duplicate=TRUE;CHECK(FindPartition(&GuInternalPartition,&found)==EFI_COMPROMISED_DATA);duplicate=FALSE;
-  devices=1;CHECK(FindPartition(&GuWindowsPartition,&found)==EFI_NOT_FOUND);devices=2;
+  CHECK(FindPartition(&GuInternalPartition,&found,FALSE)==EFI_SUCCESS && found==own);
+  duplicate=TRUE;CHECK(FindPartition(&GuInternalPartition,&found,FALSE)==EFI_COMPROMISED_DATA);duplicate=FALSE;
+  devices=1;CHECK(FindPartition(&GuWindowsPartition,&found,TRUE)==EFI_NOT_FOUND);devices=2;
   metadataSize=imageSize;CHECK(LoadUnlock()==EFI_SUCCESS && loadCalls==1);
   metadataSize=imageSize+1;CHECK(LoadUnlock()==EFI_BAD_BUFFER_SIZE && loadCalls==1);metadataSize=imageSize;
   badInfo=TRUE;CHECK(LoadUnlock()==EFI_BAD_BUFFER_SIZE && loadCalls==1);badInfo=FALSE;
