@@ -106,11 +106,17 @@ static BOOLEAN GuHeadlessCheckInner(VOID) {
   static GU_HEADLESS_GRAPH current;
   s=GuHeadlessSnapshot(&current);
   if(s!=EFI_SUCCESS)return FALSE;
-  UINTN own=0;
+  /* Edges touching a volatile handle (any registered target GPU, plus every
+     handle registered by an authorized guarded driver release) may come and go
+     during the run. Their exact state is enforced by the per-card ownership
+     pipeline, not by this global graph, so they are excluded from both
+     snapshots and both comparisons. */
+  UINTN own=0,curCount=0;
   for(UINTN i=0;i<current.count;i++) {
     const GU_HEADLESS_EDGE *e=&current.edges[i];
     if(GuHeadlessOwn(e)){own++;continue;}
-    if(e->handle==Gu.handle)return FALSE; /* No driver/child may remain on GPU. */
+    if(GuIsVolatileHandle(e->handle) || GuIsVolatileHandle(e->agent) || GuIsVolatileHandle(e->controller))continue;
+    curCount++;
     if(GuHeadless.ready) {
       UINTN matches=0;for(UINTN j=0;j<GuHeadless.graph.count;j++)if(GuHeadlessSame(e,&GuHeadless.graph.edges[j]))matches++;
       if(matches!=1)return FALSE;
@@ -118,9 +124,22 @@ static BOOLEAN GuHeadlessCheckInner(VOID) {
   }
   if(own!=(Gu.owned?1U:0U))return FALSE;
   if(GuHeadless.ready) {
-    if(current.count!=GuHeadless.graph.count+own)return FALSE;
+    UINTN baseCount=0;
     for(UINTN i=0;i<GuHeadless.graph.count;i++) {
-      UINTN matches=0;for(UINTN j=0;j<current.count;j++)if(GuHeadlessSame(&GuHeadless.graph.edges[i],&current.edges[j]))matches++;
+      const GU_HEADLESS_EDGE *e=&GuHeadless.graph.edges[i];
+      if(!GuIsVolatileHandle(e->handle) && !GuIsVolatileHandle(e->agent) && !GuIsVolatileHandle(e->controller))baseCount++;
+    }
+    /* curCount already excludes the own claim edge; compare like-for-like. */
+    if(curCount!=baseCount)return FALSE;
+    for(UINTN i=0;i<GuHeadless.graph.count;i++) {
+      const GU_HEADLESS_EDGE *e=&GuHeadless.graph.edges[i];
+      if(GuIsVolatileHandle(e->handle) || GuIsVolatileHandle(e->agent) || GuIsVolatileHandle(e->controller))continue;
+      UINTN matches=0;
+      for(UINTN j=0;j<current.count;j++) {
+        const GU_HEADLESS_EDGE *c=&current.edges[j];
+        if(GuHeadlessOwn(c) || GuIsVolatileHandle(c->handle) || GuIsVolatileHandle(c->agent) || GuIsVolatileHandle(c->controller))continue;
+        if(GuHeadlessSame(e,c))matches++;
+      }
       if(matches!=1)return FALSE;
     }
     return TRUE;

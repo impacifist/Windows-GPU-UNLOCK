@@ -2,32 +2,152 @@
 VOID *memset(VOID *, int, size_t);
 VOID *memcpy(VOID *, const VOID *, size_t);
 GU_PLATFORM Gu;
+
+/* Compile-time card table plus the live registry of enumerated targets. */
+static const GU_CARD_SPEC GuCardTable[] = { GU_CARD_TABLE };
+static struct {
+  GU_PLATFORM ctx;
+  const GU_CARD_SPEC *spec;
+  EFI_HANDLE handle;
+  BOOLEAN console;
+} GuTargets_[GU_MAX_TARGETS];
+static UINTN GuTargetCount_;
+static UINTN GuActive_ = (UINTN)-1;
+
+UINTN GuTargetCount(VOID) { return GuTargetCount_; }
+const GU_CARD_SPEC *GuTargetSpec(UINTN Index) {
+  return Index<GuTargetCount_ ? GuTargets_[Index].spec : NULL;
+}
+EFI_HANDLE GuTargetHandleOf(UINTN Index) {
+  return Index<GuTargetCount_ ? GuTargets_[Index].handle : NULL;
+}
+BOOLEAN GuIsTargetHandle(EFI_HANDLE Handle) {
+  for(UINTN i=0;i<GuTargetCount_;i++)if(GuTargets_[i].handle==Handle)return TRUE;
+  return FALSE;
+}
+
+/* Handles whose open-protocol edges may legitimately change during a run:
+   registered target GPUs plus any agent/image/child handle recorded when a
+   guarded driver release is authorized. */
+#define GU_MAX_VOLATILE 64
+static EFI_HANDLE GuVolatile_[GU_MAX_VOLATILE];
+static UINTN GuVolatileCount_;
+
+VOID GuAddVolatileHandle(EFI_HANDLE Handle) {
+  if(!Handle)return;
+  for(UINTN i=0;i<GuVolatileCount_;i++)if(GuVolatile_[i]==Handle)return;
+  if(GuVolatileCount_<GU_MAX_VOLATILE)GuVolatile_[GuVolatileCount_++]=Handle;
+}
+BOOLEAN GuIsVolatileHandle(EFI_HANDLE Handle) {
+  if(!Handle)return FALSE;
+  for(UINTN i=0;i<GuVolatileCount_;i++)if(GuVolatile_[i]==Handle)return TRUE;
+  return FALSE;
+}
+UINT32 GuTargetId(VOID) { return Gu.board_id; }
+UINT32 GuTargetSub(VOID) { return Gu.board_subsystem; }
+
+/* A card with BY_CHILD_CONTROLLER edges owns display children (the console
+   GPU); it must be unlocked after every other card. */
+static BOOLEAN GuCardHasChildren(EFI_HANDLE Handle) {
+  EFI_GUID pci=EFI_PCI_IO_PROTOCOL_GUID;
+  EFI_OPEN_PROTOCOL_INFORMATION_ENTRY *entries=NULL;UINTN count=0;BOOLEAN children=FALSE;
+  if(EFI_ERROR(Gu.bs->OpenProtocolInformation(Handle,&pci,&entries,&count)))return FALSE;
+  for(UINTN i=0;i<count;i++)
+    if(entries[i].Attributes==EFI_OPEN_PROTOCOL_BY_CHILD_CONTROLLER)children=TRUE;
+  if(entries && EFI_ERROR(Gu.bs->FreePool(entries)))children=FALSE;
+  return children;
+}
+
+/* Enumerate every PCI device, match against GU_CARD_TABLE, and register each
+   found card. Unknown cards are skipped. Non-console cards come first in the
+   registry so the console GPU is unlocked last. */
+EFI_STATUS GuDiscoverTargets(VOID) {
+  EFI_GUID pci_guid=EFI_PCI_IO_PROTOCOL_GUID;
+  EFI_HANDLE *handles=NULL;UINTN count=0;
+  EFI_STATUS status=Gu.bs->LocateHandleBuffer(ByProtocol,&pci_guid,NULL,&count,&handles);
+  GuLog("PCI enumeration: status=%#llx handles=%zu\n",(unsigned long long)status,(size_t)count);
+  if(EFI_ERROR(status) || !handles || !count || count>256){if(handles)GuFree(handles);return EFI_NOT_FOUND;}
+  UINTN found=0;
+  for(UINTN i=0;i<count && found<GU_MAX_TARGETS;i++) {
+    EFI_PCI_IO_PROTOCOL *pci=NULL;UINT32 id=0,sub=0;
+    status=Gu.bs->HandleProtocol(handles[i],&pci_guid,(VOID **)&pci);
+    if(!EFI_ERROR(status) && pci){status=pci->Pci.Read(pci,EfiPciIoWidthUint32,0,1,&id);}
+    if(EFI_ERROR(status) || !pci){GuLog("PCI scan failed: index=%zu status=%#llx\n",(size_t)i,(unsigned long long)status);break;}
+    status=pci->Pci.Read(pci,EfiPciIoWidthUint32,0x2c,1,&sub);
+    if(EFI_ERROR(status)){GuLog("PCI subsystem read failed: index=%zu\n",(size_t)i);break;}
+    for(UINTN t=0;t<sizeof(GuCardTable)/sizeof(GuCardTable[0]);t++) {
+      if(id!=GuCardTable[t].id)continue;
+      UINTN seg,bus,dev,fun;
+      status=pci->GetLocation(pci,&seg,&bus,&dev,&fun);
+      if(EFI_ERROR(status))break;
+      BOOLEAN console=GuCardHasChildren(handles[i]);
+      /* Insert before the console card so non-console targets run first. */
+      UINTN pos=found;
+      if(!console)for(UINTN j=0;j<found;j++)if(GuTargets_[j].console){pos=j;break;}
+      for(UINTN j=found;j>pos;j--)GuTargets_[j]=GuTargets_[j-1];
+      memset(&GuTargets_[pos].ctx,0,sizeof(GuTargets_[pos].ctx));
+      GuTargets_[pos].ctx.bs=Gu.bs;GuTargets_[pos].ctx.image=Gu.image;
+      GuTargets_[pos].ctx.display_check=Gu.display_check;
+      GuTargets_[pos].ctx.handle=handles[i];GuTargets_[pos].ctx.pci=pci;
+      GuTargets_[pos].ctx.segment=seg;GuTargets_[pos].ctx.bus=bus;
+      GuTargets_[pos].ctx.device=dev;GuTargets_[pos].ctx.function=fun;
+      GuTargets_[pos].ctx.board_id=id;GuTargets_[pos].ctx.board_subsystem=sub;
+      GuTargets_[pos].ctx.expected_chip=GuCardTable[t].chip;
+      GuTargets_[pos].ctx.expected_memory=GuCardTable[t].memory;
+      GuTargets_[pos].ctx.prom_sha256=GuCardTable[t].prom_sha256;
+      GuTargets_[pos].ctx.card_name=GuCardTable[t].name;
+      GuTargets_[pos].spec=&GuCardTable[t];GuTargets_[pos].handle=handles[i];
+      GuAddVolatileHandle(handles[i]);
+      GuTargets_[pos].console=console;
+      GuLog("target[%zu]: %s id=%#x sub=%#x bdf=%zu:%02zu:%02zu.%zu console=%u\n",
+        (size_t)pos,GuCardTable[t].name,id,sub,(size_t)seg,(size_t)bus,(size_t)dev,(size_t)fun,(unsigned)console);
+      if(sub!=GuCardTable[t].subsystem)
+        GuLog("target[%zu]: subsystem %#x differs from reviewed %#x\n",(size_t)pos,sub,GuCardTable[t].subsystem);
+      found++;
+      break;
+    }
+    if(EFI_ERROR(status))break;
+  }
+  GuFree(handles);
+  GuTargetCount_=found;
+  GuLog("PCI targets registered=%zu status=%#llx\n",(size_t)found,(unsigned long long)status);
+  if(EFI_ERROR(status))return status;
+  if(!found)return EFI_NOT_FOUND;
+#if !GU_MULTI_TARGET
+  if(found!=1)return EFI_UNSUPPORTED;
+#endif
+  return EFI_SUCCESS;
+}
+
+VOID GuActivate(UINTN Index) {
+  if(Index>=GuTargetCount_){Gu.fault=TRUE;return;}
+  if(GuActive_<GU_MAX_TARGETS)GuTargets_[GuActive_].ctx=Gu;
+  Gu=GuTargets_[Index].ctx;
+  Gu.card_index=Index;GuActive_=Index;
+}
+
 #ifdef GU_ENTRY_LATCHED
-static BOOLEAN EntryLatched;
-static UINT32 EntrySs0,EntrySs1;
 BOOLEAN GuGetEntrySelectors(UINT32 *Ss0, UINT32 *Ss1) {
-  if(!EntryLatched || !Ss0 || !Ss1)return FALSE;
-  *Ss0=EntrySs0;*Ss1=EntrySs1;return TRUE;
+  if(!Gu.entry_latched || !Ss0 || !Ss1)return FALSE;
+  *Ss0=Gu.entry_ss0;*Ss1=Gu.entry_ss1;return TRUE;
 }
 BOOLEAN GuEntrySelectorsMatch(UINT32 Ss0, UINT32 Ss1) {
-  return EntryLatched && Gu.prom_verified && !Gu.fault && Ss0==EntrySs0 && Ss1==EntrySs1;
+  return Gu.entry_latched && Gu.prom_verified && !Gu.fault && Ss0==Gu.entry_ss0 && Ss1==Gu.entry_ss1;
 }
 BOOLEAN GuLatchEntrySelectors(UINT32 Ss0, UINT32 Ss1) {
   if(Gu.fault || !Gu.prom_verified || Gu.started || Ss0==0xffffffffU ||
      (Ss0&0xffff0000U)==0xbadf0000U || Ss0==0x88888888U || Ss1>0xfU)return FALSE;
-  if(EntryLatched)return GuEntrySelectorsMatch(Ss0,Ss1);
-  EntrySs0=Ss0;EntrySs1=Ss1;EntryLatched=TRUE;return TRUE;
+  if(Gu.entry_latched)return GuEntrySelectorsMatch(Ss0,Ss1);
+  Gu.entry_ss0=Ss0;Gu.entry_ss1=Ss1;Gu.entry_latched=TRUE;return TRUE;
 }
 #endif
 #ifdef GU_ENTRY_LATCHED_SS1_FULL
-static UINT32 SelectorPhase;
-static BOOLEAN Ss1WriteConsumed;
 BOOLEAN GuSelectorPhase(UINT32 Phase) {
   UINT32 entry0,entry1,ss0,ss1;
-  /* ENTRY is established only by GuInit, never by this transition API. */
-  if(!((SelectorPhase==GU_SELECTOR_PHASE_ENTRY && Phase==GU_SELECTOR_PHASE_SS0_WRITTEN && !Ss1WriteConsumed) ||
-       (SelectorPhase==GU_SELECTOR_PHASE_SS0_WRITTEN && Phase==GU_SELECTOR_PHASE_SS1_WRITE && !Ss1WriteConsumed) ||
-       (SelectorPhase==GU_SELECTOR_PHASE_SS1_WRITE && Phase==GU_SELECTOR_PHASE_TARGET && Ss1WriteConsumed))) {
+  /* ENTRY is established only by context activation, never by this transition API. */
+  if(!((Gu.selector_phase==GU_SELECTOR_PHASE_ENTRY && Phase==GU_SELECTOR_PHASE_SS0_WRITTEN && !Gu.ss1_write_consumed) ||
+       (Gu.selector_phase==GU_SELECTOR_PHASE_SS0_WRITTEN && Phase==GU_SELECTOR_PHASE_SS1_WRITE && !Gu.ss1_write_consumed) ||
+       (Gu.selector_phase==GU_SELECTOR_PHASE_SS1_WRITE && Phase==GU_SELECTOR_PHASE_TARGET && Gu.ss1_write_consumed))) {
     Gu.fault=TRUE;return FALSE;
   }
   if(!Gu.profile_verified || !Gu.armed || !Gu.owned || Gu.fault || !Gu.prom_verified ||
@@ -40,21 +160,17 @@ BOOLEAN GuSelectorPhase(UINT32 Phase) {
     Gu.fault=TRUE;return FALSE;
   }
   (void)entry0;
-  SelectorPhase=Phase;return TRUE;
+  Gu.selector_phase=Phase;return TRUE;
 }
 #endif
 VOID GuInit(EFI_BOOT_SERVICES *Bs, EFI_PCI_IO_PROTOCOL *Pci) {
   memset(&Gu,0,sizeof(Gu)); Gu.bs=Bs; Gu.pci=Pci;
-#ifdef GU_ENTRY_LATCHED
-  EntryLatched=FALSE;EntrySs0=EntrySs1=0;
-#endif
-#ifdef GU_ENTRY_LATCHED_SS1_FULL
-  SelectorPhase=GU_SELECTOR_PHASE_ENTRY;Ss1WriteConsumed=FALSE;
-#endif
+  GuTargetCount_=0;GuActive_=(UINTN)-1;GuVolatileCount_=0;
 }
+/* The active card recorded BDF and PCI identity; bus is no longer fixed. */
 BOOLEAN GuTargetConfig(const UINT32 *C, UINTN S, UINTN B, UINTN D, UINTN F) {
-  return C && S==GU_TARGET_SEGMENT && B==GU_TARGET_BUS && !D && !F && C[0]==GU_BOARD_ID &&
-    C[11]==GU_BOARD_SUBSYSTEM && (C[2]>>24)==3 && !((C[3]>>16)&0x7f);
+  return C && S==Gu.segment && B==Gu.bus && D==Gu.device && F==Gu.function &&
+    C[0]==Gu.board_id && C[11]==Gu.board_subsystem && (C[2]>>24)==3 && !((C[3]>>16)&0x7f);
 }
 BOOLEAN GuSafeToReturn(VOID) {
   return !Gu.retained && !Gu.master_attributes_pending &&
@@ -135,11 +251,11 @@ VOID GuWrite32(UINT32 O, UINT32 V) {
   if(GU_PREFLIGHT_ONLY || !Gu.profile_verified || !Gu.pci || !Gu.armed || !Gu.owned || !Gu.display_ok || (O&3) ||
       (UINT64)O+4>Gu.bar_size) {Gu.fault=TRUE;return;}
 #ifdef GU_ENTRY_LATCHED_SS1_FULL
-  if(O==0x823820 && (V!=0x8U || SelectorPhase!=GU_SELECTOR_PHASE_SS1_WRITE || Ss1WriteConsumed)) {
+  if(O==0x823820 && (V!=0x8U || Gu.selector_phase!=GU_SELECTOR_PHASE_SS1_WRITE || Gu.ss1_write_consumed)) {
     Gu.fault=TRUE;return;
   }
   /* Spend before the external callback: reentry and errors cannot retry. */
-  if(O==0x823820)Ss1WriteConsumed=TRUE;
+  if(O==0x823820)Gu.ss1_write_consumed=TRUE;
 #endif
   Gu.mmio_writes++;
   if(EFI_ERROR(Gu.pci->Mem.Write(Gu.pci,EfiPciIoWidthUint32,0,O,1,&V)))Gu.fault=TRUE;
@@ -171,7 +287,7 @@ EFI_STATUS GuEnableMaster(VOID) {
   if(GU_PREFLIGHT_ONLY || !Gu.profile_verified || Gu.fault || Gu.retained || Gu.started || Gu.master_attributes_pending ||
      !Gu.pci || !Gu.pci->Attributes || !Gu.owned || !Gu.armed || !Gu.display_ok)goto fail;
   Status=RawRead(EfiPciIoWidthUint32,0,&Id);
-  if(EFI_ERROR(Status) || Id!=GU_BOARD_ID)goto fail;
+  if(EFI_ERROR(Status) || Id!=Gu.board_id)goto fail;
   Status=RawRead(EfiPciIoWidthUint16,4,&Command);
   if(EFI_ERROR(Status) || Command==0xffff || (Command&4) || !(Command&2))goto fail;
   Status=Gu.pci->Attributes(Gu.pci,EfiPciIoAttributeOperationSupported,0,&Supported);
@@ -216,7 +332,7 @@ EFI_STATUS GuClearMaster(VOID) {
   if(GU_PREFLIGHT_ONLY)return EFI_ACCESS_DENIED;
   /* Containment remains permitted after a latched I/O failure. */
   Status=RawRead(EfiPciIoWidthUint32,0,&Id);
-  if(EFI_ERROR(Status) || Id!=GU_BOARD_ID)goto fail;
+  if(EFI_ERROR(Status) || Id!=Gu.board_id)goto fail;
   if(Gu.master_attributes_pending) {
     if(Gu.pci!=Gu.master_pci)AttributeStatus=EFI_COMPROMISED_DATA;
     else if(!Gu.pci->Attributes)AttributeStatus=EFI_UNSUPPORTED;
@@ -266,7 +382,7 @@ EFI_STATUS GuSavePci(VOID) {
      Gu.pcie_cap>(Gu.pcie_version==1?0xecU:0xc4U))return EFI_NOT_READY;
   for(I=0;I<64;I++)
     if(EFI_ERROR(GuConfigRead(EfiPciIoWidthUint32,(UINT32)I*4,&Gu.saved_config[I])))return EFI_DEVICE_ERROR;
-  if(Gu.saved_config[0]!=GU_BOARD_ID || Gu.saved_config[11]!=GU_BOARD_SUBSYSTEM ||
+  if(Gu.saved_config[0]!=Gu.board_id || Gu.saved_config[11]!=Gu.board_subsystem ||
      (Gu.saved_config[1]&4))return EFI_ACCESS_DENIED;
   if(EFI_ERROR(GuConfigRead(EfiPciIoWidthUint16,Gu.pcie_cap+8,&Gu.saved_devctl)))return EFI_DEVICE_ERROR;
   if(Gu.saved_devctl&0x8000)return EFI_NOT_READY;
@@ -278,7 +394,7 @@ EFI_STATUS GuFlr(VOID) {
   UINT32 Identity=0,Capability=0;UINT16 Command=0xffff,Pending=0xffff,Ctl=0;
   UINTN Wait;EFI_STATUS ResetStatus;
   if(GU_PREFLIGHT_ONLY || !Gu.profile_verified || !Gu.saved || Gu.flrs || Gu.fault || !Gu.owned || !Gu.armed || !Gu.display_ok)return EFI_NOT_READY;
-  if(EFI_ERROR(GuConfigRead(EfiPciIoWidthUint32,0,&Identity)) || Identity!=GU_BOARD_ID ||
+  if(EFI_ERROR(GuConfigRead(EfiPciIoWidthUint32,0,&Identity)) || Identity!=Gu.board_id ||
      EFI_ERROR(GuConfigRead(EfiPciIoWidthUint16,4,&Command)) || Command==0xffff ||
      (Command&4) || !(Command&2) ||
      EFI_ERROR(GuConfigRead(EfiPciIoWidthUint32,Gu.pcie_cap+4,&Capability)) ||
@@ -298,7 +414,7 @@ EFI_STATUS GuFlr(VOID) {
 #ifdef GU_ENTRY_LATCHED_SS1_PRESERVE
      Ss1!=Entry1
 #else
-     Ss1!=0x8U || SelectorPhase!=GU_SELECTOR_PHASE_TARGET
+     Ss1!=0x8U || Gu.selector_phase!=GU_SELECTOR_PHASE_TARGET
 #endif
      )return EFI_NOT_READY;
 #endif
@@ -309,7 +425,7 @@ EFI_STATUS GuFlr(VOID) {
   if(EFI_ERROR(ResetStatus))return EFI_DEVICE_ERROR;
   for(Wait=0;Wait<=1000000;Wait+=1000) {
     EFI_STATUS Status=RawRead(EfiPciIoWidthUint32,0,&Identity);
-    if(!EFI_ERROR(Status) && Identity==GU_BOARD_ID)return EFI_SUCCESS;
+    if(!EFI_ERROR(Status) && Identity==Gu.board_id)return EFI_SUCCESS;
     if(!EFI_ERROR(Status) && Identity!=0xffffffffU && Identity!=0)break;
     if(Wait<1000000)GuStall(1000);
   }

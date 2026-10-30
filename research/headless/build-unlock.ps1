@@ -1,7 +1,7 @@
 # GPL-2.0-only. Isolated exact-platform headless unlock wrapper/child package.
-param([string]$Clang='clang',[string]$LldLink='lld-link',[string]$Python='python',[ValidateSet('b650m-3090fe','b660m-3070ti','b660m-3090ti')][string]$HardwareProfile='b650m-3090fe')
-$hwDefine=switch($HardwareProfile){'b660m-3070ti'{'-DGU_PROFILE_B660M_3070TI'}'b660m-3090ti'{'-DGU_PROFILE_B660M_3090TI'}default{'-DGU_PROFILE_B650M_3090FE'}}
-$hwName=switch($HardwareProfile){'b660m-3070ti'{'ASUS-TUF-GAMING-B660M-E-D4-4003-RTX3070TI'}'b660m-3090ti'{'ASUS-TUF-GAMING-B660M-E-D4-4003-RTX3090TI'}default{'ASUS-TUF-B650M-PLUS-WIFI-3057-RTX3090-FE'}}
+param([string]$Clang='clang',[string]$LldLink='lld-link',[string]$Python='python',[ValidateSet('b650m-3090fe','b660m-3070ti','b660m-3090ti','b660m-dual')][string]$HardwareProfile='b650m-3090fe')
+$hwDefine=switch($HardwareProfile){'b660m-3070ti'{'-DGU_PROFILE_B660M_3070TI'}'b660m-3090ti'{'-DGU_PROFILE_B660M_3090TI'}'b660m-dual'{'-DGU_PROFILE_B660M_DUAL'}default{'-DGU_PROFILE_B650M_3090FE'}}
+$hwName=switch($HardwareProfile){'b660m-3070ti'{'ASUS-TUF-GAMING-B660M-E-D4-4003-RTX3070TI'}'b660m-3090ti'{'ASUS-TUF-GAMING-B660M-E-D4-4003-RTX3090TI'}'b660m-dual'{'ASUS-TUF-GAMING-B660M-E-D4-4003-DUAL-RTX'}default{'ASUS-TUF-B650M-PLUS-WIFI-3057-RTX3090-FE'}}
 $ErrorActionPreference='Stop'
 $repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 . (Join-Path $repo 'internal-boot/install/headless-package.ps1')
@@ -31,6 +31,6 @@ try {
  if($LASTEXITCODE -ne 0){throw 'Headless wrapper PE verification failed'}
  $afterInputs=Get-HeadlessInputInventory $repo
  if(($beforeInputs | ConvertTo-Json -Depth 4 -Compress) -cne ($afterInputs | ConvertTo-Json -Depth 4 -Compress)){throw 'Inputs changed while building; no package manifest will be published'}
- [ordered]@{Format=2;HardwareProfile=$hwName;Mode='single-rtx-headless-unlock-then-windows';CanUnlock=$true;RequiresHumanKey=$false;HardwareTested=$false;ChildSha256=$hash;ChildBytes=(Get-Item $child).Length;ChildManifestSha256=(Get-FileHash -LiteralPath (Join-Path (Split-Path $child) 'build-manifest.json')).Hash;EfiSha256=(Get-FileHash -LiteralPath build/headless/HEADLESS.EFI).Hash;EfiBytes=(Get-Item build/headless/HEADLESS.EFI).Length;Inputs=(Get-HeadlessInputInventory $repo -WithContract);BuiltUtc=[DateTime]::UtcNow.ToString('o')} | ConvertTo-Json -Depth 6 | Set-Content build/headless/manifest.json -Encoding utf8
+ [ordered]@{Format=2;HardwareProfile=$hwName;Mode=($(if($HardwareProfile -eq 'b660m-dual'){'multi-rtx-headless-unlock-then-windows'}else{'single-rtx-headless-unlock-then-windows'}));CanUnlock=$true;RequiresHumanKey=$false;HardwareTested=$false;ChildSha256=$hash;ChildBytes=(Get-Item $child).Length;ChildManifestSha256=(Get-FileHash -LiteralPath (Join-Path (Split-Path $child) 'build-manifest.json')).Hash;EfiSha256=(Get-FileHash -LiteralPath build/headless/HEADLESS.EFI).Hash;EfiBytes=(Get-Item build/headless/HEADLESS.EFI).Length;Inputs=(Get-HeadlessInputInventory $repo -WithContract);BuiltUtc=[DateTime]::UtcNow.ToString('o')} | ConvertTo-Json -Depth 6 | Set-Content build/headless/manifest.json -Encoding utf8
  $null=Assert-HeadlessPackage $repo
 } finally {Pop-Location}

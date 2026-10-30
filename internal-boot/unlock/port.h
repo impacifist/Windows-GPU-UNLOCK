@@ -64,6 +64,12 @@ typedef struct {
   UINT32 saved_config[64];
   UINT16 saved_devctl, saved_devctl2;
   UINT8 pcie_version;
+  /* Per-card identity resolved from GU_CARD_TABLE at enumeration time. */
+  UINTN card_index, segment, bus, device, function;
+  UINT32 board_id, board_subsystem, expected_chip, expected_memory, initial_config[64];
+  const char *prom_sha256, *card_name;
+  BOOLEAN is_console, complete, entry_latched;
+  UINT32 entry_ss0, entry_ss1, selector_phase, ss1_write_consumed;
   BOOLEAN fault, retained, started, quiesced, armed, owned, display_ok, saved;
   BOOLEAN profile_verified, prom_verified;
   BOOLEAN master_attributes_pending;
@@ -80,6 +86,33 @@ typedef struct {
   BOOLEAN (*display_check)(VOID);
 } GU_PLATFORM;
 extern GU_PLATFORM Gu;
+
+/* Compile-time card identity row from GU_CARD_TABLE. */
+typedef struct {
+  UINT32 id, subsystem, chip, memory;
+  const char *prom_sha256, *name;
+} GU_CARD_SPEC;
+
+/* Target registry: cards found by PCI enumeration, ordered so every
+   non-console card is processed before the console owner. */
+UINTN GuTargetCount(VOID);
+const GU_CARD_SPEC *GuTargetSpec(UINTN Index);
+EFI_HANDLE GuTargetHandleOf(UINTN Index);
+BOOLEAN GuIsTargetHandle(EFI_HANDLE Handle);
+/* Volatile registry: target handles plus every driver/image/child handle an
+   authorized DisconnectController release may tear down. The headless graph
+   treats edges touching these handles as expected change, not foreign tamper. */
+VOID GuAddVolatileHandle(EFI_HANDLE Handle);
+BOOLEAN GuIsVolatileHandle(EFI_HANDLE Handle);
+EFI_STATUS GuDiscoverTargets(VOID);
+/* Save current Gu into its slot and load the target context. Index must be
+   an enumerated card; shared fields (bs/image/display_check) are preserved. */
+VOID GuActivate(UINTN Index);
+UINT32 GuTargetId(VOID);
+UINT32 GuTargetSub(VOID);
+#if !defined(GU_TARGET_PCI_ID)
+#define GU_TARGET_PCI_ID (GuTargetId())
+#endif
 
 VOID GuInit(EFI_BOOT_SERVICES *Bs, EFI_PCI_IO_PROTOCOL *Pci);
 #ifdef GU_ENTRY_LATCHED
