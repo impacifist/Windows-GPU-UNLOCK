@@ -23,7 +23,7 @@ try {
  if($LASTEXITCODE -ne 0){throw 'Diagnostic link failed'}
  & $Python ../unlock/verify_pe.py build/diagnostic/DIAGNOSTIC.EFI build/diagnostic/DIAGNOSTIC.map --output build/diagnostic/pe-verification.json
  if($LASTEXITCODE -ne 0){throw 'Diagnostic PE verification failed'}
- $sourceManifest=@(($sources+@('diagnostic.h','media.h','probe.h','../unlock/machine-profile.h')) | ForEach-Object {
+ $sourceManifest=@(($sources+@('diagnostic.h','media.h','probe.h','../unlock/machine-profile.h','../unlock/gpu-family.h','../unlock/firmware-profile.h')) | ForEach-Object {
   [ordered]@{Path=$_;Sha256=(Get-FileHash -LiteralPath $_ -Algorithm SHA256).Hash}
  })
  if($UsbMedia){

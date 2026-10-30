@@ -51,6 +51,7 @@ static EFI_STATUS EFIAPI FreeP(VOID *p){
     if(DriftKind==7)Devs[0].io.Pci.Read=NULL;
     if(DriftKind==8)Devs[0].failLocation=TRUE;
     if(DriftKind==9)Devs[0].cfg[15]^=1U;
+    if(DriftKind==10)Devs[0].seg=GU_TARGET_SEGMENT^1U;
   }
   return FreeFault==phase?EFI_DEVICE_ERROR:EFI_SUCCESS;
 }
@@ -59,7 +60,7 @@ static EFI_STATUS EFIAPI FreeP(VOID *p){
 static void Card(FAKE *x){
   memset(x,0,sizeof(*x));x->io.GetLocation=Loc;x->io.Pci.Read=CfgRead;x->io.Mem.Read=MemRead;x->io.Mem.Write=MemWrite;
   x->io.GetBarAttributes=GetBar;
-  x->bus=GU_TARGET_BUS;x->cfg[0]=GU_BOARD_ID;x->cfg[1]=2;x->cfg[2]=0x030000a1;x->cfg[4]=(UINT32)GU_BAR0_BASE;x->cfg[11]=GU_BOARD_SUBSYSTEM;
+  x->seg=GU_TARGET_SEGMENT;x->bus=GU_TARGET_BUS;x->cfg[0]=GU_BOARD_ID;x->cfg[1]=2;x->cfg[2]=0x030000a1;x->cfg[4]=(UINT32)GU_BAR0_BASE;x->cfg[11]=GU_BOARD_SUBSYSTEM;
   x->bar.d.Desc=ACPI_ADDRESS_SPACE_DESCRIPTOR;x->bar.d.Len=sizeof(x->bar.d)-3;x->bar.d.AddrSpaceGranularity=32;
   x->bar.d.AddrRangeMin=GU_BAR0_BASE;x->bar.d.AddrRangeMax=GU_BAR0_END;x->bar.d.AddrLen=0x1000000;
   x->bar.end[0]=ACPI_END_TAG_DESCRIPTOR;
@@ -127,7 +128,10 @@ int main(void){
   Card(&Devs[0]);Devs[0].failRead=TRUE;Check(Run()==EFI_DEVICE_ERROR,"register read failure reported");
   Card(&Devs[0]);Devs[0].cfg[11]=GU_BOARD_SUBSYSTEM^1U;Check(Run()==EFI_NOT_FOUND,"other subsystem not a target");
   Card(&Devs[0]);Devs[0].bus=GU_TARGET_BUS+1U;Check(Run()==EFI_NOT_FOUND,"card at another slot not a target");
+  Card(&Devs[0]);Devs[0].seg=GU_TARGET_SEGMENT^1U;RejectBeforeMmio(EFI_NOT_FOUND,"same BDF in another segment is not a target");
   DevCount=2;Card(&Devs[0]);Card(&Devs[1]);Devs[1].fun=1;Devs[1].cfg[0]=0x1aef10de;Check(Run()==EFI_SUCCESS,"HD audio function ignored");
+  Card(&Devs[1]);Devs[1].seg=GU_TARGET_SEGMENT^1U;Devs[1].regs[0]^=1U;
+  Check(Run()==EFI_SUCCESS && Reads==9,"another segment with the same BDF cannot supply the cold observations");
   Card(&Devs[1]);Check(Run()==EFI_NOT_FOUND,"two identical targets refused");
   DevCount=0;Check(Run()==EFI_NOT_FOUND,"no PCI devices refused");
   DevCount=1;
@@ -162,9 +166,9 @@ int main(void){
   }
   for(int phase=1;phase<=2;phase++) {
     Card(&Devs[0]);FreeFault=phase;RejectBeforeMmio(EFI_DEVICE_ERROR,"pool free failure prevents MMIO");
-    for(int drift=1;drift<=9;drift++) {
+    for(int drift=1;drift<=10;drift++) {
       Card(&Devs[0]);DriftPhase=phase;DriftKind=drift;
-      EFI_STATUS expected=(drift==5 || drift==7)?EFI_UNSUPPORTED:drift==8?EFI_DEVICE_ERROR:EFI_NOT_READY;
+      EFI_STATUS expected=(drift==5 || drift==7 || drift==10)?EFI_UNSUPPORTED:drift==8?EFI_DEVICE_ERROR:EFI_NOT_READY;
       RejectBeforeMmio(expected,"service-return target or raw-config drift refused");
     }
   }

@@ -2,15 +2,19 @@
 
 [English](COMPATIBILITY.en.md) | **한국어**
 
-현재 소스에는 실기기 결과가 기록된 정확한 장비 프로필 다섯 개가 있습니다.
-내부 headless 두 구성과 headless USB 세 구성입니다. 최초 B650M은 유지관리자가
+**2026-10-29 이슈 감사:** [보고된 구성과 프로필 판단](CONFIRMED-SETUPS.ko.md) · [전체 이슈 105개](ISSUE-AUDIT.ko.md). 아래 고정 프로필 6개 외에도 LOCAL 성공 보고가 있습니다.
+
+현재 소스에는 실기기 결과가 기록된 정확한 장비 프로필 여섯 개가 있습니다.
+내부 headless 세 구성과 headless USB 세 구성입니다. 최초 B650M은 유지관리자가
 시험했고, B660M·X870·B660-PLUS의 근거는 기여자의 보고입니다
 ([PR #5](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/5),
 [PR #10](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/10),
 [PR #24](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/24),
-[PR #30](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/30)).
-빌드는 [internal-boot/unlock/machine-profile.h](../internal-boot/unlock/machine-profile.h)에서
-빌드 시점에 선택된 하나의 검토된 프로필 전용이며, 다른 GPU·플랫폼은 지원하지 않습니다.
+[PR #30](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/30),
+[PR #77](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/77)).
+고정 프로필 빌드는 [internal-boot/unlock/machine-profile.h](../internal-boot/unlock/machine-profile.h)에서
+선택한 정확한 구성 전용입니다. 다른 GPU·플랫폼에는 이 고정 프로필을 적용할 수 없습니다.
+실험적 LOCAL 생성 경로와 별도의 기여자 성공 보고는 아래에 설명합니다.
 
 | 빌드 프로필 | 정확한 플랫폼 / CPU | 기록된 headless 경로 |
 |---|---|---|
@@ -19,11 +23,20 @@
 | `x870-3090ti` | Gigabyte X870 AORUS ELITE WIFI7 BIOS F13d / Ryzen 7 9800X3D / ASUS RTX 3090 Ti | USB 전용; 기여자 보고 |
 | `b660plus-3060` | ASUS PRIME B660-PLUS D4 BIOS 3010 / iGPU 없는 i5-12600KF / GA104 RTX 3060 12GB | USB 전용, 디스플레이 child 두 개, CSM 끔; 기여자 보고 |
 | `h610m-3060` | Gigabyte H610M H BIOS FC / i5-14400(iGPU 켜짐, GOP 없음) / Gigabyte GA106 RTX 3060 12GB | USB 전용, 디스플레이 child 두 개; 기여자 보고 |
+| `b660m-3090ti` | ASUS TUF GAMING B660M-E D4 BIOS 4003 / iGPU 없는 i7-12700F / Colorful RTX 3090 Ti | 내부; 기여자가 cold boot 1회 보고 |
 
 최신 태그 v0.3.1은 소스 전용 사전 릴리스이며, 현재 소스에는 그 이후의 USB 경로와
 X870 프로필 등이 포함됩니다. 실기기 보고는 각 기록의 빌드에 해당합니다. 현재 cold
 사전검사 보강은 host·빌드 검증을 거쳤지만 새 실기기 부팅·복구 결과는 없습니다.
 프로필이 컴파일된다는 사실만으로 실기기 검증이 추가되지는 않습니다.
+
+현재 host 검증 도구는 PCI command `0x0002` 캡처의 속성을 `0x200`으로 초기화하고,
+선택한 프로필의 PROM 해시를 사용합니다. [#129의 테스트 오류 보고](https://github.com/impacifist/Windows-GPU-UNLOCK/issues/129#issuecomment-6482780948)와
+[#105](https://github.com/impacifist/Windows-GPU-UNLOCK/issues/105)의 지적을 반영한 수정이며,
+이후 주입하는 불일치·파일 변조는 계속 거절합니다. 실제 펌웨어의 속성 불일치를 자동으로
+수정하는 기능은 아닙니다. LOCAL 소스 변경 전의 검증 결과는 재사용할 수 없으며,
+현재 소스와 자신의 원본 입력으로 필수 검사 22개를 다시 통과해야 합니다.
+별도의 자산 없는 모의 회귀 명령과 검증 범위는 [새 장비 안내](NEW-MACHINE.en.md#the-evidence-gate)에 있습니다.
 
 ## 프로필 1: ASUS TUF B650M / RTX 3090 FE(최초 검증)
 
@@ -159,6 +172,57 @@ non-aggregate 디스플레이 child 두 개를 사용합니다.
 FP32 9.58 → 9.34 TFLOPS입니다. 저장소의 cuBLAS n=4096과는 다른 측정 절차입니다.
 실기기 보고와 해시는 원 기여 `4b748f5`에 해당하며 이후 보강한 통합본의 실기기 시험이
 아닙니다. [근거와 한계](../evidence/h610m-3060-usb/README.md)를 참고하세요.
+
+## 프로필 6: ASUS TUF B660M-E D4 / Colorful RTX 3090 Ti(내부)
+
+`b660m-3090ti`는 PCI `10de:2203`, subsystem `7377:1301`, GA102 `0xb72000a1`,
+`0x5ff4` MiB와 [기여자의 기록](../evidence/b660m-3090ti-internal/README.md)에 있는
+정확한 PROM 해시를 고정합니다. 같은 보드·BIOS 4003의 콘솔·EDID·nvgop fingerprint를
+프로필 2와 공유하며 런타임 소유권·코드·cold 상태·정리 검사는 유지합니다.
+
+내부 ESP cold boot 한 번에서 깨끗한 트랜잭션, Windows 직접 시작과 화면 복귀를
+보고했습니다. 반복 부팅·재시작·절전·안정성·통제된 성능 비교는 미검증입니다.
+통합 빌드의 유지관리자 실기 시험이 아닌 기여자 보고입니다. USB 경로의 실기 근거가
+없으므로 이 프로필은 USB 선택 항목을 제공하지 않습니다.
+
+main 소스에서 `internal-boot/Configure.ps1`과 `research/headless/build-unlock.ps1`
+양쪽에 `-HardwareProfile b660m-3090ti`를 전달하세요. v0.3.1 태그에는 없습니다.
+Cold/full-flow와 컴파일 회귀 검사를 제공하지만 `test-all.ps1`의 전체 개인 fixture
+트랜잭션 재현은 아직 연결하지 않았습니다. 공개 근거에 정확한 FWSEC 이미지 offset·size와
+개인 입력이 없으므로 펌웨어 배치를 추정해 통과시키지 않고 해당 검증을 차단합니다.
+
+## 로컬 프로필 성공 보고
+
+[이슈 #105](https://github.com/impacifist/Windows-GPU-UNLOCK/issues/105)는 X870 EAGLE WIFI7
+BIOS F11 / Ryzen 9 9950X에서 Gigabyte RTX 3060 Ti LHR(`10de:24c9`, subsystem
+`1458:40cd`)의 성공을 보고합니다. 첨부 패치는 텍스트로 검토했으며 SHA-256은
+`eb6bce2587dd0ed1145829267802aebdc4e4287f8448dfccd36313b82c458a8f`입니다.
+공통 LOCAL 후보는 GA104 `b74000a1`, `2000` MiB, nvgop `60015`로 한정합니다.
+이미지 `26e00`, Stop `678`, `.text` `2106f`바이트의 SHA-256은
+`645a2f416940211e09023838ac03f4b45453f95f457eab2de49628d57e9deb95`입니다.
+메인보드별 프로필·펌웨어 템플릿을 추가하지 않으며, 다른 GA104 GPU의 전용 핀도 유지합니다.
+
+기여자는 재시작 기반의 완전한 캡처 2개·불완전한 캡처 2개와 USB 거래 1회 후 Windows·화면
+복귀를 보고했습니다. 실험에 사용한 임시 LOCAL 허용 범위 변경은 첨부에 없으며, 고정 프로필과
+바이너리가 같다는 설명은 기여자의 보고입니다. 비공개 PROM·드라이버 원본을 독립적으로
+해시하거나 실기기 거래를 재현하지 않았습니다. 현재 소스의 생성·재현 검사는 합성 입력을
+사용하며, 반복 성공·완전 종료 후 동작·다른 3060 Ti·내부 경로를 입증하지 않습니다.
+새 LOCAL 사용에는 별도의 완전 종료 캡처, 장비별 정확한 핀과 현재 필수 host 검사 22개가
+필요합니다. 과거 검사 결과로 이를 대체할 수 없습니다.
+
+[이슈 #113](https://github.com/impacifist/Windows-GPU-UNLOCK/issues/113)은
+Gigabyte B460M D2VX SI BIOS FE / i5-10400F / Zotac RTX 3070 8GB에서 한 번의
+headless USB 언락, clean FLR·정리, Windows 화면 복귀를 보고합니다. 시험 소스는
+`9692463` 기반 [공개 변경 17b5e50](https://github.com/Wandraker/GPU-UNLOCK/commit/17b5e50b0a56ca593fffd764bd0fc85379b536b2)이며,
+핵심 변경은 진단 ID·GA104 카드 조합·생성 허용 범위·거부 시험입니다. 언락·소유권·DMA·FLR
+실행 코드는 바꾸지 않았습니다. 현재 main의 새 실기기 검증이나 장기 안정성 근거는 아닙니다.
+
+현재 자동 로컬 프로필은 `10de:2484` / chip `b74000a1` / `2000` MiB와
+nvgop `60009`의 기존 검증 코드 해시 조합을 허용합니다. subsystem·PROM·경로·펌웨어
+나머지 값은 자신의 캡처로 고정하고 필수 host 시험 22개를 통과해야 합니다.
+같은 GA104인 RTX 3060 `2487` / `3000` MiB는 여전히 `60010` 코드만 허용합니다.
+새 장비별 고정 프로필은 추가하지 않았으며 [로컬 프로필 절차](NEW-MACHINE.en.md)를 사용합니다.
+다른 3070 PCI ID, VBIOS·드라이버 조합과 콘솔 구성은 별도 검증이 필요합니다.
 
 ## 기록된 구성 밖의 범위
 

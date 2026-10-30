@@ -1,0 +1,2850 @@
+{
+  "schema_version": 1,
+  "audited_at_utc": "2026-10-29T23:20:00.093515+00:00",
+  "base_commit": "75071aa134616c3d65ad315e0cf2810bf34b191b",
+  "scope": "All 105 GitHub issues, open and closed, excluding pull requests; 73 comments. Snapshot, not a live support guarantee.",
+  "runtime_use": false,
+  "write_authority": false,
+  "setups": [
+    {
+      "issue": 4,
+      "gpu": "MSI RTX 3070 Ti 8GB",
+      "pci_id": "10de:2482",
+      "subsystem": "1462:5052",
+      "motherboard": "ASUS TUF GAMING B660M-E D4",
+      "bios": "4003",
+      "cpu": "i7-12700F",
+      "profile_status": "fixed-main",
+      "tested_route": "b660m-3070ti internal",
+      "result": "Logged transaction, Windows/display return; repeated boots reported",
+      "measurement": "FP16 ~43.7 -> 89.28 TFLOPS",
+      "tested_source": "ed6220b",
+      "id": "issue-4",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/4",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/4#issuecomment-6381211744",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/4#issuecomment-6382082358",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/4#issuecomment-6386864256",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/4#issuecomment-6388169841"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": false,
+      "published_sha256_values": [
+        "06b490f3d9a060f10f1c4641dba8ff67a4b66c2509cb2de2322ff761effc77ac",
+        "13fe4e75207ac384a6d115ef50995b6b2209b37011dd1c4df8f6605dd27998e7",
+        "67859b35149d49c985d19d998c5cc62c88d5af182a6afc255b089585fba79e29",
+        "73bd2dfa0baad1a29d47cd44ec81c517ac8c6c54c304560b5254ce09a841c0ae"
+      ],
+      "evidence_kind": "published-excerpt",
+      "windows_return_reported": true,
+      "vbios_reported": null,
+      "nvidia_driver_reported": "616.92",
+      "windows_reported": "Windows 11 Pro 22000",
+      "display_reported": "RTX only, AMI aggregate",
+      "published_log_markers": [
+        "post-FLR SEC2 reset released, GSP halted, BME=0 pending=0 WPR2=1ffffe00:00000000 SS0=88888888 SS1=00000008",
+        "transaction result=0 containment=0 started=1 quiesced=1 fault=0 retained=0 maps=0 FLR=1",
+        "FINAL status=0 stage=transaction attempted=1 driver_release=0 clean=1"
+      ]
+    },
+    {
+      "issue": 7,
+      "gpu": "ASUS RTX 3080 Ti 12GB",
+      "pci_id": "10de:2208",
+      "subsystem": "1043:8803",
+      "motherboard": "MSI MPG X570 GAMING PLUS",
+      "bios": "A.N0",
+      "cpu": "Ryzen 9 3900X",
+      "profile_status": "research",
+      "tested_route": "private e1adcc5; PR139",
+      "result": "One USB transaction and Windows return; decode pre-step; public adapter not hardware-tested",
+      "measurement": "FP16 69.01 -> 121.31; BF16 68.97 -> 125.51",
+      "tested_source": "e1adcc5",
+      "id": "issue-7",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/7",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/7#issuecomment-6395249296",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/7#issuecomment-6402150030",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/7#issuecomment-6457934735",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/7#issuecomment-6505096303"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [],
+      "evidence_kind": "operator-or-linked-report",
+      "windows_return_reported": true,
+      "vbios_reported": "94.02.71.80.77",
+      "nvidia_driver_reported": "610.88",
+      "windows_reported": "Windows 11 Pro 26300",
+      "display_reported": "RTX only, non-aggregate; no separate EDID driver",
+      "published_log_markers": []
+    },
+    {
+      "issue": 12,
+      "gpu": "MSI RTX 3090 24GB",
+      "pci_id": "10de:2204",
+      "subsystem": "1462:3881",
+      "motherboard": "MSI B550M PRO-VDH WIFI",
+      "bios": "2.O1",
+      "cpu": "Ryzen 7 5700X",
+      "profile_status": "local-main",
+      "tested_route": "LOCAL; no EDID driver; bus 2b",
+      "result": "Logged clean transaction and Windows/display return",
+      "measurement": "FP16 64.3 -> 110.9; BF16 66.2 -> 115.9 (4096)",
+      "tested_source": "local port; now represented by evidence/b550m-3090-usb",
+      "id": "issue-12",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/12",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/12#issuecomment-6415505411",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/12#issuecomment-6420993685"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [],
+      "evidence_kind": "published-excerpt",
+      "windows_return_reported": true,
+      "vbios_reported": "94.02.42.00.2f",
+      "nvidia_driver_reported": "617.14",
+      "windows_reported": "Windows 10 Pro 19045",
+      "display_reported": "RTX HDMI+DP; no iGPU; no EDID driver",
+      "published_log_markers": [
+        "post-FLR SEC2 reset released, GSP halted, BME=0 pending=0 WPR2=1ffffe00:00000000 SS0=88888888 SS1=00000008",
+        "transaction result=0 containment=0 started=1 quiesced=1 fault=0 retained=0 maps=0 FLR=1",
+        "FINAL status=0 stage=transaction attempted=1 driver_release=0 clean=1"
+      ]
+    },
+    {
+      "issue": 28,
+      "gpu": "Maxsun RTX 3080 LHR 10GB",
+      "pci_id": "10de:2216",
+      "subsystem": "7377:2000",
+      "motherboard": "Maxsun MS-Terminator B760M D4",
+      "bios": "not stated",
+      "cpu": "i5-12490F",
+      "profile_status": "research",
+      "tested_route": "private b760m-3080lhr internal",
+      "result": "One clean transaction and Windows return; extra exclusive owner/private EDID topology",
+      "measurement": "FP16 56.4 -> 109.8; BF16 59.9 -> 113.2",
+      "tested_source": "v0.3.1 plus local changes",
+      "id": "issue-28",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/28",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/28#issuecomment-6427707329",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/28#issuecomment-6436156992"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [
+        "1265f152bdbd1a65f94f19cd0433082f245a5c0340ef3a09968ac75f7add00ab",
+        "64d887e4b8ad6bed5dabf2856c28aecadbb5e086b1fead791f178661ef381296"
+      ],
+      "evidence_kind": "published-excerpt",
+      "windows_return_reported": true,
+      "vbios_reported": null,
+      "nvidia_driver_reported": "617.14",
+      "windows_reported": "Windows 11",
+      "display_reported": "RTX DP; AMI aggregate plus extra owner",
+      "published_log_markers": [
+        "transaction result=0 containment=0 started=1 quiesced=1 fault=0 retained=0 maps=0 FLR=1",
+        "FINAL status=0 stage=transaction attempted=1 clean=1"
+      ]
+    },
+    {
+      "issue": 29,
+      "gpu": "MSI RTX 3090 24GB",
+      "pci_id": "10de:2204",
+      "subsystem": "1462:3884",
+      "motherboard": "Gigabyte model not stated",
+      "bios": "not stated",
+      "cpu": "not stated",
+      "profile_status": "incomplete",
+      "tested_route": "entryLatchedSs1Full internal",
+      "result": "Logged transaction and Windows handoff reported; board/CPU/source incomplete",
+      "measurement": "no controlled pair supplied",
+      "tested_source": "not pinned",
+      "id": "issue-29",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/29"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [
+        "056cbc064a888f80717726c54d7f64fcd68044d123870c95a74f37f4975dcaa4",
+        "2a0aa1f86d0b6afff5214d641d87d46dc98ef06ed908ff05d0ddbad5ffb7e197",
+        "3df651acb174fd5f5561a1996965b192f50c5d763168446ed0d4ead19d895768",
+        "572373620a37418f24dc16b5031c39338778c3257e48e8408de9a57291b24f3a",
+        "cc5a3fc1f4c47f2fe107b1b68f0176d8a448e6dec84b575e5560ccef5262bf15"
+      ],
+      "evidence_kind": "published-excerpt",
+      "windows_return_reported": true,
+      "vbios_reported": null,
+      "nvidia_driver_reported": null,
+      "windows_reported": null,
+      "display_reported": null,
+      "published_log_markers": [
+        "post-FLR SEC2 reset released, GSP halted, BME=0 pending=0 WPR2=1ffffe00:00000000 SS0=88888888 SS1=00000008",
+        "transaction result=0 containment=0 started=1 quiesced=1 fault=0 retained=0 maps=0 FLR=1",
+        "FINAL status=0 stage=transaction attempted=1 driver_release=0 clean=1"
+      ]
+    },
+    {
+      "issue": 32,
+      "gpu": "EVGA RTX 3090 24GB",
+      "pci_id": "10de:2204",
+      "subsystem": "3842:3982",
+      "motherboard": "ASUS ROG MAXIMUS Z790 DARK HERO",
+      "bios": "2202",
+      "cpu": "not stated; UHD770 display",
+      "profile_status": "research",
+      "tested_route": "experimental separate-display UEFI",
+      "result": "One logged transaction and Windows benchmarks; repeated boots untested",
+      "measurement": "FP16 70.33 -> 129.93; BF16 70.42 -> 130.69",
+      "tested_source": "849f99637a0e324161ad6fe12d77f7b668822512 plus local adaptation",
+      "id": "issue-32",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/32",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/32#issuecomment-6407043722",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/32#issuecomment-6426947731"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [
+        "7fbe6318356c1919d96e375fa9e2dff744c02dfc0205587b38181038f5f78466"
+      ],
+      "evidence_kind": "published-excerpt",
+      "windows_return_reported": true,
+      "vbios_reported": "94.02.42.C0.05",
+      "nvidia_driver_reported": "617.42",
+      "windows_reported": "Windows",
+      "display_reported": "Intel UHD770 display",
+      "published_log_markers": [
+        "FINAL status=0 stage=transaction attempted=1 driver_release=1 clean=1"
+      ]
+    },
+    {
+      "issue": 36,
+      "gpu": "RTX 3050 Laptop 4GB GA107M",
+      "pci_id": "10de:25a2",
+      "subsystem": "1043:13fc",
+      "motherboard": "ASUS TUF F15 FX506HCB",
+      "bios": "316",
+      "cpu": "i5-11400H",
+      "profile_status": "external",
+      "tested_route": "independent yuksew-derived manual USB",
+      "result": "One transaction/Windows boot; laptop decode/cleanup changes outside this implementation",
+      "measurement": "MMA uniform-input BF16 15.033 -> 31.946; not cuBLAS",
+      "tested_source": "5479d5772b3c5d56c1321b07925bb1d41008a69d plus private changes",
+      "id": "issue-36",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/36"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [
+        "2350cfbae6b88baf4f4105b6ff7ef55b1828cd74b8bbbc69dd64ce6973b2c2fb",
+        "7909ab86822f3b4ece90c79e2487f96e34f15c579a219ee3b2e7ae268444bfc7",
+        "9f20dfd713538d90d642fbfcc6a8e7ba771280b050f4ef283f18b7bc69b09ff1",
+        "b086df90eca2fd0536fac7076b379d8cbffa736cae23e275fe0b3e0ca643a547"
+      ],
+      "evidence_kind": "published-excerpt",
+      "windows_return_reported": true,
+      "vbios_reported": "94.07.3b.80.0b",
+      "nvidia_driver_reported": "617.42",
+      "windows_reported": "Windows 11 Pro 26300",
+      "display_reported": "Intel UHD UEFI GOP; physical wiring not independently mapped",
+      "published_log_markers": [
+        "post-FLR SEC2 reset released, GSP halted, BME=0 pending=0 WPR2=1ffffe00:00000000 SS0=88888888 SS1=00000008",
+        "transaction result=0 containment=0 started=1 quiesced=1 fault=0 retained=0 maps=0 FLR=1",
+        "FINAL status=0 stage=transaction attempted=1 driver_release=0 clean=1"
+      ]
+    },
+    {
+      "issue": 43,
+      "gpu": "RTX 3060 GA106 12GB",
+      "pci_id": "10de:2504",
+      "subsystem": "10de:1536",
+      "motherboard": "MSI MAG B550M MORTAR MS-7C91",
+      "bios": "not stated",
+      "cpu": "Ryzen 5 5600X",
+      "profile_status": "research",
+      "tested_route": "private GA106 manual/automatic SD route",
+      "result": "Transaction signature and Windows return reported; source diff not published",
+      "measurement": "FP16 24.5-26.1 -> 41-45, torch 8192",
+      "tested_source": "9352abd plus local port",
+      "id": "issue-43",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/43"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [],
+      "evidence_kind": "published-excerpt",
+      "windows_return_reported": true,
+      "vbios_reported": "94.06.25.00.fc",
+      "nvidia_driver_reported": "591.74",
+      "windows_reported": "Windows 10 19045",
+      "display_reported": "RTX only",
+      "published_log_markers": []
+    },
+    {
+      "issue": 50,
+      "gpu": "RTX 3060 GA106 12GB",
+      "pci_id": "10de:2504",
+      "subsystem": "10de:1536",
+      "motherboard": "Gigabyte Z690 UD DDR4",
+      "bios": "F27",
+      "cpu": "i5-12400F",
+      "profile_status": "local-candidate",
+      "tested_route": "historical z690ud-3060 fork; current LOCAL candidate",
+      "result": "Two full-shutdown USB transactions and Windows return; do not reuse fixed fork header",
+      "measurement": "matched cuBLAS pair and log tables in issue",
+      "tested_source": "vjumpkung fork 923ac21 on f33a4c8",
+      "id": "issue-50",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/50"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [
+        "609263ff3b48cd20be601616be4c6eb9737852f82eb1d3de60c27cba077fffbe",
+        "706d14565417a663854fa5a1f66271ce26bd09a40a52fbfc2859e57d97d38bd5",
+        "78f963203776978c9a08a5605ab25eee529ae6ceaa689be2ecdb82a88582d487",
+        "91be90d58c1bf6e1e03f3f629bcef78be1cb549dc4bf254585126f199b52e80a",
+        "aac8b068a6c30d44a6d78d703cc6716682f15c59a39a48c537924a152b15fdbe"
+      ],
+      "evidence_kind": "published-excerpt",
+      "windows_return_reported": true,
+      "vbios_reported": "94.06.2f.00.6d",
+      "nvidia_driver_reported": "610.88",
+      "windows_reported": "Windows 11 Education 26300",
+      "display_reported": "one RTX DP monitor; no iGPU",
+      "published_log_markers": [
+        "post-FLR SEC2 reset released, GSP halted, BME=0 pending=0 WPR2=1ffffe00:00000000 SS0=88888888 SS1=00000008",
+        "transaction result=0 containment=0 started=1 quiesced=1 fault=0 retained=0 maps=0 FLR=1",
+        "FINAL status=0 stage=transaction attempted=1 driver_release=0 clean=1"
+      ]
+    },
+    {
+      "issue": 73,
+      "gpu": "Gigabyte RTX 3080 12GB",
+      "pci_id": "10de:220a",
+      "subsystem": "1458:40a2",
+      "motherboard": "ASUS TUF GAMING B550-PLUS",
+      "bios": "3611",
+      "cpu": "Ryzen 9 5900X",
+      "profile_status": "local-proposed",
+      "tested_route": "LOCAL tuple added by this PR",
+      "result": "One logged USB transaction; Windows/HDMI return; DP required monitor power-cycle/replug",
+      "measurement": "FP16 69.30 -> 114.03; BF16 69.11 -> 117.32 (CUDA12.8)",
+      "tested_source": "0d2027e + b79cdd6 + uncommitted probe/admission changes",
+      "id": "issue-73",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/73"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [
+        "22ecc7dd285a8990e6abf1872407cb2d3ec9e4e5841b7a11667e63e858ca64f4",
+        "27116972e70a1c23e13de5b4248bee113fccb84317629ed1c7cee5db76ece519",
+        "355952e6a8e173b1e47a8d6c4033da94a107ff4f04cc41c5f521878b21269928",
+        "3842554c6917626d2dd1729895e10d5b79a109b1c0a4ffce44c1a4aac5e2ef75",
+        "716a35381f728fb0bb29eb88213c799a14b3d9d72217c5b8dfab7711899fd058",
+        "86587a2931742c40d6385c49825cf8702be8fe68f22f052b462815930915a3ec",
+        "9884098e48f79eb7ab7256ffcd7f4e27e50d18978501642f6b77c09f9bb08cdf",
+        "99e4b7aff51f40e07b8fbbfe62b89f55a5d6a678edb87de5ae598b4ffd0e932b",
+        "de07c5426fd8c93b97ca96b4b81e67a8ccb744bcef5fb4b27c02b2863579e541"
+      ],
+      "evidence_kind": "published-excerpt",
+      "windows_return_reported": true,
+      "vbios_reported": "94.02.85.00.d7",
+      "nvidia_driver_reported": "621.01",
+      "windows_reported": "Windows 11 Insider 26340",
+      "display_reported": "RTX DP+HDMI; no iGPU; DP needed manual recovery",
+      "published_log_markers": [
+        "post-FLR SEC2 reset released, GSP halted, BME=0 pending=0 WPR2=1ffffe00:00000000 SS0=88888888 SS1=00000008",
+        "transaction result=0 containment=0 started=1 quiesced=1 fault=0 retained=0 maps=0 FLR=1",
+        "FINAL status=0 stage=transaction attempted=1 driver_release=0 clean=1"
+      ]
+    },
+    {
+      "issue": 81,
+      "gpu": "ZOTAC RTX 3090 24GB",
+      "pci_id": "10de:2204",
+      "subsystem": "19da:1613",
+      "motherboard": "ASUS TUF GAMING B650-PLUS",
+      "bios": "3287",
+      "cpu": "Ryzen 9 7950X3D",
+      "profile_status": "local-main",
+      "tested_route": "LOCAL-220410de-161319da-a95a2b89 USB",
+      "result": "One full-shutdown transaction and Windows/display return; no tracked diff",
+      "measurement": "after-only benchmark; no matched uplift claim",
+      "tested_source": "20c44fe",
+      "id": "issue-81",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/81"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [
+        "0d5856381dfbb5fc70f3f8c41261afffcab6357ee232d216eb9e78098c7de0a9",
+        "355952e6a8e173b1e47a8d6c4033da94a107ff4f04cc41c5f521878b21269928",
+        "4bc9e0a511501e4975d0cfb80e1b1c9069d28ee4868ecf4a00301deb49a134b0",
+        "52a55f0ba6d3824e32bdf30eb70158088318d0262ccf24d27c26c63270e17072",
+        "5aa68b71b1d9715277b32fb3bf743a630ad86a84540c7e89ace93ff006ac601e",
+        "a95a2b89fabb3e4026287725f6de7c90dd82cb2e8a094ba5ad760a11933e4ff4",
+        "c5bf20bc6ba309bc21c3f200b77020bc6d80f20d219a76959f8dc32f6e9295f4"
+      ],
+      "evidence_kind": "published-excerpt",
+      "windows_return_reported": true,
+      "vbios_reported": "94.02.42.80.9f",
+      "nvidia_driver_reported": "621.01",
+      "windows_reported": "Windows 11 Pro 26300",
+      "display_reported": "one RTX DP monitor; Ryzen iGPU no GOP",
+      "published_log_markers": [
+        "post-FLR SEC2 reset released, GSP halted, BME=0 pending=0 WPR2=1ffffe00:00000000 SS0=88888888 SS1=00000008",
+        "transaction result=0 containment=0 started=1 quiesced=1 fault=0 retained=0 maps=0 FLR=1",
+        "FINAL status=0 stage=transaction attempted=1 driver_release=0 clean=1"
+      ]
+    },
+    {
+      "issue": 84,
+      "gpu": "ASUS Turbo RTX 3090 24GB",
+      "pci_id": "10de:2204",
+      "subsystem": "1043:87d5",
+      "motherboard": "ASUS PRIME B550M-A WIFI II",
+      "bios": "3621",
+      "cpu": "Ryzen 5 5600X",
+      "profile_status": "local-main",
+      "tested_route": "LOCAL-220410de-87d51043-f4c45666 USB",
+      "result": "One logged cold transaction, Windows/display return; downloaded ZIP commit unknown",
+      "measurement": "matched 8192 Tensor measurements in issue",
+      "tested_source": "main ZIP; exact commit unknown",
+      "id": "issue-84",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/84"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [
+        "1c866c92eac9f4c7b2d991171aadf156a46698c5fe13ebbb99ab542f974d7b09",
+        "6e7b8878f6bcb2fa13db1410b1223c347e11d794c66e9b88a962cc014e2db005",
+        "adab43d8e70e84ce7d45e6377852ec170f56258c756aff241e4261df90fe3afe"
+      ],
+      "evidence_kind": "published-excerpt",
+      "windows_return_reported": true,
+      "vbios_reported": "94.02.42.80.65",
+      "nvidia_driver_reported": "610.88",
+      "windows_reported": "Windows 11 Pro 26200.9711",
+      "display_reported": "one RTX DP monitor; no iGPU",
+      "published_log_markers": [
+        "transaction result=0 containment=0 started=1 quiesced=1 fault=0 retained=0 maps=0 FLR=1",
+        "FINAL status=0 stage=transaction attempted=1 driver_release=0 clean=1"
+      ]
+    },
+    {
+      "issue": 86,
+      "gpu": "RTX 3060 Ti 8GB GA104-200",
+      "pci_id": "10de:2414",
+      "subsystem": "10de:2414",
+      "motherboard": "Gigabyte Z590 VISION G",
+      "bios": "F8",
+      "cpu": "i7-11700KF",
+      "profile_status": "research",
+      "tested_route": "LOCAL-241410de-241410de-2036183f internal",
+      "result": "Windows/display return and benchmarks; different b73000a1 chip/6000a driver; not current GA104 tuple",
+      "measurement": "FP16 26.24 -> 50.23 (4096)",
+      "tested_source": "locally modified source; no pinned commit",
+      "id": "issue-86",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/86"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [
+        "8924ba488419e5d82b524d10e8dd63bfe886f077026fae1a9cc03e25b920b276"
+      ],
+      "evidence_kind": "operator-or-linked-report",
+      "windows_return_reported": true,
+      "vbios_reported": "94.03.1b.00.45",
+      "nvidia_driver_reported": "617.42",
+      "windows_reported": "Windows 11 Pro 26300",
+      "display_reported": "RTX DP+HDMI; no iGPU",
+      "published_log_markers": []
+    },
+    {
+      "issue": 87,
+      "gpu": "ZOTAC RTX 3060 GA104 12GB",
+      "pci_id": "10de:2487",
+      "subsystem": "19da:2630",
+      "motherboard": "ASUS PRIME B760M-A WIFI",
+      "bios": "1820",
+      "cpu": "i7-14700F",
+      "profile_status": "local-main",
+      "tested_route": "LOCAL USB; two-child aggregate",
+      "result": "Latest comment supersedes initial probe refusal: three successful boots including warm restart",
+      "measurement": "locked ~25.8; logged post-run Tensor results in update",
+      "tested_source": "e7ff2cc plus two local host-fixture fixes",
+      "id": "issue-87",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/87",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/87#issuecomment-6479015793"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [
+        "bcb69bf9db1cf61172b89d3ece98cb506e1a191e03208dca356118eef12364d8"
+      ],
+      "evidence_kind": "published-excerpt",
+      "windows_return_reported": true,
+      "vbios_reported": "94.04.71.40.5C",
+      "nvidia_driver_reported": "610.88 (initial report)",
+      "windows_reported": "Windows Enterprise 26200",
+      "display_reported": "two RTX children; AMI aggregate; no iGPU",
+      "published_log_markers": [
+        "transaction result=0 containment=0 started=1 quiesced=1 fault=0 retained=0 maps=0 FLR=1",
+        "FINAL status=0 stage=transaction attempted=1 driver_release=0 clean=1"
+      ]
+    },
+    {
+      "issue": 90,
+      "gpu": "Palit RTX 3090 24GB",
+      "pci_id": "10de:2204",
+      "subsystem": "1569:f278",
+      "motherboard": "Gigabyte B550M AORUS PRO-P",
+      "bios": "F15a",
+      "cpu": "Ryzen 9 5900X",
+      "profile_status": "research",
+      "tested_route": "private LOCAL; SS1 preserved",
+      "result": "Windows/display return reported; accepted captures after CSM disabled; local gate changes not reviewed here",
+      "measurement": "MoE prefill +9-10%; decode within +/-2%; cuBLAS not run",
+      "tested_source": "20c44fe plus 11 local commits",
+      "id": "issue-90",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/90"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [
+        "130065c8ea0bbae645078ee3c2ae3786eb5b8422297331f0237159d0a55eacc0",
+        "879b05582a8cf64893384f940604ab5f2e5e879397c46de1f59f7304d4ea9803",
+        "8d79529cf27a072903f509e66e899b1bc73c8d565e1d502366651a4593694676"
+      ],
+      "evidence_kind": "operator-or-linked-report",
+      "windows_return_reported": true,
+      "vbios_reported": null,
+      "nvidia_driver_reported": "610.88",
+      "windows_reported": "Windows 10 22H2",
+      "display_reported": "RTX display; CSM off for accepted captures",
+      "published_log_markers": []
+    },
+    {
+      "issue": 91,
+      "gpu": "EVGA RTX 3070 XC3 8GB",
+      "pci_id": "10de:2484",
+      "subsystem": "3842:3755",
+      "motherboard": "Gigabyte B550M DS3H",
+      "bios": "F21c",
+      "cpu": "Ryzen 5 5600X",
+      "profile_status": "local-main",
+      "tested_route": "LOCAL-248410de-37553842-e177a27c USB",
+      "result": "One logged cold USB transaction and Windows recovery; current tuple covered via #113",
+      "measurement": "FP16 38.50 -> 73.40; BF16 38.63 -> 73.30",
+      "tested_source": "CaldurG fork c411b91..6b05970",
+      "id": "issue-91",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/91"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [
+        "1c3e1f88a21f0e43002e901e3fdfc4225088eb22a6b82934aa2776ad32bff895",
+        "2c7922c6a0213e7147d09f5bea10319cc84d771f635e066d989e057262db2ff9",
+        "a01399e2d13a42b52fa64ae1de79dda849a9810b8f0706e7f9d565998b18709f",
+        "d045cee2113e461c7c678ec21542b1d0f18356765c0fc6a0bf2dcf824088e011"
+      ],
+      "evidence_kind": "published-excerpt",
+      "windows_return_reported": true,
+      "vbios_reported": null,
+      "nvidia_driver_reported": "621.01",
+      "windows_reported": "Windows",
+      "display_reported": "RTX only, no iGPU",
+      "published_log_markers": []
+    },
+    {
+      "issue": 93,
+      "gpu": "Dell OEM RTX 3090 24GB",
+      "pci_id": "10de:2204",
+      "subsystem": "1028:3880",
+      "motherboard": "MSI MAG B760M MORTAR WIFI II",
+      "bios": "1.90",
+      "cpu": "i5-14600K",
+      "profile_status": "research",
+      "tested_route": "private separate Intel-display USB",
+      "result": "One cold transaction and Windows return; Intel GOP/ownership changes need separate review",
+      "measurement": "FP16 67.39 -> 112.87; BF16 67.96 -> 114.54",
+      "tested_source": "three local source changes; source not pinned",
+      "id": "issue-93",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/93"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [],
+      "evidence_kind": "operator-or-linked-report",
+      "windows_return_reported": true,
+      "vbios_reported": "94.02.59.00.D6",
+      "nvidia_driver_reported": "616.92",
+      "windows_reported": "Windows 22631",
+      "display_reported": "motherboard HDMI on UHD770; target headless",
+      "published_log_markers": []
+    },
+    {
+      "issue": 99,
+      "gpu": "Palit RTX 3090 24GB",
+      "pci_id": "10de:2204",
+      "subsystem": "1569:2204",
+      "motherboard": "HP Z640",
+      "bios": "M60",
+      "cpu": "not stated",
+      "profile_status": "incomplete",
+      "tested_route": "modified legacy UEFI",
+      "result": "Transaction/benchmark claim; partial patch relaxes aggregate checks; Windows handoff not independently established",
+      "measurement": "FP16/BF16 61.2 -> 115.3; FP32 21.0 -> 24.7",
+      "tested_source": "v0.3.0-derived; no exact source SHA",
+      "id": "issue-99",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/99"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [
+        "2e45b52536aaa6d222e68e73d611d87e04d4795e81da239299555625f79ef544",
+        "8ea297373e9e5d3600ff41ad9fae88f2d14c98c017d100669f7333981da673b4"
+      ],
+      "evidence_kind": "operator-or-linked-report",
+      "windows_return_reported": false,
+      "vbios_reported": null,
+      "nvidia_driver_reported": "617.14",
+      "windows_reported": "Windows 11",
+      "display_reported": "RTX physical GOP plus mirror GOP",
+      "published_log_markers": []
+    },
+    {
+      "issue": 102,
+      "gpu": "Gigabyte RTX 3090 24GB",
+      "pci_id": "10de:2204",
+      "subsystem": "1458:403a",
+      "motherboard": "MSI MPG X570 GAMING PRO CARBON WIFI",
+      "bios": "1.Q2",
+      "cpu": "Ryzen 9 3950X",
+      "profile_status": "research",
+      "tested_route": "private decode pre-step + LOCAL USB",
+      "result": "One transaction/Windows boot from restart; nvgop6000a and decode correction need review",
+      "measurement": "FP16 67.9 -> 112.5; BF16 68.8 -> 114.9",
+      "tested_source": "20c44fe plus contributor prestep branch",
+      "id": "issue-102",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/102",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/102#issuecomment-6504092640"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [
+        "1337743fa8b84093707d4c4d2a5dfbf7383c9231b7fec13ba5006c7128f7710d",
+        "6b2047cd6fa0205f37cd8a42087e911cd1b17ff5d01fb0a9c294feac29b43695",
+        "7beed8426c740b3fea7747aa12683040dafffea98916f688b61d3f32440ae473",
+        "8924ba488419e5d82b524d10e8dd63bfe886f077026fae1a9cc03e25b920b276",
+        "e84a31e774742e83824d9ff004175812fd087f21bcd87b89343504049f8c7acc",
+        "ebdb02a7567b01b8f2cc395e369f3960da1f165795ec128a744639c031ebda74"
+      ],
+      "evidence_kind": "published-excerpt",
+      "windows_return_reported": true,
+      "vbios_reported": "94.02.59.00.5e",
+      "nvidia_driver_reported": "621.01",
+      "windows_reported": "Windows 11 Pro 26300",
+      "display_reported": "three RTX monitors; no iGPU",
+      "published_log_markers": []
+    },
+    {
+      "issue": 105,
+      "gpu": "Gigabyte RTX 3060 Ti LHR 8GB",
+      "pci_id": "10de:24c9",
+      "subsystem": "1458:40cd",
+      "motherboard": "Gigabyte X870 EAGLE WIFI7",
+      "bios": "F11",
+      "cpu": "Ryzen 9 9950X",
+      "profile_status": "local-main",
+      "tested_route": "LOCAL USB; exact 24c9/2000/60015 tuple",
+      "result": "One clean restart-based transaction and Windows return; captures not all full shutdowns",
+      "measurement": "FP16 35.03 -> 67.55; BF16 34.93 -> 67.38",
+      "tested_source": "c403e8f plus attached profile patch/local envelope",
+      "id": "issue-105",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/105"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [
+        "14b494ea49d1230e23cd511fb1ae73b6c21db04d9fd2f7625787b0db51804db3",
+        "1c820acd954bc2f3821d88ba7d644fa7939cce880bf8a3bef5d6818fa083ff5f",
+        "355952e6a8e173b1e47a8d6c4033da94a107ff4f04cc41c5f521878b21269928",
+        "560e0e16e5783e66b0d442adadb1628f8ad63ac5495180d636c42accfe60392a",
+        "dcb92e8f37833a87dfb35b043575fdd1163f4123a78f10b5901a79a50c5ff918"
+      ],
+      "evidence_kind": "published-excerpt",
+      "windows_return_reported": true,
+      "vbios_reported": "94.04.94.00.d4",
+      "nvidia_driver_reported": "617.42",
+      "windows_reported": "Windows 11 Pro 26300",
+      "display_reported": "see issue for captured child topology",
+      "published_log_markers": []
+    },
+    {
+      "issue": 106,
+      "gpu": "Dell RTX 3090 24GB",
+      "pci_id": "10de:2204",
+      "subsystem": "1028:3880",
+      "motherboard": "Gigabyte X570 AORUS ULTRA",
+      "bios": "F30",
+      "cpu": "Ryzen 5 5600X",
+      "profile_status": "research",
+      "tested_route": "private parent-bridge BME wrapper",
+      "result": "Clean transaction and Windows return reported; bridge scope not a generic LOCAL fix",
+      "measurement": "Drama3 total generation 641.81s -> 639.70s; no material gain established",
+      "tested_source": "c403e8f plus local guarded bridge transaction",
+      "id": "issue-106",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/106",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/106#issuecomment-6461819788"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [
+        "7b2a9f388c07d6c3ddf6ccd0ed5045623fedc520a1c93997e8b99a9d25d38004",
+        "97868a3401bdb7a4ed70aa906357712f67f927905da31b5a625163bd851bc071",
+        "fab45f82649d3d54abf6ac736875db9f1afd83aa3c3fa931627501014987fe84"
+      ],
+      "evidence_kind": "published-excerpt",
+      "windows_return_reported": true,
+      "vbios_reported": null,
+      "nvidia_driver_reported": "610.60",
+      "windows_reported": "Windows",
+      "display_reported": "single NVIDIA display",
+      "published_log_markers": [
+        "transaction result=0 containment=0 started=1 quiesced=1 fault=0 retained=0 maps=0 FLR=1",
+        "FINAL status=0 stage=transaction attempted=1 driver_release=0 clean=1"
+      ]
+    },
+    {
+      "issue": 113,
+      "gpu": "Zotac RTX 3070 8GB",
+      "pci_id": "10de:2484",
+      "subsystem": "19da:2617",
+      "motherboard": "Gigabyte B460M D2VX SI",
+      "bios": "FE",
+      "cpu": "i5-10400F",
+      "profile_status": "local-main",
+      "tested_route": "LOCAL-248410de-261719da-b0dc28e6 USB",
+      "result": "One logged cold transaction and Windows/display return",
+      "measurement": "FP16 38.71 -> 73.40; BF16 38.80 -> 73.40",
+      "tested_source": "9692463 + public Wandraker 17b5e50",
+      "id": "issue-113",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/113",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/113#issuecomment-6492115054"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [
+        "0c2577e00ea01c58dcc48b3ff14a2732ce7750739026b26513bafc243604f893",
+        "e4ac510daeda901c980afc5f8b038df075c432c0db30323e1629d43008f7842a"
+      ],
+      "evidence_kind": "published-excerpt",
+      "windows_return_reported": true,
+      "vbios_reported": "94.04.3a.40.24",
+      "nvidia_driver_reported": null,
+      "windows_reported": "Windows",
+      "display_reported": "one RTX monitor; no iGPU",
+      "published_log_markers": [
+        "post-FLR SEC2 reset released, GSP halted, BME=0 pending=0 WPR2=1ffffe00:00000000 SS0=88888888 SS1=00000008",
+        "transaction result=0 containment=0 started=1 quiesced=1 fault=0 retained=0 maps=0 FLR=1",
+        "FINAL status=0 stage=transaction attempted=1 driver_release=0 clean=1"
+      ]
+    },
+    {
+      "issue": 121,
+      "gpu": "Reported MSI RTX 3090 24GB",
+      "pci_id": "10de:2204",
+      "subsystem": "1458:4043",
+      "motherboard": "MSI MAG X570S TORPEDO MAX",
+      "bios": "A.B3",
+      "cpu": "Ryzen 9 5950X",
+      "profile_status": "research",
+      "tested_route": "contributor decode pre-step + LOCAL USB",
+      "result": "One clean transaction/Windows return; retain reported manufacturer/subsystem discrepancy",
+      "measurement": "FP16/BF16 1.66-1.68x",
+      "tested_source": "ff93077 plus local build-script changes",
+      "id": "issue-121",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/121"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [
+        "238f982b89df36c7d384b96fbab152c2a06f0cb1b70589ef36101fc075aa710c",
+        "2b310df8239bb39659f18acc113a76ceb9abb07663d9b682bb9f4d4c619d3147",
+        "2c1dd5f78e84455e84e0d7ea6152cbd9454a6fb8259330283d8cbfe54e6ca03e",
+        "4f3956d23f8548871eb910485435b085288f96d0247a9c63653021186a4fa87d",
+        "6b2047cd6fa0205f37cd8a42087e911cd1b17ff5d01fb0a9c294feac29b43695",
+        "6e90cfc4e515458327b7a57bf828535cdae805c0f6f122a088e51128c8dca63a",
+        "7f19e1cb85110401392297cab929cba06365090b0ff07ad07d404d2bbe0a97a9",
+        "a6e6477a732ee3c6bbde33f61a6af3fb1f408a19c9b3235c2190f3d9b3c24778",
+        "f2bd06db7a274fddd8c9de416734e1140d4fb05aafaf580292145963f3b85a83"
+      ],
+      "evidence_kind": "published-excerpt",
+      "windows_return_reported": true,
+      "vbios_reported": "94.02.42.80.88",
+      "nvidia_driver_reported": "617.42",
+      "windows_reported": "Windows 11 Pro 26100",
+      "display_reported": "one RTX monitor; no EDID driver",
+      "published_log_markers": [
+        "post-FLR SEC2 reset released, GSP halted, BME=0 pending=0 WPR2=1ffffe00:00000000 SS0=88888888 SS1=00000008",
+        "transaction result=0 containment=0 started=1 quiesced=1 fault=0 retained=0 maps=0 FLR=1",
+        "FINAL status=0 stage=transaction attempted=1 driver_release=0 clean=1"
+      ]
+    },
+    {
+      "issue": 124,
+      "gpu": "Gainward RTX 3090 24GB",
+      "pci_id": "10de:2204",
+      "subsystem": "10b0:2204",
+      "motherboard": "Gigabyte Z790 GAMING X AX",
+      "bios": "F15",
+      "cpu": "i7-13700K",
+      "profile_status": "local-main",
+      "tested_route": "LOCAL-220410de-220410b0-e4482647 USB",
+      "result": "One logged transaction/Windows return; one capture after reset, only one full shutdown",
+      "measurement": "stock350W FP16 69.96 -> 122.30; BF16 69.51 -> 125.04",
+      "tested_source": "e7ff2ccdeb87482f704233c95d1e93047264ff92; no tracked diff",
+      "id": "issue-124",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/124",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/124#issuecomment-6475613556",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/124#issuecomment-6475885125"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [
+        "114aa01491535ed0190205325c398b7f55220210feda70672cc5ae0c78ce63b4",
+        "42d4abe712fd9e6efbcc8366684af3acc1905e1fca5fcc56495ff3b548375091",
+        "57e11bc74fde6c28efcf29301ac8c3855ce55b4380ab295af75b4cbbc0150414",
+        "a6e6477a732ee3c6bbde33f61a6af3fb1f408a19c9b3235c2190f3d9b3c24778",
+        "d99d44b1157d393eb0abc6d208bb2d21e0a9e7f88ea7f35b7f844c9b0ab83142",
+        "dfd108ad546bbd422be9174d4dcce39165530f515e6c79cd9719f13653e7585a",
+        "ed6952ce2001519360fcdf11f4d7e211da59c69d84ffa71f9a5f2fb1ecf01b7e"
+      ],
+      "evidence_kind": "published-excerpt",
+      "windows_return_reported": true,
+      "vbios_reported": "94.02.42.00.a7",
+      "nvidia_driver_reported": "617.14",
+      "windows_reported": "Windows 11",
+      "display_reported": "RTX only GOP; Intel UHD770 enabled without GOP",
+      "published_log_markers": [
+        "post-FLR SEC2 reset released, GSP halted, BME=0 pending=0 WPR2=1ffffe00:00000000 SS0=88888888 SS1=00000008",
+        "transaction result=0 containment=0 started=1 quiesced=1 fault=0 retained=0 maps=0 FLR=1",
+        "FINAL status=0 stage=transaction attempted=1 driver_release=0 clean=1"
+      ]
+    },
+    {
+      "issue": 129,
+      "gpu": "Dell OEM RTX 3090 24GB",
+      "pci_id": "10de:2204",
+      "subsystem": "1028:3880",
+      "motherboard": "ASRock X570 Taichi",
+      "bios": "not stated",
+      "cpu": "Ryzen 7 5800X3D",
+      "profile_status": "research",
+      "tested_route": "external decode pre-step + LOCAL USB",
+      "result": "One cold transaction and Windows/display return; reflashed VBIOS disclosed",
+      "measurement": "FP16 acc32 71.9 -> 112.5; BF16 73.1 -> 116.4; GEMM correctness not checked",
+      "tested_source": "64c2408 + ff93077 bus retarget and test-only fix",
+      "id": "issue-129",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/129",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/129#issuecomment-6482780948"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [
+        "6ae5f874c32048fcca5bbf55d36768c56f32f6898e1d1f042cc9aeaec01c3c06",
+        "942a254f611e6e0ba68e68c2cd7d23ee47a6141dc3a8c4fa4f131e9346e55167",
+        "a6e6477a732ee3c6bbde33f61a6af3fb1f408a19c9b3235c2190f3d9b3c24778",
+        "d33de55939e3134008ff50ab667a313f155e3c75f53b4653516f12c16fa5fc05"
+      ],
+      "evidence_kind": "published-excerpt",
+      "windows_return_reported": true,
+      "vbios_reported": "94.02.59.00.d6",
+      "nvidia_driver_reported": "621.01",
+      "windows_reported": "Windows 11 IoT Enterprise 26300",
+      "display_reported": "two monitors; tested profile pins one child",
+      "published_log_markers": [
+        "post-FLR SEC2 reset released, GSP halted, BME=0 pending=0 WPR2=1ffffe00:00000000 SS0=88888888 SS1=00000008",
+        "transaction result=0 containment=0 started=1 quiesced=1 fault=0 retained=0 maps=0 FLR=1",
+        "FINAL status=0 stage=transaction attempted=1 driver_release=0 clean=1"
+      ]
+    },
+    {
+      "issue": 131,
+      "gpu": "ZOTAC RTX 3090 24GB",
+      "pci_id": "10de:2204",
+      "subsystem": "19da:1613",
+      "motherboard": "ASUS ROG CROSSHAIR VIII HERO WI-FI",
+      "bios": "5601",
+      "cpu": "Ryzen 9 5950X",
+      "profile_status": "research",
+      "tested_route": "private x570-3090 one-shot USB",
+      "result": "Operator Windows/NVIDIA/display recovery; source candidate and full transaction logs private",
+      "measurement": "FP16 53.324 -> 115.506 (4096)",
+      "tested_source": "locally modified candidate; no exact commit",
+      "id": "issue-131",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/131"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [
+        "c85fd3ae3c0162bdc308a37bc9098b6fcae126332957e5237e7660ca71d997cd",
+        "f78203061475571b99e5b86081888b478a4cf59938a5c0161621bc6bc113647f"
+      ],
+      "evidence_kind": "operator-or-linked-report",
+      "windows_return_reported": true,
+      "vbios_reported": null,
+      "nvidia_driver_reported": "621.01",
+      "windows_reported": "Windows 11 Pro",
+      "display_reported": "two RTX monitors; no iGPU",
+      "published_log_markers": []
+    },
+    {
+      "issue": 133,
+      "gpu": "EVGA RTX 3090 Ti FTW3 Ultra 24GB",
+      "pci_id": "10de:2203",
+      "subsystem": "3842:4985",
+      "motherboard": "MSI PRO Z690-P DDR4",
+      "bios": "A.20",
+      "cpu": "i7-12700K",
+      "profile_status": "local-main",
+      "tested_route": "LOCAL-220310de-49853842-79d1fad6 USB",
+      "result": "Two logged USB boots; one manual and one default USB-first; Windows/display return",
+      "measurement": "custom ctypes/cuBLAS FP16 72.30 -> 136.15; BF16 72.07 -> 136.29",
+      "tested_source": "c403e8f0002ec69fc162a145d8172b2782ec9645; no tracked diff",
+      "id": "issue-133",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/133"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [
+        "4de776034c2f2b7170f332ec3180245e6a904e63560c9b9aa87220ab0a59eb51",
+        "7f28eea71718c61949603c060155f58405cc4c988dbd1583c2272058b5eedd37",
+        "a6b7e6c315a70d99f40603b6f5e7227e4b4338cf04fd9f796f41e594a8a567e0",
+        "c8f87a4a85666960029958e2405ec96ea76ffeb10458e51b31518e403522bab8",
+        "f22faf670cfe3563b0bfd16277b1c6e0feddb40cc37ce058dc2295e2814ce6d5"
+      ],
+      "evidence_kind": "published-excerpt",
+      "windows_return_reported": true,
+      "vbios_reported": "94.02.A0.00.5C",
+      "nvidia_driver_reported": "610.88",
+      "windows_reported": "Windows 11 26300",
+      "display_reported": "one RTX HDMI monitor; UHD770 present",
+      "published_log_markers": [
+        "transaction result=0 containment=0 started=1 quiesced=1 fault=0 retained=0 maps=0 FLR=1",
+        "FINAL status=0 stage=transaction attempted=1 driver_release=0 clean=1"
+      ]
+    },
+    {
+      "issue": 136,
+      "gpu": "MSI RTX 3090 SUPRIM 24GB",
+      "pci_id": "10de:2204",
+      "subsystem": "1462:3882",
+      "motherboard": "MSI MAG B650 TOMAHAWK WIFI",
+      "bios": "1.A0",
+      "cpu": "Ryzen 7 7800X3D",
+      "profile_status": "local-main",
+      "tested_route": "LOCAL-220410de-38821462-a1201d9a USB",
+      "result": "One logged full-shutdown transaction and both displays return; no tracked diff",
+      "measurement": "FP16 71.43 -> 129.42; BF16 71.45 -> 132.23",
+      "tested_source": "e7ff2cc",
+      "id": "issue-136",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/136"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [
+        "74080f997d6b72d029dad468df719e5319954c72d9deb92b7c710758e6da68fd",
+        "9b825955c8e90b3ca8d282986f9c32faf2eae60784c7d140a546447eb1acd23a",
+        "a1201d9ad1ec53b72210995d06f3975dae5d56e0273340e18306a84ff367b32e",
+        "a6e6477a732ee3c6bbde33f61a6af3fb1f408a19c9b3235c2190f3d9b3c24778",
+        "a81b47cf11965ea9e240fd89b307b13d32d650c35248cd42fc8b97755aa9618a",
+        "d045cee2113e461c7c678ec21542b1d0f18356765c0fc6a0bf2dcf824088e011",
+        "d99d44b1157d393eb0abc6d208bb2d21e0a9e7f88ea7f35b7f844c9b0ab83142",
+        "f32eb523d4b59a3b347da38c5cebbcc9f19a82a7dc19a64b87802de6c24913f1",
+        "f6b072be600a9327f15f39c91c5741c18dca572a3a5be75e9cc33d1292881de0"
+      ],
+      "evidence_kind": "published-excerpt",
+      "windows_return_reported": true,
+      "vbios_reported": "94.02.42.00.f5",
+      "nvidia_driver_reported": "610.88",
+      "windows_reported": "Windows 11 Home 22631",
+      "display_reported": "RTX DP+HDMI; Ryzen iGPU enabled without GOP",
+      "published_log_markers": [
+        "post-FLR SEC2 reset released, GSP halted, BME=0 pending=0 WPR2=1ffffe00:00000000 SS0=88888888 SS1=00000008",
+        "transaction result=0 containment=0 started=1 quiesced=1 fault=0 retained=0 maps=0 FLR=1",
+        "FINAL status=0 stage=transaction attempted=1 driver_release=0 clean=1"
+      ]
+    },
+    {
+      "issue": 140,
+      "gpu": "ASUS TUF RTX 3080 Ti 12GB",
+      "pci_id": "10de:2208",
+      "subsystem": "1043:8803",
+      "motherboard": "withheld",
+      "bios": "withheld",
+      "cpu": "withheld",
+      "profile_status": "incomplete",
+      "tested_route": "private manual USB; Secure Boot policy modified",
+      "result": "Windows success and benchmarks reported; host/log/hash evidence incomplete; Secure Boot only likely on",
+      "measurement": "FP16 68.240 -> 121.478; BF16 68.217 -> 126.263",
+      "tested_source": "263741419ece69bcce73162ad5e98a742db8c6b5 plus local changes",
+      "id": "issue-140",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/140"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [],
+      "evidence_kind": "operator-or-linked-report",
+      "windows_return_reported": true,
+      "vbios_reported": "94.02.71.80.77",
+      "nvidia_driver_reported": "610.88",
+      "windows_reported": "Windows 11",
+      "display_reported": "RTX monitor; other details withheld",
+      "published_log_markers": []
+    },
+    {
+      "issue": 2,
+      "gpu": "Inno3D RTX 4070 Ti",
+      "pci_id": "10de:2782",
+      "subsystem": "10de:16e1",
+      "motherboard": "ASRock Z690M-ITX/ax",
+      "bios": "20.01",
+      "cpu": "not stated",
+      "profile_status": "external",
+      "tested_route": "Zihao-Wu06 Ada port",
+      "result": "External port reports selectors/post-FLR, Windows return and daily use; not support in this repository",
+      "measurement": "FP16 76.3 -> 117.1; BF16 +58.5%; TF32 +64.5%",
+      "tested_source": "external Ada issue1",
+      "id": "issue-2-other-reporter",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/2",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/2#issuecomment-6380432100",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/2#issuecomment-6381484940",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/2#issuecomment-6382005042",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/2#issuecomment-6439173227",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/2#issuecomment-6439431097",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/2#issuecomment-6461484777"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [],
+      "evidence_kind": "operator-or-linked-report",
+      "windows_return_reported": true,
+      "vbios_reported": null,
+      "nvidia_driver_reported": "610.88",
+      "windows_reported": "Windows 11 Pro 26200",
+      "display_reported": "external Ada path",
+      "published_log_markers": []
+    },
+    {
+      "issue": 13,
+      "gpu": "PNY RTX 3080 LHR (comment, not original Gigabyte reporter)",
+      "pci_id": "10de:2216",
+      "subsystem": "not stated",
+      "motherboard": "not stated",
+      "bios": "not stated",
+      "cpu": "not stated",
+      "profile_status": "incomplete",
+      "tested_route": "unidentified private Windows port",
+      "result": "A different commenter reports success with a screenshot; do not attribute it to the original X570 machine",
+      "measurement": "screenshot only",
+      "tested_source": "not stated",
+      "id": "issue-13-other-reporter",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/13",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/13#issuecomment-6399004241",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/13#issuecomment-6402150303",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/13#issuecomment-6402251157"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [],
+      "evidence_kind": "operator-or-linked-report",
+      "windows_return_reported": true,
+      "vbios_reported": null,
+      "nvidia_driver_reported": null,
+      "windows_reported": "Windows 11",
+      "display_reported": "not identified",
+      "published_log_markers": []
+    },
+    {
+      "id": "issue-102-followup",
+      "issue": 102,
+      "gpu": "RTX 3090 24GB (reported subsystem 1b4c:1454)",
+      "pci_id": "10de:2204",
+      "subsystem": "1b4c:1454",
+      "motherboard": "MSI MPG X570 GAMING PLUS",
+      "bios": "not stated",
+      "cpu": "Ryzen 9 5900X",
+      "profile_status": "research",
+      "tested_route": "private decode pre-step + generated LOCAL USB; PR138",
+      "result": "One clean transaction and Windows recovery reported in a separate comment/setup",
+      "measurement": "WSL short FP16 acc32 58.30 -> 89.77 TFLOPS; one pair",
+      "tested_source": "contributor pre-step; PR138",
+      "sources": [
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/102#issuecomment-6504092640",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/pull/138"
+      ],
+      "write_authority": false,
+      "profile_header_required_from_owner": true,
+      "published_sha256_values": [],
+      "evidence_kind": "operator-or-linked-report",
+      "windows_return_reported": true,
+      "vbios_reported": null,
+      "nvidia_driver_reported": "610.88",
+      "windows_reported": "Windows/WSL",
+      "display_reported": "RTX; other topology not stated",
+      "published_log_markers": []
+    }
+  ],
+  "issues": [
+    {
+      "number": 2,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/2",
+      "title": "[Compatibility] Support for the 4xxx series",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-28T05:34:44Z",
+      "comment_count": 6,
+      "body_sha256": "90efe3b2521ec21df07c25dfed0f76608ea5515e814f688a5da4cd868a61234c",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/2#issuecomment-6380432100",
+          "sha256": "f613dec9bdfa91d13f797ed15034fa80d383db6a2fd30007836fb7e82c1aaada"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/2#issuecomment-6381484940",
+          "sha256": "5633b1250c8b49e4cfa0a5eb62c0166397b92c68aab03b64cf737b3eda9b3ec2"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/2#issuecomment-6382005042",
+          "sha256": "3b325f2320f37a3ff8abccf818a166223e0a327ec88b003ba9722ad82ddd33ba"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/2#issuecomment-6439173227",
+          "sha256": "de95138e5afb957d45c2885f6efe6325dc0e90732099fbee485f0d2284d1d7a3"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/2#issuecomment-6439431097",
+          "sha256": "d3033e57dd9642f66ffe6c49a195b58ce57c36694aeef283bc463547fdf90360"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/2#issuecomment-6461484777",
+          "sha256": "c4e289c5ee734847a854a70994d6466c32b4d2e7258bcf2c6e15dbcf3efe40d1"
+        }
+      ],
+      "classification": "setup-report",
+      "assessment": "Ada success is in an external project; original 4070 SUPER request remains open.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 3,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/3",
+      "title": "Compatibility report: Colorful RTX 3090 / Gigabyte B660M / i5-12600KF (no iGPU)",
+      "state_at_audit": "closed",
+      "updated_at": "2026-10-26T12:57:48Z",
+      "comment_count": 0,
+      "body_sha256": "43ea8dc605780240ed6131a8c0bf38527a35862258896f9d17b8a76160c27492",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "Inventory and locked baseline only despite closed issue state.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 4,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/4",
+      "title": "[Compatibility] RTX 3070 Ti / TUF GAMING B660M-E D4 / i7-12700F (no iGPU)",
+      "state_at_audit": "closed",
+      "updated_at": "2026-10-24T18:55:33Z",
+      "comment_count": 4,
+      "body_sha256": "5ecb5a9055ab38f2339a21fb5461f34b4257cfde11ccb06fa8b561fe3613f2f1",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/4#issuecomment-6381211744",
+          "sha256": "1afafc4717ce9c720f5fdfe1382e4f598092d3dec4ccdb2f02a1ebc2ceca5faf"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/4#issuecomment-6382082358",
+          "sha256": "3f52c39cdcda6d9585950542bc3752657e32b4e3b5976b63cd15cfb5c3bdb392"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/4#issuecomment-6386864256",
+          "sha256": "074f11ba6810c0fcbd3cbd5bba74f882db89a648c053408c977b1e92ae5aa392"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/4#issuecomment-6388169841",
+          "sha256": "4c9f3ed1a548125c8741252a75acf2a02adea229ec6ee82a7febc833f42cafed"
+        }
+      ],
+      "classification": "setup-report",
+      "assessment": "Logged transaction, Windows/display return; repeated boots reported",
+      "resolution_recommendation": "route-already-present"
+    },
+    {
+      "number": 7,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/7",
+      "title": "[Compatibility research] ASUS RTX 3080 Ti / MSI X570: diagnostic findings and proposed profile",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-29T18:31:13Z",
+      "comment_count": 4,
+      "body_sha256": "59b77ba4559fcb4259e81aaac6598204fa71215294d8d4ceb8bb7dd1e5a45de0",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/7#issuecomment-6395249296",
+          "sha256": "d8030092a5242cc7d960a60554d977414894e6c45ab1fc93c6d8dd0fcdaac0c6"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/7#issuecomment-6402150030",
+          "sha256": "ad339c10613763c34b799cf5d07a0eb51791829f0b789f443c772b785429bf1f"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/7#issuecomment-6457934735",
+          "sha256": "0bb3fd0ed6c92b4e6cd5fccb0a71a8f65f7eb0a322717f7dfeee64f0341bbd27"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/7#issuecomment-6505096303",
+          "sha256": "e90a678d298d10609cf01b64d5db624f888e4fa5f77860e1c9bf384c908020a2"
+        }
+      ],
+      "classification": "setup-report",
+      "assessment": "Latest successful private run supersedes earlier read-only status; PR139 integration separate.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 12,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/12",
+      "title": "[Compatibility] MSI RTX 3090 / MSI B550M PRO-VDH WIFI / Ryzen 7 5700X (no iGPU)",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-26T16:13:25Z",
+      "comment_count": 2,
+      "body_sha256": "cdc98c13692dc21f52da2e15c668aa1d5ca293f2a6e71453f239b647a33d8021",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/12#issuecomment-6415505411",
+          "sha256": "6890d31b1293a58f2650e0b02959742d1f4b46b63be36104708c04b36eff85fa"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/12#issuecomment-6420993685",
+          "sha256": "870fb0762a9616675adc8ffeb8f83bed35eac06095fc00bbe9780e545df51fee"
+        }
+      ],
+      "classification": "setup-report",
+      "assessment": "Logged clean transaction and Windows/display return",
+      "resolution_recommendation": "close-on-merge-of-pr142"
+    },
+    {
+      "number": 13,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/13",
+      "title": "[Compatibility] RTX 3080 LHR (10de:2216, Gigabyte 1458:403f) / ASUS PRIME X570-P / Ryzen 9 5900X",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-25T19:41:17Z",
+      "comment_count": 3,
+      "body_sha256": "20bf2d1c03d4150a46b244eaa7375ca39ebfb449a551209b42d596ab89e9e880",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/13#issuecomment-6399004241",
+          "sha256": "ccdb579f957434554b0e1bd4eb2026f02ec9eb8a66fb5560950cd5bc1bc069a2"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/13#issuecomment-6402150303",
+          "sha256": "9533acf565c08b176420f63a500ebd86d9671cb723107b9bdd317defcf460615"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/13#issuecomment-6402251157",
+          "sha256": "51f7c73a782eaaaa7a430f9f970ebbf7a979101374840f8e75022cdbd554a20f"
+        }
+      ],
+      "classification": "setup-report",
+      "assessment": "Success belongs to another commenter/card; original setup untested.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 14,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/14",
+      "title": "[Compatibility] MSI RTX 3070 (10de:2484) / MSI MAG B550M MORTAR WIFI / Ryzen 9 5900X",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-25T12:30:17Z",
+      "comment_count": 0,
+      "body_sha256": "bd7a27438800e3b3e615b9be20420cd616b9ff28d395b404eb4fefe526381162",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 15,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/15",
+      "title": "[Compatibility research] Gigabyte RTX 3060 12 GB (10de:2487) / ASUS TUF B360-PLUS / i5-8400",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-29T21:37:53Z",
+      "comment_count": 4,
+      "body_sha256": "b8d36e8a962be2e265c7f5b524ab304808d89986b385b66cbd85bf5a6e14cfff",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/15#issuecomment-6462750913",
+          "sha256": "a3ac99535966158698ffe7cf9891beb529ba303772c7c154d13bff087ae565ba"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/15#issuecomment-6508586647",
+          "sha256": "bc6cdd5ec204b60262e91f7360b68791636d03960a26599d5a87680e4fad5fd3"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/15#issuecomment-6508887030",
+          "sha256": "9f72721c5931ffbb759a117fb8f29fe04b20504ef027de1a9503633d98cb496b"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/15#issuecomment-6508920064",
+          "sha256": "e05bec83ea284fbe2b3177aab464f2509be98b0f78293f48a1063e6afdcaf4e0"
+        }
+      ],
+      "classification": "diagnostic-only",
+      "assessment": "Read-only RUN05 and host tests only; header/provenance review remains.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 16,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/16",
+      "title": "[Compatibility] INNO3D GEFORCE RTX 3090 ICHILL X4 / B550M / Ryzen 9 5950x",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-25T15:17:47Z",
+      "comment_count": 0,
+      "body_sha256": "c4136c45dc56e2d1dc9fd7dafe5e264166342bf041de672794121bcb1005aaa8",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 17,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/17",
+      "title": "[Compatibility] RTX 3090 (GA102, Gigabyte 1458:4041) + RTX 2080 Ti + RTX 5080 / Gigabyte X870E AORUS PRO / Ryzen 9 9950X3D",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-25T16:36:50Z",
+      "comment_count": 0,
+      "body_sha256": "b9689e1fb7fe0316f4b0571ea9a92543c24a628472074d047b55969b1941f7f5",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 18,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/18",
+      "title": "[Compatibility] ASUS PRIME B550-PLUS / Ryzen 5 5600X / RTX 3060 Ti",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-25T15:57:16Z",
+      "comment_count": 0,
+      "body_sha256": "7c0d05f0016f216a185a008816c10d719063989a547c24fa55539a1b2bf7ca53",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 19,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/19",
+      "title": "[Compatibility] RTX 3060 (GA106, ASUS 1043:881d) / Lenovo 1052 BIOS S0AKT48A / i9-11900K",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-25T17:07:21Z",
+      "comment_count": 1,
+      "body_sha256": "9bfb790456abb4f1c285f2d5a3508b9462eeee0634a579e4c705ee0fc1b63fcc",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/19#issuecomment-6400588384",
+          "sha256": "62a4abdcc0593a77ce82f1e6e3cb98be5a28c3cf636dedc251e944fa1c11f097"
+        }
+      ],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 20,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/20",
+      "title": "[Compatibility] RTX 3080 FE (GA102) / ASUS ROG MAXIMUS XI HERO (Z390) / i9-9900KF (no iGPU)",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-25T22:36:56Z",
+      "comment_count": 2,
+      "body_sha256": "02ea53a8bf14ceda12322f0ed408ed32d2bc870c533d96bd1c603f28b070331d",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/20#issuecomment-6402150563",
+          "sha256": "bd3454303b23a9d27687f17ed8b4cc77b8fe876269e8e6c96c3968ebe6818de7"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/20#issuecomment-6404367705",
+          "sha256": "7793b63651bc4adc2ff4b87271137db2fa155fdcf75da58960679e20427254ff"
+        }
+      ],
+      "classification": "diagnostic-only",
+      "assessment": "Diagnostic-only successful Windows return; no transaction.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 21,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/21",
+      "title": "Independent Implementation",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-26T04:56:03Z",
+      "comment_count": 8,
+      "body_sha256": "22afbac33d5df789bc6833440bed509a68d8da71149535bae405d53364aed3c4",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/21#issuecomment-6402149783",
+          "sha256": "91c8de4b5baa9ad674c1b0b00a4385f278dae7df45628e701ecd76e10fa01097"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/21#issuecomment-6402207214",
+          "sha256": "e3056a0eac2e77431bb8979eb424457d514163d285efe74b91f1995c5779ebb5"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/21#issuecomment-6402340833",
+          "sha256": "534a5a43ee0beeb06d1c0711969e92d1745f6f4e008804f24ece74fb1afa1d9b"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/21#issuecomment-6405298814",
+          "sha256": "31c65ac83fad3916ea31a69f38ba0410ed62a77dd6e71d13d8f336110e0cf354"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/21#issuecomment-6405382726",
+          "sha256": "742fa9bc86567c85c88cbdcf9b83ef03aeeee271a1263b5d45b64c7483111f6d"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/21#issuecomment-6406186993",
+          "sha256": "662941bdd4df7927f0723d2bd8e74081d82c694de9d155739517f72f484fba46"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/21#issuecomment-6406629980",
+          "sha256": "0a39dc2cb8437c1696ff9683285350e7e6bd27ada203ad3fe984b95ce3cd57cb"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/21#issuecomment-6408560055",
+          "sha256": "7f3da3f37bc49d7f10d7159b1486efd6305ef43c1f4810be990a0b2f1aa953cc"
+        }
+      ],
+      "classification": "discussion",
+      "assessment": "Independent implementation/source reproduction; not an exact upstream machine profile.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 22,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/22",
+      "title": "[Compatibility] MSI RTX 3070 Ti SUPRIM X (Asus TUF OC) / Gigabyte B460M DS3H (V1) / i5 10400F",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-26T17:10:02Z",
+      "comment_count": 0,
+      "body_sha256": "b99e251325d797190ad57f720e3a6beb10ad2e9905cc0fdff9d8c97b9da700b9",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 25,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/25",
+      "title": "[Compatibility] NVIDIA GeForce RTX 3090 / MSI MAG B550 TOMAHAWK MAX WIFI / AMD Ryzen 7 5800X3D",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-25T22:26:57Z",
+      "comment_count": 0,
+      "body_sha256": "936aa597013dfc87bd7d3cf51529a9669bd2f27db571675d4ecefd63549128f7",
+      "comment_sha256": [],
+      "classification": "diagnostic-only",
+      "assessment": "Diagnostic-only evidence.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 27,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/27",
+      "title": "[Compatibility] MSI RTX 4070 (AD104, 10de:2786) / Gigabyte B760M AORUS ELITE / Intel i5-12400",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-29T08:31:37Z",
+      "comment_count": 3,
+      "body_sha256": "853232525b8df3b9654bdf144d44b75011ab9855356b194e5192655cb8a3b899",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/27#issuecomment-6465761865",
+          "sha256": "5b7c66073d42f9224c3369152b81ea720518387c88e93f582e989a88184bf133"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/27#issuecomment-6474262470",
+          "sha256": "0746ae2fbddb753ad36123e146c986dbdfe6548eee3aa689346f8184c66bba56"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/27#issuecomment-6491845560",
+          "sha256": "637efee9e22edf80a3723e5ae71bb0eab8eea4c7ff2fe813a2213cb6b0b7c740"
+        }
+      ],
+      "classification": "inventory-or-question",
+      "assessment": "Successful inventory collection is not an unlock; multiple reporter setups.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 28,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/28",
+      "title": "[Compatibility] RTX 3080 LHR (10de:2216) / Maxsun MS-Terminator B760M D4 / i5-12490F",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-27T08:01:42Z",
+      "comment_count": 2,
+      "body_sha256": "1b6f0439f932fff3bf5d7aa742ae8bb7a8968f0b8ad5caa17f19c10e9f2a5864",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/28#issuecomment-6427707329",
+          "sha256": "75d1d960683c4c32af25db0bca355f0173183545f42fbe5781e54e90237426b0"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/28#issuecomment-6436156992",
+          "sha256": "6827f238a1572ee05311495ae9b87c48b19e0e4b3eab024e852b96e5c1622fd2"
+        }
+      ],
+      "classification": "setup-report",
+      "assessment": "One clean transaction and Windows return; extra exclusive owner/private EDID topology",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 29,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/29",
+      "title": "[Compatibility] RTX 3090 (10de:2204) / GIGABYTE / Success (entryLatchedSs1Full)",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-25T23:56:45Z",
+      "comment_count": 0,
+      "body_sha256": "4be51d70d7585f36a5da5ede4d23c9a663281c429312a096c9f59a95ca9832aa",
+      "comment_sha256": [],
+      "classification": "setup-report",
+      "assessment": "Logged transaction and Windows handoff reported; board/CPU/source incomplete",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 31,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/31",
+      "title": "[Compatibility] RTX 3090 FE / ASUS PRIME X570-PRO / AMD Ryzen 9 5950x",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-26T00:30:51Z",
+      "comment_count": 0,
+      "body_sha256": "e21a0213a78fd91bec5e0a55bc478f8696c93584562bd6a22a06ac3fa381b274",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 32,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/32",
+      "title": "[Compatibility] EVGA RTX3090 / Z790 / Intel EXPERIMENTAL UNLOCK",
+      "state_at_audit": "closed",
+      "updated_at": "2026-10-26T20:47:18Z",
+      "comment_count": 2,
+      "body_sha256": "ac580552bceba3440f68b3e081e0f4c8c80faaf9ac6e7c8114458e839d094e7e",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/32#issuecomment-6407043722",
+          "sha256": "dd1765d59c7c3ecc1c1ddbc86ed83289c3f5d4912ec2e26e80fffec988b1e8e5"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/32#issuecomment-6426947731",
+          "sha256": "bf0c11946e07e32fc90fbbf4af7eb7f8f2e5a0a2bacf345795a2497f699f9829"
+        }
+      ],
+      "classification": "setup-report",
+      "assessment": "One logged transaction and Windows benchmarks; repeated boots untested",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 33,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/33",
+      "title": "[Compatibility] ASUS RTX 3090 / ASUS X99-PRO/USB 3.1 / Intel Core i7-5820K",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-26T04:26:52Z",
+      "comment_count": 0,
+      "body_sha256": "dd582d0d6671ed1fcae3ff4603d179e6ba88f06c7cbaa7010bce9b94e1ba90a6",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 34,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/34",
+      "title": "[Compatibility] RTX 3090 / ASUS ROG STRIX B650E-F / Ryzen 9 7950X3D",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-26T05:40:51Z",
+      "comment_count": 0,
+      "body_sha256": "ac211aeb9c10ff7fa6d61e2356033dc2153cc115d91fa90a5fc4e5efcae003ba",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 35,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/35",
+      "title": "[Compatibility] RTX 3080 10GB (10DE:2206) / THUNDEROBOT B660M-HDV / i7-12700 — Intel iGPU dual display, all read-only stages pass",
+      "state_at_audit": "closed",
+      "updated_at": "2026-10-26T09:47:15Z",
+      "comment_count": 1,
+      "body_sha256": "e60b7bbd107c3457039d9343fa67f70fbed3f6a5f204b34e0df5ccd3c595929a",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/35#issuecomment-6413003936",
+          "sha256": "c68d438c289de7b997ec811b56c79e1172fb7b6799d9356f2aeea27b7476f54b"
+        }
+      ],
+      "classification": "diagnostic-only",
+      "assessment": "Closed read-only preflight, attempted=0; not an unlock.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 36,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/36",
+      "title": "[Compatibility research] ASUS FX506HCB / RTX 3050 Laptop GA107M (10de:25a2): independent UEFI result and controlled Windows measurements",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-26T11:38:59Z",
+      "comment_count": 0,
+      "body_sha256": "c46e8825b086fc4406a9aef78352e77664b4370a0a2155ca665ec4d3513efb37",
+      "comment_sha256": [],
+      "classification": "setup-report",
+      "assessment": "One transaction/Windows boot; laptop decode/cleanup changes outside this implementation",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 38,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/38",
+      "title": "[Compatibility] ASUS TUF RTX 3090 (subsystem 1043:87b3) / ASRock B450M-HDV R4.0 / Ryzen 5 5500 (no iGPU) - inventory + probe question",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-26T13:03:30Z",
+      "comment_count": 0,
+      "body_sha256": "21c139b45f3eec493614d1dff94ddc3124f0824a1f55938f254f9ad891b00e9e",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 40,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/40",
+      "title": "[Proposal] Discord Community for Contributors",
+      "state_at_audit": "closed",
+      "updated_at": "2026-10-27T07:55:44Z",
+      "comment_count": 0,
+      "body_sha256": "4465c744f923067b93125c2b60fd0051566e396dd0441631019cd4ee82fdb553",
+      "comment_sha256": [],
+      "classification": "discussion",
+      "assessment": "Community proposal, not hardware evidence.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 41,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/41",
+      "title": "Fork with a universal guided installer (credit + heads-up)",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-26T16:17:02Z",
+      "comment_count": 5,
+      "body_sha256": "939522ed8a93865daf971abe118632ae6ddf99566f8a033eba1fd8187c8dc56d",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/41#issuecomment-6416984887",
+          "sha256": "c9c80c34ede3ace894ca5d26ca9bbd1850d7a5fc2b621b9471c42767039b1d00"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/41#issuecomment-6417027833",
+          "sha256": "b7611ded7290db6e606de325b92f447267a4353d67402022e0d4f4bc8bb6ce7b"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/41#issuecomment-6417233248",
+          "sha256": "305aaeb7f5032973132894c08cbdd841c3feced1b1b8d8afe94c4dde595aca3b"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/41#issuecomment-6421032895",
+          "sha256": "116b59730ddcbda5d32dccb555da102b41fdabee13e08cbfdd7d38bab3bc66f7"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/41#issuecomment-6421077811",
+          "sha256": "1561eb893cf5e87d8deaf2c48c36187a70b507c9fb23e456bb992b270b543833"
+        }
+      ],
+      "classification": "discussion",
+      "assessment": "External guided installer; one-machine claim does not qualify local profiles.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 42,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/42",
+      "title": "[Compatibility] RTX 3090 + RTX 3090 Ti — ASUS PRIME Z690-A / i9-14900K",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-26T13:14:56Z",
+      "comment_count": 0,
+      "body_sha256": "9194eae4f0b8befb99192fd1350106f70a021881de94937201a134950aae08dc",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "Dual-card locked benchmarks only.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 43,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/43",
+      "title": "GA106 RTX 3060 12GB 포트 실기 성공 — Windows FP16 24.5→41-45 TFLOPS + 부팅 자동화",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-26T13:21:47Z",
+      "comment_count": 0,
+      "body_sha256": "7e163d2eaa6cac042cae478c082124215856098856bd17165d64baddfd083302",
+      "comment_sha256": [],
+      "classification": "setup-report",
+      "assessment": "Transaction signature and Windows return reported; source diff not published",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 46,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/46",
+      "title": "[Compatibility] ZOTAC RTX 3090 (10de:2204, 19da:1613) / Gigabyte B660M GAMING DDR4 / i7-12700",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-26T14:04:45Z",
+      "comment_count": 0,
+      "body_sha256": "568c647720bebd170b6f737f1454b547b5f118cc93221e18ec5e3c9b7b7945ca",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 47,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/47",
+      "title": "[Compatibility] RTX 3090 FE (subsys 10de:147d) / ASRock B550 Phantom Gaming-ITX/ax (AMI) / Ryzen 5 5600G — read-only probe full pass; VBIOS identical to B650M/3090-FE profile",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-26T15:37:56Z",
+      "comment_count": 0,
+      "body_sha256": "24947ab6941420c1f182372576c38c2669d3a82e4e3187e8bcf78878b489a0c7",
+      "comment_sha256": [],
+      "classification": "diagnostic-only",
+      "assessment": "Matching PROM and diagnostic pass do not prove a transaction.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 50,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/50",
+      "title": "[Compatibility] RTX 3060 12GB GA106 (10de:2504, subsystem 10de:1536) / Gigabyte Z690 UD DDR4 BIOS F27 / i5-12400F (no iGPU) - headless USB unlock, 2 clean cold-boot transactions",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-26T16:48:15Z",
+      "comment_count": 0,
+      "body_sha256": "41f3ef02741cbad87e71f54f5f5470f4914fb657c0914b5420e9404b95ce1153",
+      "comment_sha256": [],
+      "classification": "setup-report",
+      "assessment": "Two full-shutdown USB transactions and Windows return; do not reuse fixed fork header",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 51,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/51",
+      "title": "[Compatibility] ASUS TUF RTX 3090 (subsystem 1043:87b3) / ASUS TUF GAMING X570-PLUS (WI-FI) / Ryzen 9 5900X (no iGPU)",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-26T17:13:25Z",
+      "comment_count": 0,
+      "body_sha256": "64cffa94f09f7a8f38be0c5897c51151c9f4284262b57124ad45df199bbb680e",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 52,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/52",
+      "title": "[Compatibility] RTX 3090 / ROG MAXIMUS Z690 FORMULA / i9-12900K: missing ConOut",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-26T20:58:44Z",
+      "comment_count": 1,
+      "body_sha256": "296c4f0ea364e9e8f332d08c7ef6f4d85c672615ccc0893813ed64571ca7bdd9",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/52#issuecomment-6427173800",
+          "sha256": "ebec88bb2102bed85a62d4e5697847547da64728d66277b297808769bbef3775"
+        }
+      ],
+      "classification": "diagnostic-only",
+      "assessment": "Missing ConOut/aggregate topology analysis, no unlock.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 54,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/54",
+      "title": "AD103 (RTX 4080 SUPER 32GB, 10de:2702): UEFI/DXE unlock dies at FWSEC 0xbadf5620 while the same sequence succeeds in Linux",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-27T23:42:58Z",
+      "comment_count": 9,
+      "body_sha256": "636b9d80aeca3523052cea450f7e26981639b86b175b5bf219b422b9a2dff5eb",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/54#issuecomment-6428062333",
+          "sha256": "e5cf191c2b43931487be19e67baf3f867ede565f8ec496b36daabe8d4bc2ebbc"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/54#issuecomment-6439042553",
+          "sha256": "c441546ac43cdd96d40263beeff4c20748a2a414cafa4fada47f1c78c801be4c"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/54#issuecomment-6439417608",
+          "sha256": "9b7000db4070993bffd890027371d1433e0e4d024f111d764e629d3dfab1d731"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/54#issuecomment-6445960303",
+          "sha256": "70f3750fe5061b591b58a131d8568d2bd8df885eec2cfd69c240095c3636bb0a"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/54#issuecomment-6446011018",
+          "sha256": "7adaf3dd878f690c5e1c8e8a24f20646704e7070a800fbf63b1163239d20432e"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/54#issuecomment-6451342433",
+          "sha256": "56f56ea8aa165f1dc4c29637f987d916c16e97c3a4fd9b6790cb7ddb15f12d52"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/54#issuecomment-6455834943",
+          "sha256": "2c8c0fdd5597e7204317b1d737abff68b8b24f2541e701e316cb416e640d0d29"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/54#issuecomment-6455995774",
+          "sha256": "d138e1aed24187e0dedf12f5db4817073238ea80187e022203c12b582b362473"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/54#issuecomment-6456352020",
+          "sha256": "7c79fdc67aefc8a46b9b08b92a759ccb14c0578e46873fe18efb8f7715f1e77c"
+        }
+      ],
+      "classification": "inventory-or-question",
+      "assessment": "DXE FWSEC failure; Linux success is not Windows/UEFI success.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 55,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/55",
+      "title": "[Compatibility] RTX 2080 Ti (TU102, 3842:2484) / ASRock X399 Taichi / Threadripper 2950X",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-26T21:36:50Z",
+      "comment_count": 0,
+      "body_sha256": "2688d464f5d1b2fcbd12add4a3d7e97042546983ee2700899e5ef5810d9b260a",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 56,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/56",
+      "title": "[Compatibility] RTX 3090 FE (10de:2204, subsystem 10de:147d) / NZXT N7 B550 (AMI, BIOS P3.60) / Ryzen 9 5950X (no iGPU), GPU on bus 07",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-26T21:42:18Z",
+      "comment_count": 0,
+      "body_sha256": "bbb30d2e356ea4fa49d1248fa664d0956737b8e5fb8dbdce78136fc383e38ab2",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 58,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/58",
+      "title": "Compatibility report — MSI MPG B550 GAMING PLUS / Ryzen 9 5900X (no iGPU) / MSI RTX 3090",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-26T23:40:23Z",
+      "comment_count": 0,
+      "body_sha256": "a9a1c8a50b9239096a6afd9ee98b3b83ba7cff607b7d5b6cc8941e2b09228cb9",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 59,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/59",
+      "title": "[Compatibility] RTX 3070 (GA104) / Gigabyte B550M AORUS ELITE / Ryzen 7 5800X3D",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-27T01:35:40Z",
+      "comment_count": 0,
+      "body_sha256": "345202cf2484e5f5335c5ec03227b462bb27572ce1a7dbcd68c0598631bbde95",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 60,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/60",
+      "title": "[Compatibility] RTX 3070 Gigabyte (GA104, 10de:2484) / MSI MPG B550 GAMING PLUS / Ryzen 7 5700X (no iGPU)",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-27T02:48:30Z",
+      "comment_count": 0,
+      "body_sha256": "f981485aea082cf3d3bcf5ea0e1e59ef52a31cb5e43921dfa60be09538600f00",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 62,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/62",
+      "title": "[Compatibility] RTX 3060 GA106 / Gigabyte X470 Aorus Ultra Gaming / Ryzen 5 5600G",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-27T03:49:40Z",
+      "comment_count": 0,
+      "body_sha256": "964b92c245c0983ddc6c4f2ff155599276536ee071a360355cede4b99ec94ade",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 66,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/66",
+      "title": "[Compatibility] ASUS RTX 3090 (10de:2204) + MSI RTX 3060 Ti LHR (10de:2489) / MSI B850 Gaming Plus WiFi (MS-7E80) / Ryzen 9 9950X3D",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-27T05:45:38Z",
+      "comment_count": 0,
+      "body_sha256": "de8b1f735e190a7414dad45caa081b1ca4be459fe83b5d92fa3972216c962018",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 68,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/68",
+      "title": "[Compatibility, inventory only] ASUS PRIME B450-PLUS BIOS 4604 / Ryzen 9 3900XT / RTX 3060 GA106 12GB",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-27T07:21:58Z",
+      "comment_count": 0,
+      "body_sha256": "bc3c2734e2e5f9f38e4919dfa64cec8507dd71a5d2d1ceadca01eaa89382b30a",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 69,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/69",
+      "title": "Beginner-friendly Windows install guide / beginner-friendly setup docs",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-28T13:22:47Z",
+      "comment_count": 2,
+      "body_sha256": "b66c30aa569eb6a79c51f56ec2cc28c04b3c7a9de3e4ab746735ef9ae3a0199b",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/69#issuecomment-6464634572",
+          "sha256": "4363f77f4062278ed9481617940dc3d8ddd3ab5ac9a76ed32ecaaccf087229a8"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/69#issuecomment-6470129431",
+          "sha256": "c995039a097018d2b31c642ab6ca7b79cc77f825dd4133b4ae154f1a5a029168"
+        }
+      ],
+      "classification": "discussion",
+      "assessment": "Setup documentation discussion.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 70,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/70",
+      "title": "[Compatibility] Colorful RTX 3060 12GB GA104 (10de:2487, subsys 7377:1501) / Huananzhi X99-F8 / E5-2690 v4 (platform has no iGPU)",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-29T14:48:48Z",
+      "comment_count": 1,
+      "body_sha256": "daabaf266e284123017690c19a5b34f2af11018ede448af7636d40868f0ae5bf",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/70#issuecomment-6499927643",
+          "sha256": "55077484d4a8747ae2ba5aa8570c8e8af1c225d4b6f937dbbfe0cfece6a700fe"
+        }
+      ],
+      "classification": "diagnostic-only",
+      "assessment": "Diagnostic-only capture; no transaction.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 71,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/71",
+      "title": "DLSS preformance boost",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-29T02:39:37Z",
+      "comment_count": 1,
+      "body_sha256": "dc0336d190110fa42b31986302e48318d2fb65cb888e453eb4dbb90967b48b35",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/71#issuecomment-6486380902",
+          "sha256": "abcf120413cba35485175c4adab8217a4184046497edc07f535fcbde41e3f769"
+        }
+      ],
+      "classification": "discussion",
+      "assessment": "DLSS/application-performance question; no exact-machine result.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 73,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/73",
+      "title": "[Compatibility] Gigabyte RTX 3080 12GB (GA102, 10de:220a / 1458:40a2) / ASUS TUF GAMING B550-PLUS BIOS 3611 / Ryzen 9 5900X (no iGPU) — headless USB local profile, one clean cold-boot transaction",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-27T10:41:40Z",
+      "comment_count": 0,
+      "body_sha256": "6c6381fc5958ba757987b9942bc8e741c505e2eb69492fe93348dce647d1ec04",
+      "comment_sha256": [],
+      "classification": "setup-report",
+      "assessment": "One logged USB transaction; Windows/HDMI return; DP required monitor power-cycle/replug",
+      "resolution_recommendation": "close-on-merge-of-pr142"
+    },
+    {
+      "number": 74,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/74",
+      "title": "[Compatibility] Lenovo IdeaPad Gaming 3 / RTX 3050 Ti Laptop (10DE:25A0)",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-27T12:17:45Z",
+      "comment_count": 0,
+      "body_sha256": "b677105d905bc495d1342ac560066f87651026c2219b3f5e0ad8f7b150e61eeb",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 75,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/75",
+      "title": "[Compatibility] RTX 3090 FE (10de:2204, subsystem 10de:147d) / ASUS TUF GAMING B660M-PLUS WIFI / i9-12900KF (no iGPU): pathless virtual GOP + aggregate console; new-machine generator refuses (gops=2)",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-28T11:51:51Z",
+      "comment_count": 1,
+      "body_sha256": "ebea5033a86bbb907a822326d5d7471a32950348af6a2bfa075aa0cafc7650a5",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/75#issuecomment-6468153229",
+          "sha256": "c59b90b19293ce91e7978e2a8e650e03f3b0890127047dd84dae8ad9bbd95ff8"
+        }
+      ],
+      "classification": "diagnostic-only",
+      "assessment": "Aggregate topology refusal; no transaction.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 76,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/76",
+      "title": "[Compatibility research] RTX 3060 12GB GA104 (10de:2487, subsystem 10de:2487) / Gigabyte B550 GAMING X V2 / Ryzen 5 5600",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-27T12:23:08Z",
+      "comment_count": 0,
+      "body_sha256": "f56c2f69740898279014035e6ee2659c78038e236aa8519ffabd5eb007647e98",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 78,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/78",
+      "title": "[Compatibility] GPU / motherboard / CPU",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-27T14:12:05Z",
+      "comment_count": 0,
+      "body_sha256": "562c3d8c44228d9df6ee84c40b3a3f5597a3d8289462f3ea3c05061983271f8d",
+      "comment_sha256": [],
+      "classification": "diagnostic-only",
+      "assessment": "Two diagnostic boots mentioned; no transaction.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 79,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/79",
+      "title": "[Compatibility] GPU / motherboard / CPU",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-27T14:19:28Z",
+      "comment_count": 0,
+      "body_sha256": "01e901a942e9b9d80d90990c787636171aa5cef09fe4912e1fae74e37a3f3f20",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 80,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/80",
+      "title": "GOP full-prepare fails with EFI_ACCESS_DENIED",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-27T14:40:02Z",
+      "comment_count": 1,
+      "body_sha256": "751cda8ed754f809afe95904949e6e54f905cb51c576619734f00db3d9a05846",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/80#issuecomment-6444905817",
+          "sha256": "983f580c2aaec5b41acf48b4ec216841e689a32b00946d5e03c94ef34cc06753"
+        }
+      ],
+      "classification": "diagnostic-only",
+      "assessment": "Preparation refusal; friend success does not qualify reporter machine.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 81,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/81",
+      "title": "[Compatibility] ZOTAC RTX 3090 (10de:2204, 19da:1613) / ASUS TUF GAMING B650-PLUS BIOS 3287 / Ryzen 9 7950X3D (iGPU, no GOP) — headless USB local profile, one clean cold-boot transaction",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-27T15:26:20Z",
+      "comment_count": 0,
+      "body_sha256": "b2cce565739395f4d82fecd09e3cba5ba45c8bca041a5217cda479a5ea9d94e7",
+      "comment_sha256": [],
+      "classification": "setup-report",
+      "assessment": "One full-shutdown transaction and Windows/display return; no tracked diff",
+      "resolution_recommendation": "close-on-merge-of-pr142"
+    },
+    {
+      "number": 83,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/83",
+      "title": "[Compatibility] PNY RTX 3080 12GB (220A) / Gigabyte H610M K DDR4 / i5-14400F — Headless USB support request",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-27T16:02:29Z",
+      "comment_count": 0,
+      "body_sha256": "ada63c3ef239c8eabb5e23e5e9255617ff24dcbb11d067cfe4038a2bf2315dcf",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 84,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/84",
+      "title": "[Compatibility] Successful local-profile headless USB: ASUS PRIME B550M-A WIFI II BIOS 3621 / Ryzen 5 5600X / RTX 3090 (1043:87d5)",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-27T16:06:50Z",
+      "comment_count": 0,
+      "body_sha256": "648ed5d5d2f150261cd64eae1b638fd81e6c1326e1d1bf36efca5de72e3f85b0",
+      "comment_sha256": [],
+      "classification": "setup-report",
+      "assessment": "One logged cold transaction, Windows/display return; downloaded ZIP commit unknown",
+      "resolution_recommendation": "close-on-merge-of-pr142"
+    },
+    {
+      "number": 85,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/85",
+      "title": "[Compatibility] GPU / motherboard / CPU",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-27T16:15:35Z",
+      "comment_count": 0,
+      "body_sha256": "30003412eb88efafa855940658d055c3263fab7fe7b616b0bcc733c2e0ec7727",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 86,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/86",
+      "title": "[Compatibility] RTX 3060 Ti (GA104-200) / Gigabyte Z590 VISION G / Single-GPU Headless Success",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-27T17:50:39Z",
+      "comment_count": 0,
+      "body_sha256": "7625a0f8244deaec3eb7ac5e0fc9d23fcbcf6e57f5b7fac5dfae0be03b98070e",
+      "comment_sha256": [],
+      "classification": "setup-report",
+      "assessment": "Windows/display return and benchmarks; different b73000a1 chip/6000a driver; not current GA104 tuple",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 87,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/87",
+      "title": "[Compatibility] ZOTAC RTX 3060 GA104 (10DE:2487 / 19DA:2630) — ASUS PRIME B760M-A WIFI, two-child AMI console",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-28T19:53:25Z",
+      "comment_count": 1,
+      "body_sha256": "e94d18913a212df513649a1e7919bc7c5c274bb72a73d60c408ad3212fe4257a",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/87#issuecomment-6479015793",
+          "sha256": "5ca2c8640a5c843533cdc4b3194fbbcc002aa597863ffd898d8ca9b6bfaa8617"
+        }
+      ],
+      "classification": "setup-report",
+      "assessment": "Latest hardware update supersedes the original incomplete capture.",
+      "resolution_recommendation": "close-on-merge-of-pr142"
+    },
+    {
+      "number": 89,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/89",
+      "title": "Lenovo LOQ 17IRB8\tRTX 3060 12 GB",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-27T18:56:02Z",
+      "comment_count": 0,
+      "body_sha256": "5a45549c5d768d6477cb15de635abf82502b5e4cd02a79725be2e18164e8808e",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "Short compatibility question, no transaction evidence.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 90,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/90",
+      "title": "[Compatibility] Palit RTX 3090 / Gigabyte B550M AORUS PRO-P / Ryzen 9 5900X (unlock verified)",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-27T19:34:49Z",
+      "comment_count": 0,
+      "body_sha256": "e97cea83de9d4aafc849d6abe94a202ea6385634e6037af3553362cef8cbad3a",
+      "comment_sha256": [],
+      "classification": "setup-report",
+      "assessment": "Windows/display return reported; accepted captures after CSM disabled; local gate changes not reviewed here",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 91,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/91",
+      "title": "[Compatibility] EVGA RTX 3070 XC3 (GA104, 10de:2484 / 3842:3755) / Gigabyte B550M DS3H / Ryzen 5 5600X (no iGPU) - headless USB local profile, one clean cold-boot transaction",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-27T19:44:25Z",
+      "comment_count": 0,
+      "body_sha256": "42864b2a38a6dd97d903bae683bd83e1426687943c4db6e229f7dbd8d2a53833",
+      "comment_sha256": [],
+      "classification": "setup-report",
+      "assessment": "One logged cold USB transaction and Windows recovery; current tuple covered via #113",
+      "resolution_recommendation": "close-on-merge-of-pr142"
+    },
+    {
+      "number": 92,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/92",
+      "title": "[Compatibility] Gigabyte RTX 3080 Ti / B550M AORUS ELITE / Ryzen 9 5900X",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-27T20:03:40Z",
+      "comment_count": 0,
+      "body_sha256": "ca6225fd7b8998f0e5b64e1a904200d25948fa850aa7394e971b250f4edc332c",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 93,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/93",
+      "title": "[Compatibility] Dell OEM RTX 3090 (10de:2204, 1028:3880) / MSI MAG B760M MORTAR WIFI II / i5-14600K",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-27T20:15:48Z",
+      "comment_count": 0,
+      "body_sha256": "9dd37bf169d5a78e38023b76a4cc102896aa34d5de62fbd0a558ebd989700ba2",
+      "comment_sha256": [],
+      "classification": "setup-report",
+      "assessment": "One cold transaction and Windows return; Intel GOP/ownership changes need separate review",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 94,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/94",
+      "title": "[Compatibility] RTX 3090 / MSI B85M Night Elf / Xeon E3-1231 v3",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-27T20:18:08Z",
+      "comment_count": 0,
+      "body_sha256": "1db60e20fa8cca42109d5c596bae00df3afb35dac78d426eaf5d5b2a09dbe29b",
+      "comment_sha256": [],
+      "classification": "diagnostic-only",
+      "assessment": "Diagnostic BME/cache mismatch, no successful unlock.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 95,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/95",
+      "title": "[Compatibility] ZOTAC RTX 3090 (10de:2204, 19da:1613) / ASRock B760 Pro RS/D4 WiFi BIOS 10.03 / i5-13400F (no iGPU): AMI ComboFile pathless GOP + missing ConOut; generator refuses (topology_scope); PROM identical to #81",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-27T20:35:28Z",
+      "comment_count": 0,
+      "body_sha256": "4a2d83bea6014d713363db82d2a817b312975ea7af691a112a326c794e36198d",
+      "comment_sha256": [],
+      "classification": "diagnostic-only",
+      "assessment": "Aggregate topology refusal, not resolved by matching another PROM.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 97,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/97",
+      "title": "[Compatibility] Asus B850 Creator WiFi Neo + RTX 3090 FE + WSL2 (Docker Desktop) — can the UEFI unlock be used under WSL2?",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-27T21:25:39Z",
+      "comment_count": 0,
+      "body_sha256": "8ea2b984994fa18a55a2db9863ce8622268189a4c2735e436f6c723076dd8d98",
+      "comment_sha256": [],
+      "classification": "discussion",
+      "assessment": "WSL2/board inquiry; no exact-machine evidence.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 98,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/98",
+      "title": "[Compatibility] ASUS ROG Strix RTX 3090 White / Gigabyte H610M K DDR4 / i3-12100",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-27T21:46:35Z",
+      "comment_count": 0,
+      "body_sha256": "7bff5793d37aa3a6dd8195ef370f12a9bf430d9440c5b502a553bfeb32e8efcc",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 99,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/99",
+      "title": "[Compatibility] Palit RTX 3090 /  HP Z640 BIOS M60",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-27T23:50:32Z",
+      "comment_count": 0,
+      "body_sha256": "aa6c525efc51c3bebb312b641259ff9ac746142b514616ee748acca85264aac2",
+      "comment_sha256": [],
+      "classification": "setup-report",
+      "assessment": "Partial legacy diff/telemetry claim, insufficient handoff/provenance evidence.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 101,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/101",
+      "title": "MSI RTX 3090 captures corroborate EVGA aggregate-console refusal (PR #96)",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-28T00:11:18Z",
+      "comment_count": 0,
+      "body_sha256": "81a7ad6c7d266f5f0b6f92f7c497705f9916c444bf134c2e62673fc3544d9c75",
+      "comment_sha256": [],
+      "classification": "diagnostic-only",
+      "assessment": "MSI diagnostic topology corroboration; no release or unlock.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 102,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/102",
+      "title": "[Compatibility] Gigabyte RTX 3090 (10de:2204 / 1458:403a) / MSI MPG X570 GAMING PRO CARBON WIFI BIOS 1.Q2 / Ryzen 9 3950X (no iGPU): headless USB local profile, one clean transaction, after fixing the AMI PciIo I/O record (#7)",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-29T17:44:43Z",
+      "comment_count": 1,
+      "body_sha256": "1bfc9ed8d1f7cd74c1c8b11dcfc169c46459ed26bc566f71c5f3c9a38effc1fb",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/102#issuecomment-6504092640",
+          "sha256": "95b5e87e3c0dfbfbf2fcf73b89e9ed6cc4d2a4289df45e86952dbeac2f27e409"
+        }
+      ],
+      "classification": "setup-report",
+      "assessment": "Private pre-step success; also a separate X570 Gaming Plus/5900X/1b4c:1454 success in the comment.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 103,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/103",
+      "title": "[Compatibility inquiry] ASUS B660-A D4 / RTX 3080 Ti — planned RTX 3090 addition",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-28T03:14:12Z",
+      "comment_count": 0,
+      "body_sha256": "568184449dd35c5e924b3e4a071cfd8e919e33d108588479215c1a3b73552f15",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 104,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/104",
+      "title": "[Compatibility] RTX 3070 Ti GA104 / ASUS PRIME B450M-A / Ryzen 5700X3D",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-28T03:24:38Z",
+      "comment_count": 0,
+      "body_sha256": "ba60f18c6bcd1cda47a297d3e9128ba6b8182614f87578c0484407d680b9ce03",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 105,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/105",
+      "title": "[Compatibility] RTX 3060 Ti LHR (10de:24c9) / Gigabyte X870 EAGLE WIFI7 / Ryzen 9 9950X — headless USB unlock succeeded, profile patch attached",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-28T04:16:48Z",
+      "comment_count": 0,
+      "body_sha256": "daa074b299ad657609bd426abff0ce45a94add775bbfe820db162c5d650e79dc",
+      "comment_sha256": [],
+      "classification": "setup-report",
+      "assessment": "One clean restart-based transaction and Windows return; captures not all full shutdowns",
+      "resolution_recommendation": "close-on-merge-of-pr142"
+    },
+    {
+      "number": 106,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/106",
+      "title": "Local results: X570 AORUS ULTRA F30 / Dell RTX 3090 - EFI unlock and Windows handoff succeeded; no material Drama 3 gain",
+      "state_at_audit": "closed",
+      "updated_at": "2026-10-28T16:44:32Z",
+      "comment_count": 1,
+      "body_sha256": "eddc5cbfe0e77faf7c33267190f83effac57829368d882560fe96ac67a2a4600",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/106#issuecomment-6461819788",
+          "sha256": "82b7aea0ea19485a42c04eee5c65abfa6836a7ff0fcae4c91d55fa6a4a44e321"
+        }
+      ],
+      "classification": "setup-report",
+      "assessment": "Original private unlock/Windows result; later comment describes a distinct diagnostic-only test.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 107,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/107",
+      "title": "[Compatibility] RTX 3060 GA104 (10de:2487) / Gigabyte H610M K DDR4 BIOS FG / i3-12100F",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-28T05:45:33Z",
+      "comment_count": 0,
+      "body_sha256": "0f6b1d5991fd9fb0659ebf185a0cfd106a190f74347b55d71b85658e187bef4d",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 108,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/108",
+      "title": "Compatibility request: Gigabyte RTX 3080 Ti GA102-LHR via external PCIe 4.0 x4",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-28T06:39:06Z",
+      "comment_count": 0,
+      "body_sha256": "45a7b50aeb23ad5005b8207ad244000ee21184a07fbeb82cfa87ab5675e0ac67",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "External-PCIe/eGPU inquiry, not tested.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 109,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/109",
+      "title": "[Compatibility Request] RTX 3060 12GB GA104 + Gigabyte B560M DS3H V2",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-28T06:52:50Z",
+      "comment_count": 0,
+      "body_sha256": "e8cebb8b0d9dd996276b2714d6997fccf7571ef9fd85c15e4be69489006f666b",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 110,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/110",
+      "title": "[Compatibility] [Compatibility] Dual ASUS RTX 3080 Ti / ROG STRIX X570-E / Ryzen 7 5800X3DGPU / motherboard / CPU",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-28T06:56:40Z",
+      "comment_count": 0,
+      "body_sha256": "99e5c59abb7591ae4095e7ec3a8ceffba547be491a82dc4a875ecea14076d5b2",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "Dual-card inventory only.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 111,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/111",
+      "title": "[Compatibility] GPU / motherboard / CPU",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-28T07:03:47Z",
+      "comment_count": 0,
+      "body_sha256": "7f076e3d88c00feb0a708e2b7d1e69a44ceda718876eda57a724d5de49d8b96c",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 113,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/113",
+      "title": "[Compatibility] RTX 3070 (10de:2484, Zotac) / Gigabyte B460M D2VX SI / i5-10400F — headless USB unlock succeeded with a local envelope change",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-29T08:45:24Z",
+      "comment_count": 1,
+      "body_sha256": "6bd1ac10646a985e7f9985a128e4d4444b5ed9b512e7b5fdd61211dc9cc48b69",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/113#issuecomment-6492115054",
+          "sha256": "c0ff62b03bc3a0efa0468d1621a131b14559f832602137c7b49ba6604062a203"
+        }
+      ],
+      "classification": "setup-report",
+      "assessment": "One logged cold transaction and Windows/display return",
+      "resolution_recommendation": "close-on-merge-of-pr142"
+    },
+    {
+      "number": 114,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/114",
+      "title": "Compatibility report: RTX 3060 (GA106, 10de:2504) on Gigabyte B650M DS3H + Ryzen 5 7600 iGPU",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-28T10:24:23Z",
+      "comment_count": 0,
+      "body_sha256": "d866ab2f8e0f76ad4bb4105357349afb90be1f33a33c25d81f552ee2932579d0",
+      "comment_sha256": [],
+      "classification": "diagnostic-only",
+      "assessment": "Incomplete probe captures; no unlock.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 115,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/115",
+      "title": "Turing RTX 20 support?",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-29T05:06:38Z",
+      "comment_count": 2,
+      "body_sha256": "9ca59681369667dc9d52ab91c2dbbae54af251e2d5061fc626958946dfb06bca",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/115#issuecomment-6486364729",
+          "sha256": "6c2466e6d11a0788e3317293862164cc7ddab16224e1f0157c6b2b4b18dc0f6a"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/115#issuecomment-6488479974",
+          "sha256": "07917daf635dfae898a158a012e4e4eed106c176a00dbe921a75cfaf565f8266"
+        }
+      ],
+      "classification": "discussion",
+      "assessment": "Turing support question; external Linux context is not a Windows result.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 117,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/117",
+      "title": "[Compatibility] NVIDIA GeForce GTX 1070 / INTEL X99 / 2x Intel Xeon E5-2683 v3",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-28T11:31:16Z",
+      "comment_count": 0,
+      "body_sha256": "c1583bae8905dacfd05ea5c753f5f255e56bb926904c95f39cc46121c88b1616",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "Pascal lacks Tensor Cores; no proposed profile here.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 119,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/119",
+      "title": "is it doable in hp victus",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-28T13:22:28Z",
+      "comment_count": 0,
+      "body_sha256": "c307e64c682c1dd9c3183f31e5f252b989c6bd16ff426d2e4e355d0d6c030a5d",
+      "comment_sha256": [],
+      "classification": "discussion",
+      "assessment": "Short laptop inquiry; no test evidence.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 120,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/120",
+      "title": "[Compatibility] GPU / motherboard / CPU",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-28T14:26:07Z",
+      "comment_count": 0,
+      "body_sha256": "199abecdc94dbcf3ed068038b99aaedcaf1983c60f7c664a388cdfc32afe0ed1",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 121,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/121",
+      "title": "[Compatibility] MSI RTX 3090 (10de:2204 / 1458:4043) / MSI MAG X570S TORPEDO MAX (MS-7D54) BIOS A.B3 / Ryzen 9 5950X (no iGPU): #102 pre-step fixes the AMI PciIo I/O record, local profile accepted, one clean unlock, FP16/BF16 1.66–1.68×",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-28T14:40:28Z",
+      "comment_count": 0,
+      "body_sha256": "5d1cd0be2534197bb6d5e8245475b5740f597ed1e8ffd59425a8ff6cdb6fe335",
+      "comment_sha256": [],
+      "classification": "setup-report",
+      "assessment": "One clean transaction/Windows return; retain reported manufacturer/subsystem discrepancy",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 122,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/122",
+      "title": "gpuunlok",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-28T15:10:26Z",
+      "comment_count": 0,
+      "body_sha256": "ade4d16f5ca527d1cc713f200b536deb680a1c811612fff6e020d7088860f8e7",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 123,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/123",
+      "title": "[Compatibility] RTX 3090 Ti / ProArt Z690-CREATOR WIFI BIOS 4505 / i9-12900KS: AMI aggregate console and nvgop 0x60017",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-28T15:44:30Z",
+      "comment_count": 0,
+      "body_sha256": "ccb96c282cd4e11562062e638f06eb0060dac3e56bc2eccd61981e2eff4db5ef",
+      "comment_sha256": [],
+      "classification": "diagnostic-only",
+      "assessment": "New NVIDIA GOP 60017 and aggregate topology; diagnostic-only.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 124,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/124",
+      "title": "[Compatibility] RTX 3090 (10de:2204 / 10b0:2204, Gainward) / Gigabyte Z790 GAMING X AX BIOS F15 / i7-13700K (UHD 770 enabled): local profile accepted, one clean headless-USB unlock, FP16/BF16/TF32 1.75-1.80x",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-28T17:24:51Z",
+      "comment_count": 2,
+      "body_sha256": "79d51d168549d333be68a469e820ed6b43826812116787a3b0b8a50015c3305c",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/124#issuecomment-6475613556",
+          "sha256": "c94f817aae925d352f515db729d259e7f53d1ed335531053d5380e05033cfd2b"
+        },
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/124#issuecomment-6475885125",
+          "sha256": "947ebc46d4c268a89d3b1eabc9a454e64f4f630ae4d6dd185b4d1b02b4510fbb"
+        }
+      ],
+      "classification": "setup-report",
+      "assessment": "One logged transaction/Windows return; one capture after reset, only one full shutdown",
+      "resolution_recommendation": "close-on-merge-of-pr142"
+    },
+    {
+      "number": 125,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/125",
+      "title": "RTX 3090 / B550 AORUS ELITE V2: power-off after unlock with the upstream headless workflow",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-28T17:13:30Z",
+      "comment_count": 0,
+      "body_sha256": "42b877d698f5d935acee5c061aa1d84c00f4b7e26a24df81de876ca1ed1a27ef",
+      "comment_sha256": [],
+      "classification": "failed-handoff",
+      "assessment": "Clean transaction followed by machine power-off; Windows recovery failed.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 126,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/126",
+      "title": "[Compatibility] RTX 3060 Ti (2486) / ASRock B450M Steel Legend / Ryzen 7 2700X",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-28T19:24:52Z",
+      "comment_count": 0,
+      "body_sha256": "ae4fc67fafbc2efed44bc9567f2bc944b857e5da3c2bfc53a75174e050fb5981",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 127,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/127",
+      "title": "[Compatibility] MSI RTX 3070 8GB / ASRock B450M-HDV R4.0 / Ryzen 7 5700X / Windows 10",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-28T19:59:29Z",
+      "comment_count": 0,
+      "body_sha256": "b62155b78a60f3c3a32bfd11af108a5a854c3f167add0b31e9354b1fc2e61c12",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "References #113 success on another PC, not this machine.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 128,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/128",
+      "title": "[Compatibility request] ASUS TUF B660M-PLUS WIFI D4 + Gigabyte AORUS RTX 3070 Ti MASTER (i7-12700F, no iGPU)",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-28T21:00:56Z",
+      "comment_count": 0,
+      "body_sha256": "ccf893deebf47b2c442b93c9306d202efd41c5a41b7319f8fcdde209cb9c1c2a",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 129,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/129",
+      "title": "[Compatibility] RTX 3090 (Dell OEM 1028:3880) / ASRock X570 Taichi / Ryzen 7 5800X3D – attributes_mismatch (PciIo cache IO|MEM vs command MEM-only)",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-28T22:53:20Z",
+      "comment_count": 1,
+      "body_sha256": "372048bc4307807c67f19f8441c6f6e75988dac9bab28f06f913c9b620e300a0",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/129#issuecomment-6482780948",
+          "sha256": "b1547bc0306d45a657a51e8cb5d1a312bbc46ac4d40c75bda16f2bc061e8ffee"
+        }
+      ],
+      "classification": "setup-report",
+      "assessment": "Latest private pre-step hardware result supersedes initial refusal.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 130,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/130",
+      "title": "[Compatibility] RTX 4050 Laptop (10de:28a1 / 103c:8bd4) / HP Victus 8BD4 Insyde F.29 / Ryzen 7 7840HS",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-29T20:08:07Z",
+      "comment_count": 1,
+      "body_sha256": "a0fb89503aa5fb8313f4bd068a4488563451f83f84e8abf1e4d8e7df848396fa",
+      "comment_sha256": [
+        {
+          "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/130#issuecomment-6507147869",
+          "sha256": "585422d1b600f678d975ee04b0721fe604dda56db43081c8aaff24df3dfbd897"
+        }
+      ],
+      "classification": "inventory-or-question",
+      "assessment": "Ada laptop inventory/collector error only.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 131,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/131",
+      "title": "[Compatibility] GPU / motherboard / CPU",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-28T23:14:23Z",
+      "comment_count": 0,
+      "body_sha256": "7f2f7ad7f99a3aad82d69b6f6a6df6064bbc2460119dc56e2fee529b1884602b",
+      "comment_sha256": [],
+      "classification": "setup-report",
+      "assessment": "Operator Windows/NVIDIA/display recovery; source candidate and full transaction logs private",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 132,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/132",
+      "title": "Compatibility inquiry: Gigabyte RTX 3060 GA106 / ASUS B550-F Gaming WiFi II / Ryzen 7 5700X",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-28T23:39:23Z",
+      "comment_count": 0,
+      "body_sha256": "59cd0fbc1ba1878fd59f5d35d47e7d8ac816ac1b36d537b6d265d50c59586283",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 133,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/133",
+      "title": "[Compatibility] GPU / motherboard / CPU",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-29T00:17:03Z",
+      "comment_count": 0,
+      "body_sha256": "38ff74e41d1308890387c233d04b7e16a2fb8095f7e127b06a1e58fcd52ea7e0",
+      "comment_sha256": [],
+      "classification": "setup-report",
+      "assessment": "Two logged USB boots; one manual and one default USB-first; Windows/display return",
+      "resolution_recommendation": "close-on-merge-of-pr142"
+    },
+    {
+      "number": 134,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/134",
+      "title": "[Compatibility] HP RTX 3060 12GB (10de:2504 / 103c:8903) / HP Pavilion Gaming Desktop TG01-2xxx board 8906 AMI F.39 / Ryzen 7 5700G",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-29T01:58:10Z",
+      "comment_count": 0,
+      "body_sha256": "1129290d5f320a99b82ef401ec9f91f72d19609d12c5b2dffaa80d453778014f",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 135,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/135",
+      "title": "[Compatibility] GPU / motherboard / CPU",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-29T08:50:30Z",
+      "comment_count": 0,
+      "body_sha256": "a497a22518b4096cd5ed4ce11fc140c48af82349b91d65165f8771b1a5751fff",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "No exact-machine successful transaction plus Windows-return evidence found in the issue/comments.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 136,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/136",
+      "title": "[Compatibility] MSI RTX 3090 SUPRIM / MSI MAG B650 TOMAHAWK WIFI / Ryzen 7 7800X3D",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-29T12:08:08Z",
+      "comment_count": 0,
+      "body_sha256": "fece43241f26e86a86021629d651a6ae353ee2d0be3c40b1d1c1bd52498db1b7",
+      "comment_sha256": [],
+      "classification": "setup-report",
+      "assessment": "One logged full-shutdown transaction and both displays return; no tracked diff",
+      "resolution_recommendation": "close-on-merge-of-pr142"
+    },
+    {
+      "number": 137,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/137",
+      "title": "[Compatibility] Dual RTX 3090 / Maxsun MS-Terminator Z890-A / Core Ultra 5 245K",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-29T15:29:52Z",
+      "comment_count": 0,
+      "body_sha256": "e43fa7e3c63fe37f252820f25c6bfc8edbcecb66ad1a654db9d831bf2af7d590",
+      "comment_sha256": [],
+      "classification": "inventory-or-question",
+      "assessment": "Dual RTX3090 inventory only; no transaction.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    },
+    {
+      "number": 140,
+      "url": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/140",
+      "title": "ASUS TUF RTX 3080 Ti — successful manual USB unlock",
+      "state_at_audit": "open",
+      "updated_at": "2026-10-29T19:43:36Z",
+      "comment_count": 0,
+      "body_sha256": "887e7380d7958118d799b7f5305d68ac267c14d93964b419f4e823087a2d302d",
+      "comment_sha256": [],
+      "classification": "setup-report",
+      "assessment": "Reported success after local Secure Boot-policy change; no complete public machine profile.",
+      "resolution_recommendation": "not-resolved-by-this-audit"
+    }
+  ],
+  "label_action": {
+    "requested": "resolved",
+    "applied": false,
+    "reason": "Authenticated upstream viewerPermission=READ; label creation denied (HTTP404). No issue was closed.",
+    "maintainer_candidates": [
+      4,
+      12,
+      81,
+      84,
+      87,
+      91,
+      105,
+      113,
+      124,
+      133,
+      136
+    ],
+    "resolution_pull_request": 142,
+    "close_on_merge": [
+      12,
+      73,
+      81,
+      84,
+      87,
+      91,
+      105,
+      113,
+      124,
+      133,
+      136
+    ],
+    "resolution_method": "PR description Resolves keywords; closes when merged into default main, not a custom label."
+  }
+}

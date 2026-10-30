@@ -374,7 +374,12 @@ fail:
 }
 EFI_STATUS GuSavePci(VOID) {
   UINTN I;
-  if(Gu.saved || Gu.fault || !Gu.owned || Gu.pcie_cap<0x40 || Gu.pcie_cap>0xd4)return EFI_NOT_READY;
+  /* Match the bounded standard capability layouts accepted by GuCheckConfig:
+   * v1 occupies 0x14 bytes, v2 occupies 0x3c bytes. Reject invalid metadata
+   * before any device access, including a version with unknown register layout. */
+  if(Gu.saved || Gu.fault || !Gu.owned || Gu.pcie_cap<0x40 || (Gu.pcie_cap&3U) ||
+     (Gu.pcie_version!=1 && Gu.pcie_version!=2) ||
+     Gu.pcie_cap>(Gu.pcie_version==1?0xecU:0xc4U))return EFI_NOT_READY;
   for(I=0;I<64;I++)
     if(EFI_ERROR(GuConfigRead(EfiPciIoWidthUint32,(UINT32)I*4,&Gu.saved_config[I])))return EFI_DEVICE_ERROR;
   if(Gu.saved_config[0]!=Gu.board_id || Gu.saved_config[11]!=Gu.board_subsystem ||

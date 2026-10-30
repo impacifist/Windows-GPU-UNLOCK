@@ -106,6 +106,7 @@ static EFI_STATUS Run(int scenario) {
   table.ConsoleOutHandle=H[3];table.StandardErrorHandle=H[3];table.ConsoleInHandle=H[3];
   file.Write=Write;file.Flush=FileFlush;
   ModeInfo.HorizontalResolution=1280;ModeInfo.VerticalResolution=720;
+  ModeInfo.PixelFormat=PixelBlueGreenRedReserved8BitPerColor;ModeInfo.PixelsPerScanLine=1280;
   Mode.Info=&ModeInfo;Mode.SizeOfInfo=sizeof(ModeInfo);Mode.MaxMode=1;
   Mode.FrameBufferBase=0xfc00000000;Mode.FrameBufferSize=3686400;Gop.Mode=&Mode;
   if(scenario==10)Gop.Mode=NULL;
@@ -122,6 +123,8 @@ int main(void) {
   Check(strstr(Output,"path-node raw=7f010400")!=NULL,"multi-instance separator retained");
   Check(strstr(Output,"pci config-dwords=220410de")!=NULL && ReadCalls==2,"GPU identification is read-only");
   Check(strstr(Output,"driver image=")!=NULL && strstr(Output,"image-file-path-node")!=NULL,"driver/image provenance");
+  Check(strstr(Output,"gop pixel-format=0x0000000000000001 info-bytes=0x0000000000000024")!=NULL,
+        "GOP pixel format and info allocation size are captured from the interface");
   for(int i=1;i<=7;i++) {
     Check(Run(i)==EFI_NOT_READY,"truncated or failed snapshot is incomplete");
     Check(strstr(Output,"capture-complete=0")!=NULL,"incomplete marker");

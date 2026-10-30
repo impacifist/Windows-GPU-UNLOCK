@@ -1,6 +1,7 @@
 /* Modified 2026-10-19/20 for Windows GPU UNLOCK; changes documented in CHANGES.md. */ /* SPDX-License-Identifier: GPL-2.0-only */
 /* Real retained core + compatibility layer + UEFI port; only EFI services are fake. */
 #include "../port.h"
+#include "../checks.h"
 #ifdef GU_ENTRY_LATCHED
 /* Test fixture baseline only, never a production fixed-selector definition. */
 #ifndef GU_STOCK_PROFILE_SS0
@@ -258,14 +259,16 @@ static EFI_STATUS EFIAPI write_config(EFI_PCI_IO_PROTOCOL *p,EFI_PCI_IO_PROTOCOL
   UINT32 offset,UINTN count,VOID *value) {
   CHECK(p==&pci && width<=EfiPciIoWidthUint32 && count==1);quiet_check();
   UINTN bytes=(UINTN)1<<width;CHECK(offset+bytes<=sizeof(config));
-  CHECK(!(offset<=6 && offset+bytes>6) && offset!=0x82 && offset!=0x64);
+  CHECK(!(offset<=6 && offset+bytes>6) &&
+    !(offset<=Gu.pcie_cap+10U && offset+bytes>Gu.pcie_cap+10U) &&
+    !(offset<=Gu.pm_cap+4U && offset+bytes>Gu.pm_cap+4U));
   UINT32 trace_value=0;memcpy(&trace_value,value,bytes);trace_write(1,(UINT32)width,offset,trace_value);
   fake.pci_writes++;memcpy(config+offset,value,bytes);
-  if(offset==0x80 && width==EfiPciIoWidthUint16 && (*(UINT16 *)value&0x8000)) {
+  if(offset==Gu.pcie_cap+8U && width==EfiPciIoWidthUint16 && (*(UINT16 *)value&0x8000)) {
     CHECK(!(config[4]&4) && fake.gsp_starts==1 && fake.sec2_starts==1);
     CHECK(!fake.unmaps && !fake.frees);check_stock_signature();
     fake.flrs++;CHECK(fake.flrs==1);fake.delay_since_flr=0;
-    memset(config+0x10,0,24);config[4]=0;config[0x80]=config[0x81]=0;
+    memset(config+0x10,0,24);config[4]=0;config[Gu.pcie_cap+8]=config[Gu.pcie_cap+9]=0;
     registers[(GSP+0x3c0)/4]=registers[(SEC2+0x3c0)/4]=0;
     registers[0x1fa824/4]=registers[0x1fa828/4]=0;
     registers[0x118128/4]=1;registers[0x118234/4]=0xff;registers[0x110100/4]=0x10;
@@ -429,6 +432,16 @@ static VOID setup(enum scenario mode) {
   Gu.bar_base=GU_BAR0_BASE;
 #endif
   Gu.pcie_cap=0x78;Gu.pcie_version=2;Gu.pm_cap=0x60;Gu.msi_cap=0x68;Gu.msix_cap=0;
+#ifdef GU_EXPERIMENTAL_3090
+  if(core_use_capture) {
+    UINT32 words[64];GU_CAPS caps;memcpy(words,config,sizeof(words));
+    CHECK(GuCheckConfig(words,GU_TARGET_SEGMENT,GU_TARGET_BUS,0,0,&caps));
+    Gu.pcie_cap=caps.pcie;Gu.pcie_version=caps.pcie_version;Gu.pm_cap=caps.pm;
+    Gu.msi_cap=caps.msi;Gu.msix_cap=caps.msix;
+    fake.pci_attributes=(config[4]&1?EFI_PCI_IO_ATTRIBUTE_IO:0)|
+      (config[4]&2?EFI_PCI_IO_ATTRIBUTE_MEMORY:0);
+  }
+#endif
   Gu.owned=Gu.armed=Gu.display_ok=Gu.profile_verified=TRUE;Gu.display_check=display_check;
 #ifdef GU_ENTRY_LATCHED
   registers[SS0/4]=test_entry_ss0;registers[SS1/4]=test_entry_ss1;
@@ -478,7 +491,7 @@ int main(int argc,char **argv) {
 #endif
   for(int mode=SUCCESS;mode<SCENARIO_COUNT;mode++) {
     setup((enum scenario)mode);UINT64 mask=0xffffffffffffULL;
-    struct pci_dev device={.dev={.dma_mask=&mask,.coherent_dma_mask=0xfffffffffULL},.pm_cap=0x60,.refs=1};
+    struct pci_dev device={.dev={.dma_mask=&mask,.coherent_dma_mask=0xfffffffffULL},.pm_cap=Gu.pm_cap,.refs=1};
     struct gpu_unlock_610_shared shared={0};
     int result=gpu_unlock_610_load_shared(&device,&shared);CHECK(!result);
     result=gpu_unlock_610_unlock(&device,&shared);gpu_unlock_610_release_shared(&shared);

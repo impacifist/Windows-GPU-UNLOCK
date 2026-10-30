@@ -121,10 +121,21 @@ def validate_envelope(envelope):
         require(len(set(ids)) == len(ids))
         chips = envelope['chips']
         require(isinstance(chips, list) and chips)
+        admitted_ids = set()
         for chip in chips:
             require(hex_value(chip['chip'], r'[0-9a-f]{8}') and isinstance(chip['family'], str))
             memory = chip['memory']
             require(isinstance(memory, list) and memory and all(hex_value(v, r'[0-9a-f]{1,8}') for v in memory))
+            cards = chip['pci_memory']
+            require(isinstance(cards, dict) and cards)
+            require(all(card in ids for card in cards))
+            for card, sizes in cards.items():
+                require(card not in admitted_ids)
+                admitted_ids.add(card)
+                require(isinstance(sizes, list) and sizes and len(set(sizes)) == len(sizes))
+                require(all(isinstance(size, str) and size in memory for size in sizes))
+            require(set(memory) == {size for sizes in cards.values() for size in sizes})
+        require(admitted_ids == set(ids))
         require(len({chip['chip'] for chip in chips}) == len(chips))
         drivers = envelope['nvgop']
         require(isinstance(drivers, list) and drivers)
@@ -132,6 +143,19 @@ def validate_envelope(envelope):
             require(hex_value(driver['version'], r'[0-9a-f]{1,8}'))
             require(hex_value(driver['text_sha256'], r'[0-9a-f]{64}'))
         require(len({(int(d['version'], 16), d['text_sha256']) for d in drivers}) == len(drivers))
+        for chip in chips:
+            allowed = chip['nvgop']
+            require(isinstance(allowed, list) and allowed)
+            require(all(isinstance(driver, dict) and
+                        any(driver.get('version') == known['version'] and driver.get('text_sha256') == known['text_sha256']
+                            for known in drivers) for driver in allowed))
+            require(len({(driver['version'], driver['text_sha256']) for driver in allowed}) == len(allowed))
+            if 'pci_nvgop' in chip or chip['chip'] == 'b74000a1':
+                try:
+                    for card in chip['pci_memory']:
+                        mp.card_nvgop(chip, int(card, 16))
+                except mp.Refused:
+                    raise ValueError('invalid installed envelope') from None
     except (KeyError, TypeError):
         raise ValueError('invalid installed envelope') from None
 
@@ -279,7 +303,7 @@ def check(folder, envelope):
             return report
         latest = observations[-1]
         for earlier in observations[:-1]:
-            if any(earlier[key] != latest[key] for key in ('defines', 'config', 'igpu_id', 'no_edid_driver')):
+            if any(earlier[key] != latest[key] for key in ('defines', 'config', 'igpu_id', 'no_edid_driver', 'child_paths')):
                 add('invalid_data', 'captures_disagree')
                 return report
         try:

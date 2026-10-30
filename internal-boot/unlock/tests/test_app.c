@@ -242,7 +242,7 @@ static EFI_STATUS EFIAPI close_protocol(EFI_HANDLE h,EFI_GUID *g,EFI_HANDLE agen
   CHECK(GuSafeToReturn() && !Gu.allocations);exclusive=FALSE;close_protocol_calls++;return EFI_SUCCESS;
 }
 static EFI_STATUS EFIAPI location(EFI_PCI_IO_PROTOCOL *p,UINTN *s,UINTN *b,UINTN *d,UINTN *f) {
-  CHECK(p==&pci || p==&replacement_pci);*s=*d=*f=0;*b=GU_TARGET_BUS;return EFI_SUCCESS;
+  CHECK(p==&pci || p==&replacement_pci);*s=GU_TARGET_SEGMENT;*d=*f=0;*b=GU_TARGET_BUS;return EFI_SUCCESS;
 }
 static EFI_STATUS EFIAPI replacement_read(EFI_PCI_IO_PROTOCOL *p,EFI_PCI_IO_PROTOCOL_WIDTH w,UINT32 o,UINTN n,VOID *d) {
   CHECK(p==&replacement_pci);return read_config(&pci,w,o,n,d);
@@ -380,6 +380,10 @@ static void app_setup(enum app_case mode) {
   setup(mode==APP_BME || mode==APP_HANDOFF_BME?BME_READBACK_FAIL:mode==APP_DIRTY?FWSEC_TIMEOUT:mode==APP_UNMAP?UNMAP_FAIL:mode==APP_SELECTOR?SELECTOR_LOST:
     mode==APP_FWSEC_NO_WPR?PIO_UNAVAILABLE_NO_WPR:mode==APP_FWSEC_PIO_UNAVAILABLE?PIO_UNAVAILABLE:SUCCESS);
   app_mode=mode;memcpy(config,captured_config,sizeof(config));
+  /* Initialize once from this capture, not setup()'s command=3 default.
+   * Keep BME-on inputs visible and preserve later deliberate cache drift. */
+  fake.pci_attributes=(config[4]&1?EFI_PCI_IO_ATTRIBUTE_IO:0)|
+    (config[4]&2?EFI_PCI_IO_ATTRIBUTE_MEMORY:0)|(config[4]&4?EFI_PCI_IO_ATTRIBUTE_BUS_MASTER:0);
   memset(&st,0,sizeof(st));memset(&rt,0,sizeof(rt));memset(files,0,sizeof(files));memset(&loaded,0,sizeof(loaded));
   exclusive_calls=close_protocol_calls=key_calls=watchdog_calls=report_bytes=file_closes=0;
   query_calls=0;query_allocation=NULL;

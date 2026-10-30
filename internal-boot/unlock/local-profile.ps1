@@ -6,6 +6,28 @@
 
 function Get-GuSha256([string]$Path){(Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant()}
 
+# ConvertFrom-Json emits Int32 in Windows PowerShell and Int64 in PowerShell 7.
+# Check the original type before comparing: no string/float/bool coercion at a gate.
+function Test-GuExactInteger($Value,[int]$Expected) {
+ return ($Value -is [int] -or $Value -is [long]) -and $Value -eq $Expected
+}
+
+# A resumed workflow must honor the same explicit bus constraint as its probe.
+# Check before any local capture archive, profile generation or package/staging.
+function Assert-GuProbeTargetBus([string[]]$Paths,[ValidateRange(1,255)][int]$TargetBus) {
+ foreach($path in $Paths) {
+  $item=Get-Item -LiteralPath $path
+  if($item.PSIsContainer -or $item.Length -gt 8MB){throw 'Probe capture exceeds the diagnostic file limit'}
+  $text=[IO.File]::ReadAllText($item.FullName)
+  $rows=[regex]::Matches($text,'(?m)^probe-target[^\r\n]*\r?$')
+  $target=if($rows.Count -eq 1){[regex]::Match($rows[0].Value.TrimEnd("`r"),'^probe-target seg=0x([0-9a-f]{1,4}) bus=0x([0-9a-f]{1,4}) dev=0x([0-9a-f]{1,4}) fun=0x([0-9a-f]{1,4})$')}else{$null}
+  if(!$target -or !$target.Success -or
+     [Convert]::ToUInt32($target.Groups[2].Value,16) -ne $TargetBus -or
+     [Convert]::ToUInt32($target.Groups[3].Value,16) -ne 0 -or
+     [Convert]::ToUInt32($target.Groups[4].Value,16) -ne 0){throw 'Captured probe target does not match explicit -TargetBus; no profile or package was generated'}
+ }
+}
+
 function Get-LocalProfile([string]$Repo) {
  $header=Join-Path $Repo 'internal-boot/unlock/profile-local.h'
  if(!(Test-Path -LiteralPath $header)){throw 'No local profile: run research/profile/make-profile.py on this machine''s probe captures first'}
@@ -22,6 +44,31 @@ function Get-LocalProfile([string]$Repo) {
   throw 'profile-local.h requires one exact GU_NO_EDID_DRIVER 0/1; regenerate the local profile'
  }
  $noEdidDriver=$edidRows[0].Value.EndsWith(' 1')
+ $segmentRows=@([regex]::Matches($text,'(?m)^[ \t]*#[ \t]*define[ \t]+GU_TARGET_SEGMENT\b[^\r\n]*'))
+ $legacySegment=($segmentRows.Count -eq 0)
+ $segment=0
+ if($text -match '(?m)^[ \t]*#[ \t]*undef[ \t]+GU_TARGET_SEGMENT\b' -or
+    (!$legacySegment -and ($segmentRows.Count -ne 1 -or $segmentRows[0].Value -cnotmatch '^#define GU_TARGET_SEGMENT 0x[0-9a-f]{1,4}U$'))){
+  throw 'Local target segment requires one exact generated 16-bit hexadecimal value without overrides'
+ }
+ if(!$legacySegment){$segment=[Convert]::ToInt32(($segmentRows[0].Value -replace '^#define GU_TARGET_SEGMENT 0x','' -replace 'U$',''),16)}
+ $aggregateRows=@([regex]::Matches($text,'(?m)^[ \t]*#[ \t]*define[ \t]+GU_LOCAL_CONSOLE_AGGREGATE\b[^\r\n]*'))
+ $childRows=@([regex]::Matches($text,'(?m)^[ \t]*#[ \t]*define[ \t]+GU_LOCAL_CHILD_COUNT\b[^\r\n]*'))
+ if($text -match '(?m)^[ \t]*#[ \t]*undef[ \t]+GU_LOCAL_(CONSOLE_AGGREGATE|CHILD_COUNT)\b' -or
+    $text -match '(?m)^[ \t]*#[ \t]*(define|undef)[ \t]+GU_CONSOLE_(AGGREGATE|MULTI_CHILD|CHILD_COUNT)\b'){
+  throw 'Local console topology must use generated local metadata without overrides'
+ }
+ $legacyTopology=($aggregateRows.Count -eq 0 -and $childRows.Count -eq 0)
+ $consoleAggregate=$false;$childCount=0
+ if(!$legacyTopology) {
+  if($aggregateRows.Count -ne 1 -or $aggregateRows[0].Value -cnotmatch '^#define GU_LOCAL_CONSOLE_AGGREGATE [01]$' -or
+     $childRows.Count -ne 1 -or $childRows[0].Value -cnotmatch '^#define GU_LOCAL_CHILD_COUNT [1-4]$'){
+   throw 'Local topology requires one exact aggregate 0/1 and child count 1..4'
+  }
+  $consoleAggregate=$aggregateRows[0].Value.EndsWith(' 1');$childCount=[int]$childRows[0].Value.Substring($childRows[0].Value.Length-1)
+ }
+ if($consoleAggregate -and $noEdidDriver){throw 'Aggregate local profiles require an EDID driver'}
+ if($childCount -gt 2 -and ($consoleAggregate -or !$noEdidDriver)){throw 'Three/four children require non-aggregate firmware without an EDID driver'}
  return [ordered]@{
   Define='-DGU_PROFILE_LOCAL';Name=(Value 'GU_PROFILE_NAME' '"(LOCAL-[0-9a-f]{8}-[0-9a-f]{8}-[0-9a-f]{8})"')
   TargetPci=(Value 'GU_BOARD_ID' '0x([0-9a-f]{8})U');Subsystem=(Value 'GU_BOARD_SUBSYSTEM' '0x([0-9a-f]{8})U')
@@ -29,17 +76,27 @@ function Get-LocalProfile([string]$Repo) {
   Memory=('0x'+(Value 'GU_DEVICE_MEMORY_SIZE' '0x([0-9a-f]+)U'));HeadlessOnly=$true;UsbOnly=$true
   HeaderSha256=(Get-GuSha256 $header)
   NoEdidDriver=$noEdidDriver
+  Segment=$segment;LegacySegment=$legacySegment
+  ConsoleAggregate=$consoleAggregate;ChildCount=$childCount;LegacyTopology=$legacyTopology
  }
 }
 
 # Everything the host tests compile or that decides what they check. Local build inputs written
 # by the build scripts themselves (platform-config.h, generated.h, build/) are excluded.
+. (Join-Path $PSScriptRoot '../../research/profile/probe-manifest.ps1')
 function Get-LocalRequiredFiles {
  @('internal-boot/efi_runtime.c','internal-boot/unlock/local-profile.ps1',
+   'internal-boot/unlock/gpu-family.h','internal-boot/unlock/firmware-profile.h',
+   'internal-boot/unlock/gpu-path.h','research/profile/gpu_path.py',
+   'internal-boot/unlock/tests/test_gpu_paths.c','internal-boot/unlock/tests/test_gpu_path_vectors.c',
+   'internal-boot/unlock/tests/test_refresh_identity.c','research/profile/test_refresh_identity.py',
+   'research/profile/test_gpu_path.py','research/profile/test_gpu_path_contract.py',
    'internal-boot/unlock/build.ps1','internal-boot/boot/handoff.c',
    'research/headless/build-usb.ps1','research/headless/stage-usb.ps1',
    'research/profile/make-profile.py','research/profile/capture_graph.py','research/profile/test-profile.ps1',
-   'research/profile/host.ps1','research/profile/proven.json')
+   'internal-boot/boot/make-console-fixture.py','internal-boot/boot/test_aggregate_full.c',
+   'internal-boot/boot/test_aggregate_prepare.c','internal-boot/boot/test_research_input.c',
+   'research/profile/host.ps1','research/profile/proven.json','research/profile/probe-manifest.ps1')+@(Get-GuReadonlyCaptureFiles)
 }
 function Get-LocalTreeInputs([string]$Repo) {
  $Repo=[IO.Path]::GetFullPath($Repo).TrimEnd('\','/')
@@ -66,6 +123,14 @@ function Get-LocalTreeInputs([string]$Repo) {
   if(!$found){throw "Empty input root: $entry"}
  }
  $files['internal-boot/efi_runtime.c']=Get-GuSha256 (Join-Path $Repo 'internal-boot/efi_runtime.c')
+ foreach($directory in @('research','research/pci-decode')) {
+  if((Get-Item -LiteralPath (Join-Path $Repo $directory) -Force).Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Indirect readonly source directory'}
+ }
+ foreach($relative in (Get-GuReadonlyCaptureFiles)) {
+  $path=Join-Path $Repo $relative
+  if((Get-Item -LiteralPath $path -Force).Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Indirect readonly source file'}
+  $files[$relative]=Get-GuSha256 $path
+ }
  [string[]]$paths=@($files.Keys);[Array]::Sort($paths,[StringComparer]::Ordinal)
  foreach($path in $paths){[pscustomobject][ordered]@{Path=$path;Sha256=$files[$path]}}
 }
@@ -76,16 +141,18 @@ function Get-LocalInputDigest($Inputs) {
  try{return (($sha.ComputeHash($bytes) | ForEach-Object {$_.ToString('x2')}) -join '')}finally{$sha.Dispose()}
 }
 function Get-LocalTreeDigest([string]$Repo) {Get-LocalInputDigest @(Get-LocalTreeInputs $Repo)}
-function Get-LocalExpectedJobs([bool]$NoEdidDriver=$false) {
+function Get-LocalExpectedJobs([bool]$NoEdidDriver=$false,[bool]$ConsoleAggregate=$false) {
+ if($NoEdidDriver -and $ConsoleAggregate){throw 'Aggregate replay requires an EDID driver'}
  $jobs=[ordered]@{'generator refusals'=0;'stock-selection'=0;'checks (real config)'=0;
- 'checks other profile (must reject)'=1;'port'=0;'write-lock'=0;'master-attributes'=0;'runtime'=0;
+ 'checks other profile (must reject)'=1;'port'=0;'fresh PCI identity'=0;'write-lock'=0;'master-attributes'=0;'runtime'=0;
  'profile-lock-entryLatchedSs1Full'=0;'profile-lock-entryLatchedSs1Preserve'=0;
  'r2 console replay (real graph)'=0;'r2 replay other profile (must reject)'=1;
- 'cold pre-check (read-only)'=0;'full flow gates'=0;'core transaction (efi)'=0;
+ 'cold pre-check (read-only)'=0;'full flow gates'=0;'research input policy'=0;'core transaction (efi)'=0;
  'manual entry-latched'=0;'automatic internal'=0;'headless internal'=0;'headless USB (shipped child)'=0}
- # A firmware without an EDID driver releases the GPU differently from every reviewed profile, so its
- # evidence must also hold the driver-release replay on its own graph.
- if($NoEdidDriver){$jobs['release replay, no EDID driver (real graph)']=0}
+ # Every generated profile must replay the complete release on its own graph/images.
+ if($ConsoleAggregate){$jobs['release replay, aggregate console (real graph)']=0}
+ elseif($NoEdidDriver){$jobs['release replay, no EDID driver (real graph)']=0}
+ else {$jobs['release replay, EDID driver (real graph)']=0}
  return $jobs
 }
 function Get-LocalObjectNames($Value) {
@@ -109,12 +176,24 @@ function Assert-LocalFixtures([string]$Repo,$Fixtures) {
 }
 function Get-LocalProfileReport([string]$Repo,$Hardware) {
  $report=Get-Content -LiteralPath (Join-Path $Repo 'research/profile/local/profile.json') -Raw | ConvertFrom-Json
- if($report.Format -isnot [int] -or $report.Format -ne 1 -or
+ if(!(Test-GuExactInteger $report.Format 1) -or
     $report.ProfileName -cne $Hardware.Name -or $report.HeaderSha256 -cne $Hardware.HeaderSha256 -or
     $report.PromSha256 -cne $Hardware.Prom -or $report.HardwareTested -isnot [bool] -or $report.HardwareTested){throw 'Generated profile report identity is invalid'}
  Assert-LocalFixtures $Repo $report.Fixtures
  if($null -eq $report.Replay -or $report.Replay.NoEdidDriver -isnot [bool] -or $report.Replay.NoEdidDriver -ne $Hardware.NoEdidDriver){
   throw 'Generated profile report NoEdidDriver must be boolean and match the header'
+ }
+ $topologyKeys=@($report.Replay.PSObject.Properties.Name)
+ if(!$Hardware.LegacySegment -or $topologyKeys -contains 'Segment') {
+  if(!(Test-GuExactInteger $report.Replay.Segment $Hardware.Segment)){
+   throw 'Generated profile report segment must be an integer and match the header exactly'
+  }
+ }
+ if(!$Hardware.LegacyTopology -or $topologyKeys -contains 'Aggregate' -or $topologyKeys -contains 'ChildCount') {
+  if($report.Replay.Aggregate -isnot [bool] -or $report.Replay.Aggregate -ne $Hardware.ConsoleAggregate -or
+     !(Test-GuExactInteger $report.Replay.ChildCount $Hardware.ChildCount)){
+   throw 'Generated profile report topology must match the header exactly'
+  }
  }
  return $report
 }
@@ -125,7 +204,7 @@ function Assert-LocalProfileEvidence([string]$Repo) {
  $path=Join-Path $local 'test-results.json'
  if(!(Test-Path -LiteralPath $path)){throw "Local profile $($hw.Name) has no passing host-test evidence; run research/profile/test-profile.ps1"}
  $e=Get-Content -LiteralPath $path -Raw | ConvertFrom-Json
- if($e.Format -isnot [int] -or $e.Format -ne 2 -or $e.AllPassed -isnot [bool] -or !$e.AllPassed -or
+ if(!(Test-GuExactInteger $e.Format 2) -or $e.AllPassed -isnot [bool] -or !$e.AllPassed -or
     $e.HardwareAccess -isnot [bool] -or $e.HardwareAccess -or $e.ProfileName -cne $hw.Name){throw 'Local profile evidence format/type mismatch; rerun host tests'}
  if($e.HeaderSha256 -ne $hw.HeaderSha256){throw 'profile-local.h changed after its host tests passed; rerun research/profile/test-profile.ps1'}
  if($e.PromSha256 -ne $hw.Prom){throw 'Local test evidence is for another PROM'}
@@ -140,11 +219,11 @@ function Assert-LocalProfileEvidence([string]$Repo) {
   if($e.Inputs[$i].Path -cne $inputs[$i].Path -or $e.Inputs[$i].Sha256 -cne $inputs[$i].Sha256){throw 'Build input path/hash changed after tests'}
  }
  if($e.TreeSha256 -cne (Get-LocalInputDigest $inputs)){throw 'Build input digest changed after tests'}
- $jobs=Get-LocalExpectedJobs $hw.NoEdidDriver
+ $jobs=Get-LocalExpectedJobs $hw.NoEdidDriver $hw.ConsoleAggregate
  Assert-LocalKeys $e.Results @($jobs.Keys) 'Host jobs'
  foreach($name in $jobs.Keys){
   $job=$e.Results.$name
-  if($job.Exit -isnot [int] -or $job.Expected -isnot [int] -or $job.Exit -ne $jobs[$name] -or $job.Expected -ne $jobs[$name]){throw "Missing or invalid host result: $name"}
+  if(!(Test-GuExactInteger $job.Exit $jobs[$name]) -or !(Test-GuExactInteger $job.Expected $jobs[$name])){throw "Missing or invalid host result: $name"}
  }
  return $e
 }
@@ -157,7 +236,7 @@ function Assert-LocalProfilePackage([string]$Repo,$Manifest) {
 }
 
 function Assert-GuUsbManifest([string]$Repo,$Manifest) {
- if($Manifest.Format -isnot [int] -or $Manifest.Format -ne 2 -or
+ if(!(Test-GuExactInteger $Manifest.Format 2) -or
     $Manifest.Mode -cne 'single-rtx-headless-unlock-then-windows-usb' -or
     $Manifest.CanUnlock -isnot [bool] -or !$Manifest.CanUnlock -or
     $Manifest.RequiresHumanKey -isnot [bool] -or $Manifest.RequiresHumanKey -or

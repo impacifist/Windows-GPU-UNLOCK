@@ -48,9 +48,11 @@ try {
  $jobs=@(
   @{Name='checks';Sources=@('tests/test_checks.c','checks.c');Defines=@();Args=@($Capture)},
   @{Name='port';Sources=@('tests/test_port.c','port.c');Defines=@('-DGU_HOST_WRITE_TEST');Args=@()},
+  @{Name='pci-layout';Sources=@('tests/test_pci_layout.c','checks.c','port.c');Defines=@('-DGU_HOST_WRITE_TEST');Args=@()},
   @{Name='preflight';Sources=@('tests/test_3090_preflight.c','app.c','app_io.c','ownership.c','format.c','sha256.c','checks.c')+$core;Defines=$defs;Args=@($Prom,$Capture)},
   @{Name='write-lock';Sources=@('tests/test_preflight_lock.c','port.c');Defines=@();Args=@()},
   @{Name='master-attributes';Sources=@('tests/test_master_attributes.c')+$core;Defines=$defs+@('-DGU_HOST_WRITE_TEST');Args=@()},
+  @{Name='capture-fixture';Sources=@('tests/test_capture_fixture.c','checks.c')+$core;Defines=$defs+@('-DGU_HOST_WRITE_TEST');Args=@()},
   @{Name='runtime';Sources=@('tests/test_runtime.c','format.c',"$out/runtime-host.obj");Defines=@('-fno-builtin');Args=@()}
  )
  foreach($profile in $profiles) {
@@ -71,7 +73,7 @@ try {
    }
    foreach($profile in $profiles) {
     $profileDefs=$defs+@('-DGU_EXPERIMENTAL_3090',(ProfileDefine $profile))
-    if($haveAssets){$jobs+=@{Name="core24GB-$profile";Sources=@('tests/test_efi_transaction.c')+$core;Defines=$profileDefs;Args=@($Prom,$Assets,$ColdCapture)}}
+    if($haveAssets){$jobs+=@{Name="core24GB-$profile";Sources=@('tests/test_efi_transaction.c','checks.c')+$core;Defines=$profileDefs;Args=@($Prom,$Assets,$ColdCapture)}}
     $appTest=if($profile -like 'entryLatchedSs1*'){'tests/test_entry_latched.c'}else{'tests/test_3090_experimental.c'}
     $jobs+=@{Name="experimental-$profile";Sources=@($appTest,'app_io.c','ownership.c','format.c','sha256.c','checks.c')+$core;Defines=$profileDefs;Args=$experimentalArgs}
    }

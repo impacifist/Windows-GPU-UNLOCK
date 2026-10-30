@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "purpose": "active-windows-display-route-inventory",
+  "started_at_utc": "2026-10-26T14:46:54.873Z",
+  "ended_at_utc": "2026-10-26T14:46:55.312Z",
+  "process_exit_code": 0,
+  "process_elapsed_seconds": 0.4370000000053551,
+  "process_deadline_seconds": 10,
+  "collector": {
+    "source": "research/rtx3080/display-topology/collect_display_paths.cpp",
+    "source_sha256": "2999b10f2c75e30bfd30eabf320105d85c0759b8adf8cae1c89bb8a84be03d6d",
+    "binary_sha256": "78c2930464cccd0d7c441d1fb6e3e5100c82db2951420189dfa39eb892f47162",
+    "repository_base_commit": "cf44e7619c147d8e1061b94929d867bdd358dfee",
+    "compiler": "MSVC 19.29.30159 for x64",
+    "compiler_options": [
+      "/EHsc",
+      "/std:c++17",
+      "/O2",
+      "/W4",
+      "/WX"
+    ],
+    "link_libraries": [
+      "User32.lib",
+      "Dxgi.lib"
+    ],
+    "raw_stdout_sha256": "3ac97b15d582488947e6eaa8bbf303d093e8bbb35d66064a88ce1cbf7b646b75",
+    "output_storage": "parsed JSON embedded without semantic changes"
+  },
+  "observation": {
+    "schema_version": 1,
+    "status": "observed",
+    "query_flags": 18,
+    "query_attempts": 1,
+    "active_path_count": 1,
+    "returned_mode_count": 3,
+    "unique_target_adapter_count": 1,
+    "paths": [
+      {
+        "path_index": 1,
+        "path_active": true,
+        "target_available": true,
+        "source_target_same_adapter": true,
+        "video_output_technology": 10,
+        "connection_type": "displayport_external",
+        "source_adapter": {
+          "vendor_id": 4318,
+          "device_id": 8726,
+          "subsystem_id": 1077875800,
+          "pci_device_id": "10de:2216",
+          "pci_subsystem_id": "1458:403f",
+          "software_adapter": false,
+          "matches_inventory_gpu_ids": true
+        },
+        "target_adapter": {
+          "vendor_id": 4318,
+          "device_id": 8726,
+          "subsystem_id": 1077875800,
+          "pci_device_id": "10de:2216",
+          "pci_subsystem_id": "1458:403f",
+          "software_adapter": false,
+          "matches_inventory_gpu_ids": true
+        }
+      }
+    ],
+    "graphics_workload_submitted": false,
+    "display_configuration_changed": false,
+    "raw_device_paths_included": false,
+    "adapter_luids_included": false,
+    "monitor_identifiers_included": false
+  }
+}

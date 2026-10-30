@@ -81,7 +81,7 @@ try {
  $app=@('app_io.c','ownership.c','format.c','sha256.c','checks.c')+$core
  $latched=$flags+$profile+$defs+@('-DGU_EXPERIMENTAL_3090','-DGU_ENTRY_LATCHED_SS1_FULL')
  $variants=@(
-  @{Name='core transaction (efi)';Defs=@('-DGU_INTERNAL_BOOT');Src=@('tests/test_efi_transaction.c')+$core;Args=@($prom,$Assets,$cold)},
+  @{Name='core transaction (efi)';Defs=@('-DGU_INTERNAL_BOOT');Src=@('tests/test_efi_transaction.c','checks.c')+$core;Args=@($prom,$Assets,$cold)},
   @{Name='manual entry-latched';Defs=@('-DGU_INTERNAL_BOOT');Src=@('tests/test_entry_latched.c')+$app;Args=@($prom,$cold,$Assets)},
   @{Name='automatic internal';Defs=@('-DGU_INTERNAL_BOOT','-DGU_AUTOMATIC_BOOT');Src=@('tests/test_automatic.c')+$app;Args=@($prom,$cold,$Assets)},
   @{Name='headless internal';Defs=@('-DGU_INTERNAL_BOOT','-DGU_AUTOMATIC_BOOT','-DGU_HEADLESS_RESEARCH');Src=@('tests/test_headless.c')+$app;Args=@($prom,$cold,$Assets)},

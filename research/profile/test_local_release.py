@@ -1,4 +1,4 @@
-"""Capture-free host replay of the production no-EDID release path.
+"""Capture-free host replay of production release with and without an EDID driver.
 
 Synthetic buffers are only hashed/read as data; no vendor code or GPU is used.
 Profile/fixture headers are virtual compiler inputs, never installed locally.
@@ -41,52 +41,68 @@ def main():
              '-I', str(out), '-I', str(ROOT / 'deps/edk2/MdePkg/Include'), '-I', str(ROOT / 'deps/edk2/MdePkg/Include/X64')]
     sources = [str(BOOT / 'test_headless_full.c'), str(BOOT / 'console-flow.c'),
                str(ROOT / 'internal-boot/unlock/checks.c'), str(ROOT / 'internal-boot/unlock/sha256.c')]
-    summaries, child_checks = [], []
-    for bus, children, command, memory in itertools.product((1, 0x2b), (1, 2), (2, 3), (0x6000, 0x5ff4)):
-        name = f'bus{bus:x}-children{children}-cmd{command}-memory{memory:x}'
+    summaries, child_checks, image_refusals = [], [], []
+    envelope=json.loads((ROOT / 'research/profile/proven.json').read_text())
+    cards=((0x220410de,0xb72000a1,0x6000),(0x220410de,0xb72000a1,0x5ff4),
+           (0x248710de,0xb74000a1,0x3000),(0x250410de,0xb76000a1,0x3000),
+           (0x220310de,0xb72000a1,0x5ff4),(0x248410de,0xb74000a1,0x2000),
+           (0x24c910de,0xb74000a1,0x2000))
+    for bus, children, command, (board,chip,memory), no_edid in itertools.product((1, 0x2b), (1, 2, 3, 4), (2, 3), cards, (False,True)):
+        if children>2 and not no_edid:continue
+        name = f'id{board:x}-bus{bus:x}-children{children}-cmd{command}-memory{memory:x}-noedid{int(no_edid)}'
         case = out / name
         case.mkdir()
         capture = case / 'DIAG.TXT'
         capture.write_text(data.synthetic_capture(bus=bus, children=children, command=command, memory=memory,
-                                                 child_adr=0x10 if bus == 1 else 0xa0), encoding='ascii')
-        admitted = data.analyze(capture.read_text())
+                                                 child_adr=0x10 if bus == 1 else 0xa0, board=board,chip=chip,no_edid=no_edid), encoding='ascii')
+        admitted = data.analyze(capture.read_text(), envelope)
+        nv_size,nv_text=(0x26ae0,0x20d33) if board in (0x248710de,0x250410de,0x220310de) else (0x2be40,0x24426)
+        if board==0x24c910de:nv_size,nv_text=0x26e00,0x2106f
         defines = admitted['defines'] + [
-            ('GU_NVGOP_TEXT_BYTES', '0x24426U'),
-            ('GU_NVGOP_TEXT_SHA256', '"' + hashlib.sha256(bytes(0x24426)).hexdigest() + '"')]
+            ('GU_NVGOP_TEXT_BYTES', f'0x{nv_text:x}U'),
+            ('GU_NVGOP_TEXT_SHA256', '"' + hashlib.sha256(bytes(nv_text)).hexdigest() + '"')]
+        if not no_edid:
+            defines += [('GU_EDID_TEXT_BYTES','0x700U'),
+                        ('GU_EDID_TEXT_SHA256','"'+hashlib.sha256(bytes(0x700)).hexdigest()+'"')]
         header = case / 'profile-local.h'
         header.write_text('/* Synthetic host-only inputs; not hardware evidence. */\n'
                           '#define GU_LOCAL_PROFILE_GENERATOR 1\n#define GU_PROFILE_NAME "LOCAL-SYNTHETIC-REPLAY"\n' +
                           '\n'.join(f'#define {key} {value}' for key, value in defines) + '\n')
         fixture = case / 'replay-fixture.h'
         run(name + '-fixture', [sys.executable, '-I', str(BOOT / 'make-console-fixture.py'), str(capture),
-                              '--single-rtx', '--no-igpu', '--no-edid-driver', '--no-edid-child',
-                              '--rtx-id=220410de', '--rtx-fb=0x000000fcc0000000', '--output=' + str(fixture)])
-        config = data.configuration(command)
+                              '--single-rtx', '--no-igpu', *(['--no-edid-driver'] if no_edid else []), '--no-edid-child',
+                              f'--rtx-id={board:08x}', '--rtx-fb=0x000000fcc0000000', '--output=' + str(fixture)])
+        config = data.configuration(command, board)
         import struct
         config_path = case / 'config.bin'
         config_path.write_bytes(struct.pack('<64I', *config))
         prom = case / 'prom.bin'; prom.write_bytes(bytes(1048576))
-        nv = case / 'nvgop.bin'; nv.write_bytes(bytes(0x2be40))
+        nv = case / 'nvgop.bin'; nv.write_bytes(bytes(nv_size))
+        edid=case/'edid.bin';edid.write_bytes(bytes(0x9000))
         overlay = case / 'overlay.json'
         overlay.write_text(json.dumps({'version': 0, 'roots': [
             {'type': 'file', 'name': str(ROOT / 'internal-boot/unlock/profile-local.h'), 'external-contents': str(header), 'use-external-name': False},
             {'type': 'file', 'name': str(BOOT / 'build/r2/replay-fixture.h'), 'external-contents': str(fixture), 'use-external-name': False}]}))
         exe = case / ('release.exe' if sys.platform == 'win32' else 'release')
         run(name + '-compile', flags + ['-ivfsoverlay', str(overlay), *sources, '-o', str(exe)])
-        summary = run(name, [str(exe), str(nv), str(prom), str(config_path)])
+        images=[str(nv)] if no_edid else [str(edid),str(nv)]
+        summary = run(name, [str(exe), *images, str(prom), str(config_path)])
         summaries.append({'case': name, 'result': summary})
         print(name + ': ' + summary, flush=True)
-        if children == 1 and command == 2 and memory == 0x6000:
+        if bus==1 and children==1 and command==2 and memory!=0x5ff4:
+            for index,image in enumerate(images):
+                for length in (0,2,63,Path(image).stat().st_size-1,Path(image).stat().st_size+1):
+                    damaged=case/f'bad-image-{index}-{length}.bin';damaged.write_bytes(bytes(length))
+                    arguments=images.copy();arguments[index]=str(damaged)
+                    refused=subprocess.run([str(exe),*arguments,str(prom),str(config_path)],capture_output=True,text=True)
+                    if refused.returncode!=1 or 'captured loaded driver image size mismatch' not in refused.stderr:
+                        raise RuntimeError('Malformed capture did not fail safely: '+str(damaged))
+                    image_refusals.append({'case':name,'image':index,'bytes':length,'exit':refused.returncode})
+        if no_edid and children == 1 and command == 2 and memory != 0x5ff4:
             probe = case / 'probe-report.txt'
-            # test_checks also tests a specific linked-capability layout. Supply that
-            # layout synthetically, retaining this local profile's identity and bus.
-            checks_config = config.copy()
-            checks_config[13] = 0x60
-            checks_config[16:] = [0] * 48
-            for at,value in {0x60:0x00036801,0x68:0x00807805,0x78:0x0012b410,
-                             0x7c:1<<28,0xb4:0x00140009,0xc8:0x00050011}.items():
-                checks_config[at//4] = value
-            probe.write_text(''.join(f'config_offset=0x{i*4:x}\nvalue=0x{value:08x}\n' for i,value in enumerate(checks_config)))
+            # Exercise the actual alternate 40/48 layout; test_checks retains its
+            # historical 60/68/78 assertions in a separate synthetic fixture.
+            probe.write_text(''.join(f'config_offset=0x{i*4:x}\nvalue=0x{value:08x}\n' for i,value in enumerate(config)))
             for job, inputs, arguments in (
                 ('checks', [str(ROOT / 'internal-boot/unlock/tests/test_checks.c'), str(ROOT / 'internal-boot/unlock/checks.c')], [str(probe)]),
                 ('port', [str(ROOT / 'internal-boot/unlock/tests/test_port.c'), str(ROOT / 'internal-boot/unlock/port.c')], [])):
@@ -96,7 +112,8 @@ def main():
                 child_checks.append({'case': name, 'job': job, 'result': result})
                 print(name + ': ' + result, flush=True)
     (out / 'summary.json').write_text(json.dumps({'synthetic_only': True, 'hardware_access': False,
-                                                 'cases': summaries, 'child_checks': child_checks}, indent=2))
+                                                 'cases': summaries, 'child_checks': child_checks,
+                                                 'image_refusals':image_refusals}, indent=2))
 
 
 if __name__ == '__main__':

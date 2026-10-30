@@ -10,7 +10,7 @@ static EFI_PCI_IO_PROTOCOL pci;
 static UINT8 config[256];
 static UINT32 registers[0x1000000/4];
 static struct {
-  UINTN allocs, frees, maps, unmaps, writes, pciwrites, reads, delay;
+  UINTN allocs, frees, maps, unmaps, writes, pciwrites, pcireads, reads, delay;
   int alloc_fail, map_fail, short_map, high_map, unaligned_map, unmap_fail, free_fail;
   int mem_fail, config_fail, lost_after_flr, flr_seen, config_too_early, flr_write_error;
   UINT64 next_dma;
@@ -45,6 +45,7 @@ static EFI_STATUS EFIAPI unmap(EFI_PCI_IO_PROTOCOL *P, VOID *M) {
 static EFI_STATUS EFIAPI readconfig(EFI_PCI_IO_PROTOCOL *P,
  EFI_PCI_IO_PROTOCOL_WIDTH W, UINT32 O, UINTN N, VOID *V) {
   (void)P;UINTN bytes=((UINTN)1<<W)*N;assert(O+bytes<=sizeof(config));
+  fake.pcireads++;
   if(fake.flr_seen && fake.delay<100000)fake.config_too_early=1;
   if(fake.config_fail)return EFI_DEVICE_ERROR;
   if(fake.flr_seen && fake.lost_after_flr && O==0){memset(V,255,bytes);return EFI_SUCCESS;}
@@ -54,13 +55,16 @@ static EFI_STATUS EFIAPI writeconfig(EFI_PCI_IO_PROTOCOL *P,
  EFI_PCI_IO_PROTOCOL_WIDTH W, UINT32 O, UINTN N, VOID *V) {
   (void)P;UINTN bytes=((UINTN)1<<W)*N;assert(O+bytes<=sizeof(config));
   /* Status and W1C capability registers must never be replayed. */
-  assert(!(O<=6 && O+bytes>6));assert(O!=0x82 && O!=0x64);
+  assert(!(O<=6 && O+bytes>6));
+  assert(!(O<Gu.pcie_cap+12U && O+bytes>Gu.pcie_cap+10U));
+  assert(!(O<Gu.pm_cap+6U && O+bytes>Gu.pm_cap+4U));
   fake.pciwrites++;if(fake.config_fail)return EFI_DEVICE_ERROR;
   memcpy(config+O,V,bytes);
-  if(O==0x80 && W==EfiPciIoWidthUint16 && (*(UINT16 *)V&0x8000)) {
+  if(O==Gu.pcie_cap+8U && W==EfiPciIoWidthUint16 && (*(UINT16 *)V&0x8000)) {
     fake.flr_seen=1;fake.delay=0;
     memset(config+0x10,0,24);config[4]=0;
-    config[0x80]=config[0x81]=0;
+    config[Gu.pcie_cap+8]=config[Gu.pcie_cap+9]=0;
+    if(Gu.pcie_version==2)config[Gu.pcie_cap+0x28]=config[Gu.pcie_cap+0x29]=0;
     if(fake.flr_write_error)return EFI_DEVICE_ERROR;
   }
   return EFI_SUCCESS;
@@ -98,9 +102,11 @@ static VOID setup(VOID) {
 }
 int main(void) {
   setup();
-  assert(GuTargetConfig((UINT32 *)config,0,GU_TARGET_BUS,0,0));
-  assert(!GuTargetConfig((UINT32 *)config,0,GU_TARGET_BUS+1U,0,0));
-  *(UINT32 *)(config+0x2c)^=1;assert(!GuTargetConfig((UINT32 *)config,0,GU_TARGET_BUS,0,0));
+  assert(GuTargetConfig((UINT32 *)config,GU_TARGET_SEGMENT,GU_TARGET_BUS,0,0));
+  assert(!GuTargetConfig((UINT32 *)config,GU_TARGET_SEGMENT^1U,GU_TARGET_BUS,0,0));
+  assert(!GuTargetConfig((UINT32 *)config,GU_TARGET_SEGMENT+0x10000U,GU_TARGET_BUS,0,0));
+  assert(!GuTargetConfig((UINT32 *)config,GU_TARGET_SEGMENT,GU_TARGET_BUS+1U,0,0));
+  *(UINT32 *)(config+0x2c)^=1;assert(!GuTargetConfig((UINT32 *)config,GU_TARGET_SEGMENT,GU_TARGET_BUS,0,0));
   setup(); VOID *cpu=NULL;UINT64 dma=0;
   assert(!EFI_ERROR(GuDmaAllocate(59136,&cpu,&dma)));
   assert(cpu && dma==0x12000000 && dma!=(UINTN)cpu && fake.maps==1);

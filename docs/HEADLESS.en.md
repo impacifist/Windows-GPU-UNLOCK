@@ -15,6 +15,11 @@ the [legacy USB guide](GUIDE.en.md) describes an AMD-display manual route.
 
 ## Prerequisites and storage
 
+Main also contains contributor-reported B660M/3070 Ti and B660M/3090 Ti internal
+profiles. For these later profiles, use main instead of the v0.3.1 checkout below
+and pass the exact `-HardwareProfile` to both Configure and build-unlock. See the
+[configuration and evidence limits](COMPATIBILITY.en.md). The default stays B650M.
+
 - Exact documented GPU/PROM, board, BIOS and PCI profile; Windows 11 x64 UEFI,
   Secure Boot disabled, Windows C: fully decrypted and BitLocker protection off.
   The tools do not change encryption.

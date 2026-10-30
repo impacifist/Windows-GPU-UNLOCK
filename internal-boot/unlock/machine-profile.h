@@ -10,6 +10,14 @@
  */
 #pragma once
 
+#ifdef GU_TARGET_SEGMENT
+#error Target segment must come from the selected profile, not a compiler override
+#endif
+
+#if defined(GU_GPU_FAMILY) || defined(GU_FIRMWARE_PROFILE)
+#error GPU family and firmware must be derived from the selected machine profile
+#endif
+
 #if (defined(GU_PROFILE_B650M_3090FE) + defined(GU_PROFILE_B660M_3070TI) + defined(GU_PROFILE_B660M_3090TI) + defined(GU_PROFILE_X870_3090TI) + defined(GU_PROFILE_B660PLUS_3060) + defined(GU_PROFILE_LOCAL) + defined(GU_PROFILE_H610M_3060) + defined(GU_PROFILE_PROBE_H610M_3060) + defined(GU_PROFILE_B660M_DUAL)) > 1
 #error Select exactly one machine profile
 #endif
@@ -35,7 +43,7 @@
  * (original verified B650M headless topology). */
 #if defined(GU_PROFILE_B660M_3070TI) || defined(GU_PROFILE_B660M_3090TI) || defined(GU_PROFILE_B660PLUS_3060) || defined(GU_PROFILE_B660M_DUAL)
 #define GU_CONSOLE_AGGREGATE 1
-#else
+#elif !defined(GU_PROFILE_LOCAL)
 #define GU_CONSOLE_AGGREGATE 0
 #endif
 
@@ -55,11 +63,34 @@
  * its read-only probe capture and never committed (see docs/NEW-MACHINE.en.md).
  * Same constants as a reviewed profile. Build scripts refuse a write build of it
  * unless research/profile/test-profile.ps1 passed against exactly this header and
- * this machine's PROM/capture fixtures. Only the non-aggregate single-RTX console
- * topology is generated. */
+ * this machine's PROM/capture fixtures. Console topology comes from generated
+ * metadata and requires its own topology-specific release replay evidence. */
 #include "profile-local.h"
-#if !defined(GU_LOCAL_PROFILE_GENERATOR) || GU_CONSOLE_AGGREGATE
-#error profile-local.h must come from research/profile/make-profile.py (non-aggregate topology)
+#if !defined(GU_LOCAL_PROFILE_GENERATOR)
+#error profile-local.h must come from research/profile/make-profile.py
+#endif
+#if defined(GU_CONSOLE_AGGREGATE) || defined(GU_CONSOLE_MULTI_CHILD) || defined(GU_CONSOLE_CHILD_COUNT)
+#error Local console topology must be derived from generated local metadata
+#endif
+#if defined(GU_LOCAL_CONSOLE_AGGREGATE) != defined(GU_LOCAL_CHILD_COUNT)
+#error Local topology metadata must contain both aggregate and child count
+#endif
+#ifdef GU_LOCAL_CONSOLE_AGGREGATE
+#if (GU_LOCAL_CONSOLE_AGGREGATE != 0 && GU_LOCAL_CONSOLE_AGGREGATE != 1) || GU_LOCAL_CHILD_COUNT < 1 || GU_LOCAL_CHILD_COUNT > 4
+#error Local topology requires aggregate 0/1 and child count 1..4
+#endif
+#if GU_LOCAL_CHILD_COUNT > 2 && (GU_LOCAL_CONSOLE_AGGREGATE || GU_NO_EDID_DRIVER != 1)
+#error Three/four children require a non-aggregate profile without an EDID driver
+#endif
+#else
+/* Compatibility with earlier non-aggregate generated headers. */
+#define GU_LOCAL_CONSOLE_AGGREGATE 0
+#define GU_LOCAL_CHILD_COUNT 0
+#endif
+#define GU_CONSOLE_AGGREGATE GU_LOCAL_CONSOLE_AGGREGATE
+#if GU_CONSOLE_AGGREGATE && GU_LOCAL_CHILD_COUNT == 2
+#define GU_CONSOLE_MULTI_CHILD 1
+#define GU_CONSOLE_CHILD_COUNT 2
 #endif
 
 #elif defined(GU_PROFILE_PROBE_H610M_3060)
@@ -87,31 +118,13 @@
 #define GU_BAR0_BASE 0x42000000ULL
 #define GU_BAR0_END 0x42ffffffULL
 #define GU_DEVICE_MEMORY_SIZE 0x3000U
-#define GU_CHIP_ID 0xb76000a1U
+#define GU_GPU_FAMILY GU_GPU_FAMILY_GA106
 #define GU_PROM_SHA256 "727dd8332f028783d3de2f81a707e4d9448c3238db6180271f3a8e9c03a808c9"
 #define GU_ROOT_PORT_DEVICE 1U
 #define GU_ROOT_PORT_FUNCTION 0U
 /* 36-byte display device path: ACPI root, PciRoot(0), Pci(1,0), Pci(0,0), ADR. */
 #define GU_RTX_PATH_BYTES   2,1,12,0,0xd0,0x41,3,10,0,0,0,0,1,1,6,0,0,1,1,1,6,0,0,0,2,3,8,0,0x30,3,1,128,127,255,4,0
-/* AMI console splitter text-out driver (BIOS FC image fingerprint). */
-#define GU_CONSOLE_TEXT_SIZE 0x5de0U
-#define GU_CONSOLE_TEXT_STOP 0xf90U
-#define GU_CONSOLE_TEXT_VERSION 0x10U
-/* AMI graphics console driver (BIOS FC image fingerprint). */
-#define GU_CONSOLE_GFX_SIZE 0x3c20U
-#define GU_CONSOLE_GFX_STOP 0xb60U
-#define GU_CONSOLE_GFX_VERSION 0x10U
-/* AMI EDID/mouse runtime driver (BIOS FC image fingerprint). */
-#define GU_EDID_IMAGE_SIZE 0x9000U
-#define GU_EDID_STOP 0x14d4U
-#define GU_EDID_TEXT_BYTES 0x3bb2U
-#define GU_EDID_TEXT_SHA256 "49fe68461765963d0b63144b0a7863f3b2db5926f1c988cbacc1e85ebe2b96f4"
-/* nvgop-ga1xx 0x60010: byte-identical .text to the B660M/3070 Ti entry. */
-#define GU_NVGOP_VERSION 0x60010U
-#define GU_NVGOP_IMAGE_SIZE 0x26ae0U
-#define GU_NVGOP_STOP 0x678U
-#define GU_NVGOP_TEXT_BYTES 0x20d33U
-#define GU_NVGOP_TEXT_SHA256 "615b37a708b1894e18d7fa60cfcdacaa4d8b598863a10b8103d231a595847b2b"
+#define GU_FIRMWARE_PROFILE GU_FIRMWARE_AMI_H610M_FC
 
 #elif defined(GU_PROFILE_X870_3090TI)
 
@@ -127,32 +140,14 @@
 #define GU_BAR0_BASE 0xdd000000ULL
 #define GU_BAR0_END 0xddffffffULL
 #define GU_DEVICE_MEMORY_SIZE 0x5ff4U
-#define GU_CHIP_ID 0xb72000a1U
+#define GU_GPU_FAMILY GU_GPU_FAMILY_GA102
 #define GU_PROM_SHA256 "943565975885ee71a7e861265984c785f564f35272c32395ee7410b353d9bbc4"
 #define GU_ROOT_PORT_DEVICE 1U
 #define GU_ROOT_PORT_FUNCTION 1U
 /* 36-byte display device path: ACPI root, PciRoot(0), Pci(1,1), Pci(0,0), ADR. */
 #define GU_RTX_PATH_BYTES \
   2,1,12,0,0xd0,0x41,3,10,0,0,0,0,1,1,6,0,1,1,1,1,6,0,0,0,2,3,8,0,0,3,1,128,127,255,4,0
-/* AMI console splitter text-out driver (BIOS F13d image fingerprint). */
-#define GU_CONSOLE_TEXT_SIZE 0xb000U
-#define GU_CONSOLE_TEXT_STOP 0x20e0U
-#define GU_CONSOLE_TEXT_VERSION 0x10U
-/* AMI GOP splitter (BIOS F13d image fingerprint). */
-#define GU_CONSOLE_GFX_SIZE 0x9000U
-#define GU_CONSOLE_GFX_STOP 0x1cc0U
-#define GU_CONSOLE_GFX_VERSION 0x10U
-/* AMI EDID/mouse runtime driver (BIOS F13d image fingerprint). */
-#define GU_EDID_IMAGE_SIZE 0x9000U
-#define GU_EDID_STOP 0x14d0U
-#define GU_EDID_TEXT_BYTES 0x37beU
-#define GU_EDID_TEXT_SHA256 "9a08c48e3a09965d1dda48b05a400311d71160d727cc9250630976cf4057eca9"
-/* nvgop-ga1xx 0x60010: byte-identical .text to the B660M/3070 Ti entry. */
-#define GU_NVGOP_VERSION 0x60010U
-#define GU_NVGOP_IMAGE_SIZE 0x26ae0U
-#define GU_NVGOP_STOP 0x678U
-#define GU_NVGOP_TEXT_BYTES 0x20d33U
-#define GU_NVGOP_TEXT_SHA256 "615b37a708b1894e18d7fa60cfcdacaa4d8b598863a10b8103d231a595847b2b"
+#define GU_FIRMWARE_PROFILE GU_FIRMWARE_AMI_X870_F13D
 
 #elif defined(GU_PROFILE_B660M_3070TI)
 
@@ -164,36 +159,14 @@
 #define GU_BAR0_BASE 0x82000000ULL
 #define GU_BAR0_END 0x82ffffffULL
 #define GU_DEVICE_MEMORY_SIZE 0x2000U
-#define GU_CHIP_ID 0xb74000a1U
+#define GU_GPU_FAMILY GU_GPU_FAMILY_GA104
 #define GU_PROM_SHA256 "f429aa1d5f0f18d11ed9a19503683a674fe3541ae77e959df8e732652c2b4df0"
 #define GU_ROOT_PORT_DEVICE 1U
 #define GU_ROOT_PORT_FUNCTION 0U
 /* 36-byte display device path: ACPI root, PciRoot(0), Pci(1,0), endpoint. */
 #define GU_RTX_PATH_BYTES \
   2,1,12,0,0xd0,0x41,3,10,0,0,0,0,1,1,6,0,0,1,1,1,6,0,0,0,2,3,8,0,32,3,1,128,127,255,4,0
-/* AMI console splitter text-out driver (BIOS 4003 image fingerprint). */
-#define GU_CONSOLE_TEXT_SIZE 0x6a40U
-#define GU_CONSOLE_TEXT_STOP 0x104cU
-#define GU_CONSOLE_TEXT_VERSION 0x10U
-/* AMI GOP combo splitter C1 GOP (BIOS 4003 image fingerprint). */
-#define GU_CONSOLE_GFX_SIZE 0x3bc0U
-#define GU_CONSOLE_GFX_STOP 0xb2cU
-#define GU_CONSOLE_GFX_VERSION 0x10U
-/* AMI GOP combo aggregate driver present only in this topology. */
-#define GU_COMBO_SIZE 0x2160U
-#define GU_COMBO_STOP 0x88cU
-#define GU_COMBO_VERSION 0x11U
-/* AMI EDID/mouse runtime driver (BIOS 4003 image fingerprint). */
-#define GU_EDID_IMAGE_SIZE 0x9000U
-#define GU_EDID_STOP 0x14d4U
-#define GU_EDID_TEXT_BYTES 0x37daU
-#define GU_EDID_TEXT_SHA256 "a015d52f55fa6441414458e2b699ba2edcb53f03b001ac6367e45bcd908c418e"
-/* nvgop-ga1xx driver shipped for GA104 (binding 0x60010). */
-#define GU_NVGOP_VERSION 0x60010U
-#define GU_NVGOP_IMAGE_SIZE 0x26ae0U
-#define GU_NVGOP_STOP 0x678U
-#define GU_NVGOP_TEXT_BYTES 0x20d33U
-#define GU_NVGOP_TEXT_SHA256 "615b37a708b1894e18d7fa60cfcdacaa4d8b598863a10b8103d231a595847b2b"
+#define GU_FIRMWARE_PROFILE GU_FIRMWARE_AMI_B660M_4003
 
 #elif defined(GU_PROFILE_B660M_3090TI) || defined(GU_PROFILE_B660M_DUAL)
 
@@ -215,35 +188,13 @@
 #define GU_BAR0_BASE 0x82000000ULL
 #define GU_BAR0_END 0x82ffffffULL
 #define GU_DEVICE_MEMORY_SIZE 0x5ff4U
-#define GU_CHIP_ID 0xb72000a1U
+#define GU_GPU_FAMILY GU_GPU_FAMILY_GA102
 #define GU_PROM_SHA256 "22b77e844a215bf52d745e0b10c6698ec3d9479f8350e833247bd5d77430bf44"
 #define GU_ROOT_PORT_DEVICE 1U
 #define GU_ROOT_PORT_FUNCTION 0U
 /* 36-byte display device path: ACPI root, PciRoot(0), Pci(1,0), Pci(0,0), ADR 0x80010320. */
 #define GU_RTX_PATH_BYTES 2,1,12,0,0xd0,0x41,3,10,0,0,0,0,1,1,6,0,0,1,1,1,6,0,0,0,2,3,8,0,32,3,1,128,127,255,4,0
-/* AMI console splitter text-out driver (BIOS 4003 image fingerprint). */
-#define GU_CONSOLE_TEXT_SIZE 0x6a40U
-#define GU_CONSOLE_TEXT_STOP 0x104cU
-#define GU_CONSOLE_TEXT_VERSION 0x10U
-/* AMI GOP combo splitter C1 GOP (BIOS 4003 image fingerprint). */
-#define GU_CONSOLE_GFX_SIZE 0x3bc0U
-#define GU_CONSOLE_GFX_STOP 0xb2cU
-#define GU_CONSOLE_GFX_VERSION 0x10U
-/* AMI GOP combo aggregate driver present only in this topology. */
-#define GU_COMBO_SIZE 0x2160U
-#define GU_COMBO_STOP 0x88cU
-#define GU_COMBO_VERSION 0x11U
-/* AMI EDID/mouse runtime driver (BIOS 4003 image fingerprint). */
-#define GU_EDID_IMAGE_SIZE 0x9000U
-#define GU_EDID_STOP 0x14d4U
-#define GU_EDID_TEXT_BYTES 0x37daU
-#define GU_EDID_TEXT_SHA256 "a015d52f55fa6441414458e2b699ba2edcb53f03b001ac6367e45bcd908c418e"
-/* nvgop-ga1xx driver shipped for GA102 (binding 0x60010). */
-#define GU_NVGOP_VERSION 0x60010U
-#define GU_NVGOP_IMAGE_SIZE 0x26ae0U
-#define GU_NVGOP_STOP 0x678U
-#define GU_NVGOP_TEXT_BYTES 0x20d33U
-#define GU_NVGOP_TEXT_SHA256 "615b37a708b1894e18d7fa60cfcdacaa4d8b598863a10b8103d231a595847b2b"
+#define GU_FIRMWARE_PROFILE GU_FIRMWARE_AMI_B660M_4003
 #elif defined(GU_PROFILE_B660PLUS_3060)
 
 /* ASUSTeK PRIME B660-PLUS D4 BIOS 3010 (CSM disabled), i5-12600KF (no iGPU),
@@ -262,36 +213,14 @@
 #define GU_BAR0_BASE 0x82000000ULL
 #define GU_BAR0_END 0x82ffffffULL
 #define GU_DEVICE_MEMORY_SIZE 0x3000U
-#define GU_CHIP_ID 0xb74000a1U
+#define GU_GPU_FAMILY GU_GPU_FAMILY_GA104
 #define GU_PROM_SHA256 "7cc9018e80c63e4aec79c71cd4ed6bdeb5e147aeeb22b21b96efe90887ba8806"
 #define GU_ROOT_PORT_DEVICE 1U
 #define GU_ROOT_PORT_FUNCTION 0U
 /* 36-byte display device path: ACPI root, PciRoot(0), Pci(1,0), Pci(0,0), ADR 0x80010300. */
 #define GU_RTX_PATH_BYTES \
   2,1,12,0,0xd0,0x41,3,10,0,0,0,0,1,1,6,0,0,1,1,1,6,0,0,0,2,3,8,0,0,3,1,128,127,255,4,0
-/* AMI console splitter text-out driver (BIOS 3010 image fingerprint). */
-#define GU_CONSOLE_TEXT_SIZE 0x6a40U
-#define GU_CONSOLE_TEXT_STOP 0x104cU
-#define GU_CONSOLE_TEXT_VERSION 0x10U
-/* AMI GOP combo splitter C1 GOP (BIOS 3010 image fingerprint). */
-#define GU_CONSOLE_GFX_SIZE 0x3bc0U
-#define GU_CONSOLE_GFX_STOP 0xb2cU
-#define GU_CONSOLE_GFX_VERSION 0x10U
-/* AMI GOP combo aggregate driver present only in this topology. */
-#define GU_COMBO_SIZE 0x2160U
-#define GU_COMBO_STOP 0x88cU
-#define GU_COMBO_VERSION 0x11U
-/* AMI EDID/mouse runtime driver (BIOS 3010 image fingerprint). */
-#define GU_EDID_IMAGE_SIZE 0x9000U
-#define GU_EDID_STOP 0x14d4U
-#define GU_EDID_TEXT_BYTES 0x37daU
-#define GU_EDID_TEXT_SHA256 "a015d52f55fa6441414458e2b699ba2edcb53f03b001ac6367e45bcd908c418e"
-/* nvgop-ga1xx 0x60010: byte-identical .text to the B660M/3070 Ti entry. */
-#define GU_NVGOP_VERSION 0x60010U
-#define GU_NVGOP_IMAGE_SIZE 0x26ae0U
-#define GU_NVGOP_STOP 0x678U
-#define GU_NVGOP_TEXT_BYTES 0x20d33U
-#define GU_NVGOP_TEXT_SHA256 "615b37a708b1894e18d7fa60cfcdacaa4d8b598863a10b8103d231a595847b2b"
+#define GU_FIRMWARE_PROFILE GU_FIRMWARE_AMI_B660M_4003
 
 #else
 
@@ -304,31 +233,39 @@
 #define GU_BAR0_BASE 0xf5000000ULL
 #define GU_BAR0_END 0xf5ffffffULL
 #define GU_DEVICE_MEMORY_SIZE 0x6000U
-#define GU_CHIP_ID 0xb72000a1U
+#define GU_GPU_FAMILY GU_GPU_FAMILY_GA102
 #define GU_PROM_SHA256 "8ea297373e9e5d3600ff41ad9fae88f2d14c98c017d100669f7333981da673b4"
 #define GU_ROOT_PORT_DEVICE 1U
 #define GU_ROOT_PORT_FUNCTION 1U
 #define GU_RTX_PATH_BYTES \
   2,1,12,0,0xd0,0x41,3,10,0,0,0,0,1,1,6,0,1,1,1,1,6,0,0,0,2,3,8,0,112,3,1,128,127,255,4,0
-#define GU_CONSOLE_TEXT_SIZE 0x7820U
-#define GU_CONSOLE_TEXT_STOP 0x1494U
-#define GU_CONSOLE_TEXT_VERSION 0x10U
-#define GU_CONSOLE_GFX_SIZE 0x48a0U
-#define GU_CONSOLE_GFX_STOP 0xf04U
-#define GU_CONSOLE_GFX_VERSION 0x10U
-#define GU_EDID_IMAGE_SIZE 0x9000U
-#define GU_EDID_STOP 0x157cU
-#define GU_EDID_TEXT_BYTES 0x38f8U
-#define GU_EDID_TEXT_SHA256 "53ef1716fa7a8cf866c986e85dd8412185a9fd58dd89e90202f97cb0997c96a6"
-#define GU_NVGOP_VERSION 0x60008U
-#define GU_NVGOP_IMAGE_SIZE 0x2b6e0U
-#define GU_NVGOP_STOP 0x698U
-#define GU_NVGOP_TEXT_BYTES 0x23d6aU
-#define GU_NVGOP_TEXT_SHA256 "6aad26e6909c9791dd0caba92d6658e9dfd8009aee80676002bf24ce2ad24d08"
+#define GU_FIRMWARE_PROFILE GU_FIRMWARE_AMI_B650M_3057
 
 #endif
 
-/* PCI bus of the RTX (segment 0, device 0, function 0). Every reviewed profile sits at
+/* The transaction/layout code is shared; family traits and exact firmware
+ * fingerprints are separate from the board/card pins above. Identity-only
+ * probes deliberately receive neither chip traits nor firmware defaults. */
+#if !defined(GU_PROFILE_PROBE_H610M_3060)
+#include "gpu-family.h"
+#if !defined(GU_PROFILE_LOCAL)
+#include "firmware-profile.h"
+#endif
+#endif
+
+/* Existing headers and every reviewed profile retain segment zero. A LOCAL
+ * header may pin another representable segment after its complete validation. */
+#ifndef GU_TARGET_SEGMENT
+#define GU_TARGET_SEGMENT 0U
+#endif
+#if GU_TARGET_SEGMENT < 0 || GU_TARGET_SEGMENT > 0xffffU
+#error GU_TARGET_SEGMENT must be in 0..65535
+#endif
+#if GU_TARGET_SEGMENT != 0U && !defined(GU_PROFILE_LOCAL)
+#error A non-default target segment is only for a generated local profile
+#endif
+
+/* PCI bus of the RTX (device 0, function 0). Every reviewed profile sits at
  * 01:00.0. Only a generated local profile (profile-local.h defines it first) may differ,
  * after its own captures and host tests pass; reviewed profiles keep 1. */
 #ifndef GU_TARGET_BUS

@@ -2,16 +2,20 @@
 
 **English** | [한국어](COMPATIBILITY.ko.md)
 
-The current source contains five exact-machine profiles with recorded hardware
-results: two internal headless configurations and three headless USB configurations.
+**2026-10-29 issue audit:** [reported setups and profile decisions](CONFIRMED-SETUPS.en.md) · [all 105 issues](ISSUE-AUDIT.en.md). The six fixed profiles below are not the full list of reported LOCAL successes.
+
+The current source contains six exact-machine profiles with recorded hardware
+results: three internal headless configurations and three headless USB configurations.
 The original B650M run was performed by the maintainer; B660M, X870 and B660-PLUS evidence
 comes from contributors ([PR #5](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/5),
 [PR #10](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/10),
 [PR #24](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/24),
-[PR #30](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/30)). Builds compile
+[PR #30](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/30),
+[PR #77](https://github.com/impacifist/Windows-GPU-UNLOCK/pull/77)). Fixed-profile builds compile
 for exactly one reviewed profile selected at build time in
 [internal-boot/unlock/machine-profile.h](../internal-boot/unlock/machine-profile.h);
-other GPUs or platforms remain unsupported.
+other GPUs or platforms cannot use those fixed profiles. Experimental LOCAL
+generation and its separate contributor reports are described below.
 
 | Build profile | Exact platform / CPU | Recorded headless route |
 |---|---|---|
@@ -20,6 +24,7 @@ other GPUs or platforms remain unsupported.
 | `x870-3090ti` | Gigabyte X870 AORUS ELITE WIFI7 BIOS F13d / Ryzen 7 9800X3D / ASUS RTX 3090 Ti | USB only; contributor report |
 | `b660plus-3060` | ASUS PRIME B660-PLUS D4 BIOS 3010 / i5-12600KF (no iGPU) / GA104 RTX 3060 12GB | USB only, two display children, CSM off; contributor report |
 | `h610m-3060` | Gigabyte H610M H BIOS FC / i5-14400 (iGPU enabled, no GOP) / Gigabyte GA106 RTX 3060 12GB | USB only, two display children; contributor report |
+| `b660m-3090ti` | ASUS TUF GAMING B660M-E D4 BIOS 4003 / i7-12700F (no iGPU) / Colorful RTX 3090 Ti | Internal; one contributor-reported cold boot |
 
 The latest tag is the source-only pre-release v0.3.1; this source tree includes
 later work, including the USB route and X870 profile. Hardware reports describe
@@ -164,8 +169,8 @@ sibling, with both monitors connected as captured. Other RTX 3060 variants are n
 
 Use `research/headless/build-usb.ps1 -HardwareProfile b660plus-3060` and the
 [USB guide](HEADLESS-USB.en.md). Internal ESP installers do not support this profile;
-its write-build gate rejects non-USB builds. It does not widen generic deep capture
-or the GA102-only local-profile generator.
+its write-build gate rejects non-USB builds. It does not make the fixed profile portable. The separate LOCAL generator now
+admits reviewed GA102/GA104/GA106 tuples and derives per-machine pins from captures.
 
 The contributor reports two full-shutdown USB boots with display restoration and
 direct Windows start. On original revision `60ae7e4`, the same-machine locked →
@@ -187,7 +192,8 @@ This differs from Profile 4's GA104 chip and aggregate console.
 
 Build with `research/headless/build-usb.ps1 -HardwareProfile h610m-3060`. Only the
 [headless USB route](HEADLESS-USB.en.md) is shipped; internal write builds are rejected.
-The profile does not widen generic discovery or the GA102 local-profile generator.
+The fixed profile does not make generic discovery or LOCAL admission unconditional;
+the separate generator checks reviewed PCI/chip/memory and driver tuples.
 
 The contributor reports one clean transaction, direct Windows entry and both displays
 restored. An earlier boot without the RTX GOP was refused before release. Matched
@@ -195,6 +201,64 @@ torch.mm n=8192 medians were FP16 27.06 → 46.61, BF16 27.18 → 46.28, TF32 13
 24.02, FP32 9.58 → 9.34 TFLOPS. This is not the repository's cuBLAS n=4096 protocol.
 These reports and hashes identify original revision `4b748f5`, not a physical test
 of the later hardened integration. [Evidence and limits](../evidence/h610m-3060-usb/README.md).
+
+## Profile 6: ASUS TUF B660M-E D4 / Colorful RTX 3090 Ti (internal)
+
+Build profile `b660m-3090ti` selects PCI `10de:2203`, subsystem `7377:1301`,
+GA102 `0xb72000a1`, `0x5ff4` MiB and the exact PROM hash from the
+[contributor's record](../evidence/b660m-3090ti-internal/README.md).
+The board and BIOS 4003 share the console/EDID/nvgop fingerprints with Profile 2;
+runtime ownership, code, cold-state and cleanup checks remain unchanged.
+
+One internal-ESP cold boot reports a clean transaction, direct Windows entry and
+display recovery. Repeated boots, restart, sleep, stability and a controlled
+performance baseline are not established. This is contributor-reported evidence,
+not a maintainer hardware test of the integrated build. The USB selector is not
+offered for this profile because its USB route has no hardware record.
+
+On main, pass `-HardwareProfile b660m-3090ti` to both `internal-boot/Configure.ps1`
+and `research/headless/build-unlock.ps1`; the v0.3.1 tag does not contain it.
+Cold/full-flow tests and compile regressions are available. Full private-fixture
+transaction replay through `test-all.ps1` is not wired for this profile; the public
+evidence does not provide its exact FWSEC image offset/size or private inputs.
+Those tests remain blocked rather than accepting an inferred firmware layout.
+
+## Reported local-profile success
+
+[Issue #105](https://github.com/impacifist/Windows-GPU-UNLOCK/issues/105) reports a
+Gigabyte RTX 3060 Ti LHR (`10de:24c9`, subsystem `1458:40cd`) on X870 EAGLE WIFI7
+BIOS F11 / Ryzen 9 9950X. The source patch was reviewed as text (SHA-256
+`eb6bce2587dd0ed1145829267802aebdc4e4287f8448dfccd36313b82c458a8f`). Its firmware
+constants admit a narrow common LOCAL candidate: GA104 `b74000a1`, `2000` MiB,
+nvgop `60015`, image `26e00`, Stop `678`, `.text` `2106f` bytes with SHA-256
+`645a2f416940211e09023838ac03f4b45453f95f457eab2de49628d57e9deb95`.
+No additional motherboard profile or firmware template is installed. Other GA104
+SKUs retain their own PCI-specific driver pins.
+
+The contributor reports two complete restart-based captures, two incomplete
+captures and one clean USB transaction with Windows/display recovery. Their
+temporary LOCAL envelope change is absent from the attachment; binary equivalence
+to its fixed profile is contributor-reported. This review did not independently
+hash their private PROM/driver bytes or reproduce the physical transaction.
+Current-source generation/replay uses synthetic inputs; it does not establish
+repeatability, full-shutdown behavior, other 3060 Ti variants or the internal route.
+New LOCAL use still requires separate full-shutdown captures, exact per-machine
+pins and all 22 current host jobs. Existing historical test results cannot replace them.
+
+[Issue #113](https://github.com/impacifist/Windows-GPU-UNLOCK/issues/113) reports one
+headless USB unlock, clean FLR/cleanup and Windows display recovery on a Gigabyte
+B460M D2VX SI BIOS FE / i5-10400F / Zotac RTX 3070 8GB. The tested source is based on
+`9692463`, with [public change 17b5e50](https://github.com/Wandraker/GPU-UNLOCK/commit/17b5e50b0a56ca593fffd764bd0fc85379b536b2).
+Its core changes cover probe ID, GA104 card traits, admission and refusal tests;
+unlock, ownership, DMA and FLR runtime code was unchanged. This is not a new
+physical validation of current main or long-term reliability evidence.
+
+Automatic LOCAL generation now admits `10de:2484` / chip `b74000a1` / `2000` MiB
+with nvgop `60009` and its existing reviewed code hash. Subsystem, PROM, paths and
+remaining firmware values still come from the owner's captures, and all 22 required
+host jobs must pass. GA104 RTX 3060 `2487` / `3000` MiB remains bound to `60010` code.
+No new named motherboard profile is added; use the [local-profile workflow](NEW-MACHINE.en.md).
+Other 3070 PCI IDs, VBIOS/driver combinations and console layouts need separate validation.
 
 ## Scope beyond the recorded configurations
 

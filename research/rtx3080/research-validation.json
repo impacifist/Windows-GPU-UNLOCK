@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "evidence_type": "follow-up-research-and-host-tests",
+  "research_date_utc": "2026-10-26",
+  "inspected_upstream_commit": "5c98f11eaafdcb7a2a06fb14fcdcde7297eb409e",
+  "original_collection_record": "observations.json",
+  "vendor_specification_findings": {
+    "installed_cpu_has_integrated_graphics": false,
+    "inference_basis": "Inventoried Ryzen 7 3700X matched to AMD specification; ASUS motherboard outputs depend on integrated graphics.",
+    "sources": [
+      "https://www.amd.com/en/support/downloads/drivers.html/processors/ryzen/ryzen-3000-series/amd-ryzen-7-3700x.html",
+      "https://rog.asus.com/motherboards/rog-strix/rog-strix-x570-f-gaming-model/spec/"
+    ],
+    "physical_monitor_connections": null,
+    "additional_display_gpu_available": null
+  },
+  "local_readiness": {
+    "observed_at_utc": "2026-10-26T13:11:16.6597791Z",
+    "method": "Read-only vswhere and MSVC toolset-directory enumeration; Test-Path for project/default compiler paths; selected Windows CIM and nvidia-smi fields.",
+    "visual_studio_product": "Visual Studio Build Tools 2022",
+    "visual_studio_version": "17.14.37806.7",
+    "enumerated_msvc_toolsets": [
+      "14.44.35207"
+    ],
+    "default_benchmark_vs2019_compiler_path_present": false,
+    "project_cuda_packages_directory_present": false,
+    "project_native_benchmark_bin_directory_present": false,
+    "ram_total_gib": 31.91,
+    "ram_available_gib": 8.5,
+    "workspace_drive_free_gib": 235.19,
+    "cuda_compilation_attempted": false,
+    "documented_host_compiler_compatibility_established": false,
+    "limitation": "Directory/installation metadata only; no compiler invocation or CUDA build. Package/binary absence applies to this checkout, not the entire PC."
+  },
+  "gpu_snapshot": {
+    "observed_at_utc": "2026-10-26T13:11:16.6597791Z",
+    "equivalent_selective_query": "nvidia-smi.exe --query-gpu=name,pci.bus_id,driver_version,utilization.gpu,memory.used,temperature.gpu,power.limit,clocks.max.sm,clocks.max.memory --format=csv,noheader,nounits",
+    "gpu_name": "NVIDIA GeForce RTX 3080",
+    "pci_bus_id": "00000000:07:00.0",
+    "driver_version": "610.88",
+    "utilization_percent": 5,
+    "memory_used_mib": 1994,
+    "temperature_celsius": 32,
+    "power_limit_watts": 370,
+    "maximum_sm_clock_mhz": 2115,
+    "maximum_memory_clock_mhz": 9501,
+    "factory_stock_settings_verified": false,
+    "sustained_idle_verified": false,
+    "limitation": "One metadata snapshot; maximum clocks are not observed running clocks, and unchanged settings do not prove stock settings."
+  },
+  "host_tests": [
+    {
+      "suite": "benchmark/test_compare_results.py",
+      "command": "py -3.11 -m unittest discover -s benchmark -p test_compare_results.py -v",
+      "python_version": "3.11.9",
+      "tests_run": 28,
+      "result": "passed",
+      "exit_code": 0,
+      "scope": "Offline synthetic JSON and hash/result-validation tests; no GPU workload."
+    },
+    {
+      "suite": "benchmark/test-runner.ps1",
+      "powershell_version": "5.1.26100.9711",
+      "process_local_python_wrapper": "function python { & py -3.11 @args; Set-Variable -Name LASTEXITCODE -Scope 1 -Value $LASTEXITCODE }",
+      "command": "& .\\benchmark\\test-runner.ps1",
+      "planned_scenarios": 60,
+      "completed_scenarios": 0,
+      "result": "incomplete",
+      "exit_code": 1,
+      "failure_location": "benchmark/test-runner.ps1:82",
+      "failure_summary": "Copy-Item was denied access to the generated managed stub.exe before the first runner invocation.",
+      "failure_cause": "unconfirmed",
+      "security_settings_changed": false,
+      "scope": "Host-only generated managed executable and mocked NVIDIA queries; no native CUDA executable or GPU workload ran."
+    }
+  ],
+  "source_sha256": {
+    "benchmark/compare_results.py": "e28749916fd552a6e530cefa24f9e1c90c09847315becf0378fcb3a53a95195b",
+    "benchmark/test_compare_results.py": "cfb6885736963aeede389653a51541c2506c18e7e0840da0bf1772cabc3ef177",
+    "benchmark/test-runner.ps1": "032c3a80efcd77fe28ab96bbdc7daa3362a859bcc446c3ae731e8074e915679a",
+    "benchmark/run-benchmark.ps1": "d8931d760472e88c992f2251ed01f6c0e233cf2d6f7066d71ccb95d016fa2590",
+    "benchmark/build.ps1": "e72a9b2c098657879885b34814648f2103b88fbaa2c543862777811c8641c4c6",
+    "benchmark/setup.ps1": "9f53bee78d9a0967e37a3bb07ac1c02858a23d2fd4c3d346249dfc984345d186",
+    "benchmark/compute-benchmark-3090.cu": "543dbc9149f01e44373c87cc182a0d8e7757bc8ee081784829335f61e73ea85e"
+  },
+  "scope": {
+    "native_cuda_benchmark_built": false,
+    "gpu_workload_run": false,
+    "experimental_efi_built": false,
+    "experimental_efi_executed": false,
+    "unlock_attempted": false,
+    "firmware_collected": false,
+    "hardware_support_established": false
+  }
+}

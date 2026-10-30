@@ -1,5 +1,95 @@
 # Changes
 
+## Unreleased — preserve captured state in host qualification fixtures
+
+- Initialize the app mock's PCI attributes from its captured command, including
+  BME-on inputs, rather than the original command=3 default. Apply this only during
+  setup so deliberately inconsistent attributes still fail the production guards.
+  This fixes the false command=2/cache=300 failure reported in issue #129.
+- Check PROM bytes against the selected machine/LOCAL profile's hash in the SHA
+  host test, as identified in issue #105. Preserve the fixed GSP hash and independent
+  SHA vectors; a changed file or another profile's pin still fails.
+- Run capture-fixture constructor/port regressions in test-all without firmware
+  assets. A separate RAM-only matrix covers compiler variants and compiled stale
+  cache/fixed-PROM mutations. These are fixture checks, not EFI/vendor transactions
+  or new hardware qualification. LOCAL still requires its complete 22 actual-input
+  jobs; changing the test sources invalidates older source-bound evidence.
+
+## Unreleased — connect reviewed RTX 3060 families to local capture and replay
+
+- Add bounded generic read-only capture for the exact `248710de` and `250410de`
+  RTX 3060 12GB identities. Preserve target pinning, BAR and MEM/BME restrictions.
+- Couple each admitted PCI identity to its exact chip revision, VRAM and reviewed
+  nvgop version/code hash. Preserve existing GA102 combinations; new 3060 tuples
+  require the recorded `60010` code.
+- Require full driver-release replay for every generated profile, including
+  EDID-present firmware. Older EDID-present evidence must be regenerated.
+  Generalize the host model's image sizes, stops, version and display-child count.
+- Extend synthetic admission and release matrices across GA102/GA104/GA106.
+  Aggregate LOCAL generation remains unsupported. These changes add experimental
+  per-machine candidates, not another hardware success or a universal support claim.
+
+## Unreleased — preserve valid late PCIe capability layouts
+
+- Match PCI configuration save bounds to the existing parser: aligned PCIe v1
+  capabilities may start as late as `0xec`, while v2 may start as late as `0xc4`.
+  Reject invalid offsets and unknown versions before device access.
+- Exercise production save, FLR and restore with RAM-only PCI services across
+  six layouts, IO/MEM command states and failure scenarios. Keep reset wait,
+  one-reset-only, status-write restrictions and containment checks.
+- Include layout regressions in the host test runner and extend captured-config
+  model tests to both layout boundaries. These are synthetic host tests, not
+  full firmware transactions or new hardware compatibility evidence.
+
+## Unreleased — discover the diagnostic target bus and replay captured PCI layouts
+
+- Automatically discover the single NVIDIA diagnostic target's nonzero PCI bus.
+  Pin its handle, interface, identity and BDF across callbacks and final revalidation;
+  target loss or drift invalidates the capture. Keep existing GPU/BAR/read restrictions.
+- Preserve optional explicit `-TargetBus` constraints through probe builds and resumed
+  new-machine captures; reject a different or ambiguous target before archive/copy/build.
+- Validate real captured PCI capability offsets and IO/MEM state in host tests.
+  Retain historical capability-layout and malformed-input regressions separately.
+  Add synthetic capture-model, bus-boundary and mocked build/resume regressions.
+- Accept exact JSON Int32/Int64 schema and exit-code values on Windows PowerShell
+  and PowerShell 7, while continuing to reject strings, floats, booleans and nulls.
+- This improves discovery and host portability; it adds no hardware validation or
+  new GPU admission. No transaction implementation, real EFI execution or GPU test is included.
+
+## Unreleased — separate GPU family traits, firmware templates and machine pins
+
+- Centralize exact GA102/GA104/GA106 chip revisions and current PCI-ID/VRAM
+  admission rules. Fixed profiles select a family; legacy LOCAL headers retain
+  captured literal values and the existing GA102 admission combinations.
+- Factor identical console/EDID/nvgop fingerprint tuples into independent fixed
+  firmware templates. LOCAL inherits none; identity-only probes gain no write traits.
+- Preserve the shared transaction/layout implementation and all exact subsystem,
+  PROM, BAR, path, topology and runtime safety checks. No new hardware support,
+  GPU register-map admission or automatic LOCAL generation is added.
+- Include the new headers in required provenance inputs and diagnostic manifests.
+  Add compile-only family/card/firmware boundary regressions and EN/KO architecture docs.
+
+## Unreleased — RTX 3080 display-routing observations
+
+- Integrate PR #39's contributor research and bounded read-only Windows
+  QueryDisplayConfig/DXGI collector. Preserve the original unlock, probe and
+  inventory collector paths.
+- Display routing observed in Windows does not establish pre-boot GOP ownership
+  or unlock support. The device-ID match flag refers to this recorded research
+  machine, not generic compatibility. The collector is compiled, not executed,
+  during maintainer integration checks; no new hardware evidence is added.
+
+## Unreleased — B660M / Colorful RTX 3090 Ti internal profile
+
+- Integrate PR #77's exact GA102 profile on the existing BIOS 4003 aggregate
+  console path; preserve all runtime release/ownership/firmware checks.
+- Keep the profile internal-only at the wrapper selector: the contributor reports
+  one internal-ESP cold boot and no USB run. No new USB staging identity is admitted.
+- Update EN/KO GPU support and exact configuration guides. Hardware evidence is
+  contributor-reported; current host/build checks are not a maintainer hardware run.
+- Full private-fixture transaction replay is not available for this profile until
+  its captured FWSEC image pin and private inputs are supplied; no layout is inferred.
+
 ## Unreleased — offline compatibility reports and comparison
 
 - Add a Python-only, read-only checker for existing probe captures. Reuse the

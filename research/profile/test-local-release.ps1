@@ -1,4 +1,4 @@
-# GPL-2.0-only. Capture-free no-EDID release matrix; no GPU/firmware access.
+# GPL-2.0-only. Capture-free EDID/no-EDID release matrix; no GPU/firmware access.
 param([string]$Clang='clang',[string]$Python='python',[string]$VcVars)
 $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'host.ps1')

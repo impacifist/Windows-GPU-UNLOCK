@@ -14,6 +14,11 @@ CPU나 다른 시스템을 검증한 것은 아닙니다. [정확한 호환성](
 
 ## 준비 조건과 저장 공간
 
+main에는 기여자가 내부 부팅을 보고한 B660M/3070 Ti·3090 Ti 프로필도 있습니다.
+이후 추가된 프로필은 아래 v0.3.1 대신 main 소스를 사용하고 Configure와 build-unlock
+양쪽에 정확한 `-HardwareProfile`을 전달해야 합니다.
+[구성·근거의 한계](COMPATIBILITY.ko.md)를 확인하세요. 기본값은 B650M입니다.
+
 - 기록된 정확한 GPU/PROM·메인보드·BIOS·PCI 프로필. Windows 11 x64 UEFI,
   Secure Boot 꺼짐, Windows C: 완전 복호화·BitLocker 보호 꺼짐.
   도구는 암호화 설정을 해제하지 않습니다.

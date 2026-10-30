@@ -1,4 +1,5 @@
 /* Modified 2026-10-19/20 for Windows GPU UNLOCK; changes documented in CHANGES.md. */ #include "../sha256.h"
+#include "../machine-profile.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -226,8 +227,7 @@ int main(int Argc, char **Argv)
     TestHashMatching();
     if (Argc == 3) TestPinnedFile(Argv[1],
         "572373620a37418f24dc16b5031c39338778c3257e48e8408de9a57291b24f3a");
-    TestPinnedFile(Argv[Argc - 1],
-        "8ea297373e9e5d3600ff41ad9fae88f2d14c98c017d100669f7333981da673b4");
+    TestPinnedFile(Argv[Argc - 1], GU_PROM_SHA256);
     printf("SHA-256: %u checks, %u failures\n", Checks, Failures);
     return Failures != 0;
 }

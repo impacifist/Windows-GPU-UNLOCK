@@ -1,22 +1,65 @@
 {
   "_comment": "Hardware-proven envelope for generated local profiles. make-profile.py refuses any capture outside it. Widen an entry only in a reviewed change that cites new hardware evidence (docs/NEW-MACHINE.en.md).",
   "class_revision": "030000a1",
-  "probe_device_ids": ["220410de", "220310de"],
+  "probe_device_ids": ["220410de", "220310de", "248710de", "250410de", "248410de", "24c910de", "220a10de"],
   "chips": [
     {
       "chip": "b72000a1",
       "family": "GA102",
       "memory": [
         "6000",
-        "5ff4"
+        "5ff4",
+        "3000"
       ],
+      "pci_memory": {"220410de": ["6000", "5ff4"], "220310de": ["6000", "5ff4"], "220a10de": ["3000"]},
+      "nvgop": [
+        {"version": "60008", "text_sha256": "6aad26e6909c9791dd0caba92d6658e9dfd8009aee80676002bf24ce2ad24d08"},
+        {"version": "60010", "text_sha256": "615b37a708b1894e18d7fa60cfcdacaa4d8b598863a10b8103d231a595847b2b"},
+        {"version": "60009", "text_sha256": "d045cee2113e461c7c678ec21542b1d0f18356765c0fc6a0bf2dcf824088e011"}
+      ],
+      "pci_nvgop": {
+        "220410de": [{"version": "60008", "text_sha256": "6aad26e6909c9791dd0caba92d6658e9dfd8009aee80676002bf24ce2ad24d08"}, {"version": "60010", "text_sha256": "615b37a708b1894e18d7fa60cfcdacaa4d8b598863a10b8103d231a595847b2b"}, {"version": "60009", "text_sha256": "d045cee2113e461c7c678ec21542b1d0f18356765c0fc6a0bf2dcf824088e011"}],
+        "220310de": [{"version": "60008", "text_sha256": "6aad26e6909c9791dd0caba92d6658e9dfd8009aee80676002bf24ce2ad24d08"}, {"version": "60010", "text_sha256": "615b37a708b1894e18d7fa60cfcdacaa4d8b598863a10b8103d231a595847b2b"}, {"version": "60009", "text_sha256": "d045cee2113e461c7c678ec21542b1d0f18356765c0fc6a0bf2dcf824088e011"}],
+        "220a10de": [{"version": "60010", "text_sha256": "615b37a708b1894e18d7fa60cfcdacaa4d8b598863a10b8103d231a595847b2b"}]
+      },
       "evidence": [
         "evidence/headless-handoff",
-        "evidence/x870-3090ti-usb"
+        "evidence/x870-3090ti-usb",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/73"
       ]
+    },
+    {
+      "chip": "b74000a1",
+      "family": "GA104",
+      "memory": ["3000", "2000"],
+      "pci_memory": {"248710de": ["3000"], "248410de": ["2000"], "24c910de": ["2000"]},
+      "nvgop": [
+        {"version": "60015", "text_sha256": "645a2f416940211e09023838ac03f4b45453f95f457eab2de49628d57e9deb95"},
+        {"version": "60010", "text_sha256": "615b37a708b1894e18d7fa60cfcdacaa4d8b598863a10b8103d231a595847b2b"},
+        {"version": "60009", "text_sha256": "d045cee2113e461c7c678ec21542b1d0f18356765c0fc6a0bf2dcf824088e011"}
+      ],
+      "pci_nvgop": {
+        "24c910de": [{"version": "60015", "text_sha256": "645a2f416940211e09023838ac03f4b45453f95f457eab2de49628d57e9deb95"}],
+        "248710de": [{"version": "60010", "text_sha256": "615b37a708b1894e18d7fa60cfcdacaa4d8b598863a10b8103d231a595847b2b"}],
+        "248410de": [{"version": "60009", "text_sha256": "d045cee2113e461c7c678ec21542b1d0f18356765c0fc6a0bf2dcf824088e011"}]
+      },
+      "evidence": ["evidence/b660plus-3060-usb", "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/113", "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/105"]
+    },
+    {
+      "chip": "b76000a1",
+      "family": "GA106",
+      "memory": ["3000"],
+      "pci_memory": {"250410de": ["3000"]},
+      "nvgop": [{"version": "60010", "text_sha256": "615b37a708b1894e18d7fa60cfcdacaa4d8b598863a10b8103d231a595847b2b"}],
+      "evidence": ["evidence/h610m-3060-usb"]
     }
   ],
   "nvgop": [
+    {
+      "version": "60015",
+      "text_sha256": "645a2f416940211e09023838ac03f4b45453f95f457eab2de49628d57e9deb95",
+      "evidence": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/105"
+    },
     {
       "version": "60008",
       "text_sha256": "6aad26e6909c9791dd0caba92d6658e9dfd8009aee80676002bf24ce2ad24d08",

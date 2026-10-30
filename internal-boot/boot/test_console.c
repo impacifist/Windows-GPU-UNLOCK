@@ -28,7 +28,7 @@ static EFI_PCI_IO_PROTOCOL AmdPci,RtxPci;
 static EFI_DRIVER_BINDING_PROTOCOL OutBinding,GfxBinding;
 static EFI_LOADED_IMAGE_PROTOCOL OutImage,GfxImage;
 static UINT8 OutFilePath[24],GfxFilePath[24];
-static UINT8 TestAmdPath[36],TestRtxPath[36];
+static UINT8 TestAmdPath[36],TestRtxPath[GU_RTX_DISPLAY_BYTES];
 static EFI_GUID Dummy={0x12345678,0,0,{0}};
 #ifdef GU_FULL_REPLAY_TEST
 static BOOLEAN FullMode;
@@ -132,10 +132,15 @@ static EFI_STATUS EFIAPI FindPci(EFI_GUID *g,EFI_DEVICE_PATH_PROTOCOL **path,EFI
   if(!GuGuidEqual(g,&PciGuid))abort();
   *h=(VOID *)*path==(VOID *)TestAmdPath?FX_AmdPci:FX_RtxPci;
   if(Scenario==27)*h=FX_AmdPci; /* Wrong GPU behind a matching-looking path. */
-  *path=(VOID *)((UINT8 *)*path+24);return EFI_SUCCESS;
+  UINTN consumed=(VOID *)*path==(VOID *)TestAmdPath?24:sizeof(TestRtxPath)-12;
+  *path=(VOID *)((UINT8 *)*path+consumed);return EFI_SUCCESS;
 }
 static EFI_STATUS EFIAPI Location(EFI_PCI_IO_PROTOCOL *io,UINTN *seg,UINTN *bus,UINTN *dev,UINTN *fun) {
-  *seg=*dev=*fun=0;*bus=io==&AmdPci?12:GU_TARGET_BUS;return EFI_SUCCESS;
+  *seg=*dev=*fun=0;*bus=io==&AmdPci?12:GU_TARGET_BUS;
+#ifdef GU_PROFILE_LOCAL
+  if(io==&RtxPci)*seg=FX_PCI_SEGMENT;
+#endif
+  return EFI_SUCCESS;
 }
 static EFI_STATUS EFIAPI Read(EFI_PCI_IO_PROTOCOL *io,EFI_PCI_IO_PROTOCOL_WIDTH width,UINT32 at,UINTN n,VOID *data) {
 #ifdef GU_FULL_REPLAY_TEST
@@ -173,7 +178,7 @@ static EFI_STATUS EFIAPI Disconnect(EFI_HANDLE controller,EFI_HANDLE agent,EFI_H
   if(Scenario==10)Live.Edges[0].Count++;
   if(Scenario==16)Live.Edges[Live.Count++]=(EDGE){FX_Input,FX_GfxAgent,FX_Input,Dummy,16,1};
   if(Scenario==20)GfxBinding.Version++;
-  if(Scenario==25)TestRtxPath[28]^=1;
+  if(Scenario==25)TestRtxPath[sizeof(TestRtxPath)-8]^=1;
   if(Scenario==26)TestAmdPath[28]^=1;
   return EFI_SUCCESS;
 }
@@ -187,9 +192,15 @@ static EFI_STATUS Log(VOID *context,const char *event,EFI_STATUS s) {
 }
 static EFI_STATUS Run(int scenario) {
   Scenario=scenario;Calls=0;OutputCalls=0;LogCalls=0;
-  memcpy(TestAmdPath,AmdPath,36);memcpy(TestRtxPath,RtxPath,36);
-  if(scenario==23)TestRtxPath[28]=0x40; /* FULL02 observed output endpoint. */
-  if(scenario==24){TestRtxPath[28]=0x40;TestAmdPath[28]^=0x20;}
+  memcpy(TestAmdPath,AmdPath,sizeof(TestAmdPath));memcpy(TestRtxPath,RtxPath,sizeof(TestRtxPath));
+#ifdef GU_PROFILE_LOCAL
+  const UINT8 observedTarget[]={FX_PRIMARY_PATH_BYTES};
+  Check(sizeof(observedTarget)==sizeof(TestRtxPath) && FX_CONTROLLER_BYTES==sizeof(TestRtxPath)-12,
+        "captured LOCAL path dimensions match the compiled target");
+  memcpy(TestRtxPath,observedTarget,sizeof(TestRtxPath));
+#endif
+  if(scenario==23)TestRtxPath[sizeof(TestRtxPath)-8]=0x40; /* FULL02 observed output endpoint. */
+  if(scenario==24){TestRtxPath[sizeof(TestRtxPath)-8]=0x40;TestAmdPath[28]^=0x20;}
   if(scenario==28)TestRtxPath[17]^=1; /* Different PCI ancestry. */
   Live.Count=sizeof(FixtureEdges)/sizeof(FixtureEdges[0]);memcpy(Live.Edges,FixtureEdges,sizeof(FixtureEdges));
   if(scenario==1)Live.Edges[Live.Count++]=(EDGE){FX_Rtx,FX_Input,FX_Rtx,TextGuid,16,1};
@@ -296,7 +307,7 @@ int main(void) {
   Check(FX_OutAgent!=FX_OutImage && FX_GfxAgent!=FX_GfxImage,"real firmware image/binding separation");
   Check(Run(0)==EFI_SUCCESS && Calls==2 && OutputCalls==2,"real graph replay succeeds");
   Check(Live.Count+3==sizeof(FixtureEdges)/sizeof(FixtureEdges[0]),"exactly three RTX ownership edges removed");
-  Check(Run(23)==EFI_SUCCESS && Calls==2 && PreparedPlan.RtxDisplayPath[28]==0x40,"FULL02 endpoint discovered and pinned");
+  Check(Run(23)==EFI_SUCCESS && Calls==2 && PreparedPlan.RtxDisplayPath[sizeof(TestRtxPath)-8]==0x40,"FULL02 endpoint discovered and pinned");
   Check(Run(24)==EFI_SUCCESS && Calls==2,"both GPU display ADRs discovered this boot");
   for(int scenario=25;scenario<=28;scenario++) {
     Check(Run(scenario)!=EFI_SUCCESS,"late endpoint drift or wrong GPU/ancestry rejected");

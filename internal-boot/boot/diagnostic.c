@@ -146,6 +146,8 @@ static VOID Details(CAPTURE *c,EFI_HANDLE h,EFI_GUID *g) {
       Field(c,"gop width=0x",gp->Mode->Info->HorizontalResolution);
       Field(c," height=0x",gp->Mode->Info->VerticalResolution);
       Field(c," stride=0x",gp->Mode->Info->PixelsPerScanLine);End(c);
+      Field(c,"gop pixel-format=0x",gp->Mode->Info->PixelFormat);
+      Field(c," info-bytes=0x",gp->Mode->SizeOfInfo);End(c);
     } else {
 #if GU_CONSOLE_AGGREGATE || defined(GU_PROBE_GENERIC)
       /* Aggregate/pathless GOPs legitimately lack Mode->Info on this firmware;
@@ -179,6 +181,9 @@ EFI_STATUS GuCaptureGraphOnVolume(EFI_SYSTEM_TABLE *t,EFI_FILE_PROTOCOL *file,EF
   Field(&c," input=0x",(UINTN)t->ConsoleInHandle);End(&c);
   Variables(&c);
   EFI_BOOT_SERVICES *bs=t->BootServices;EFI_HANDLE *handles=NULL;UINTN count=0;
+#ifdef GU_DIAGNOSTIC_PROBE
+  EFI_FREE_POOL probeRelease=bs->FreePool;
+#endif
   EFI_STATUS s=bs->LocateHandleBuffer(AllHandles,NULL,NULL,&count,&handles);
 #ifdef GU_DIAGNOSTIC_PROBE
     /* Read-only profile probe: config space, caps, BAR/PROM hash, image dumps.
@@ -189,6 +194,13 @@ EFI_STATUS GuCaptureGraphOnVolume(EFI_SYSTEM_TABLE *t,EFI_FILE_PROTOCOL *file,EF
      * probe error that did not clear Complete still fails closed here. */
     EFI_STATUS probe=GuProbeGpu(t,&c);
     Field(&c,"probe status=0x",probe);End(&c);
+    if(probe==EFI_COMPROMISED_DATA) {
+      Problem(&c,"probe-capability-snapshot",EFI_NOT_READY);
+      if(handles && probeRelease)probeRelease(handles);
+      Text(&c,"capture-complete=0\r\n");
+      EFI_STATUS written=Flush(&c);if(written!=EFI_SUCCESS)return written;
+      written=file->Flush(file);return written==EFI_SUCCESS?EFI_NOT_READY:written;
+    }
     if(probe!=EFI_SUCCESS && probe!=EFI_NOT_FOUND && c.Complete)Problem(&c,"probe",probe);
 #endif
   Field(&c,"handles status=0x",s);Field(&c," count=0x",count);End(&c);

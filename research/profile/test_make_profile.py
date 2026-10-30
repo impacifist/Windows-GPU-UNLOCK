@@ -30,7 +30,7 @@ def sub(path, pattern, replace):
     path.write_bytes(new.encode())
 
 
-def case(name, expect, mutate=None, envelope=ENVELOPE):
+def case(name, expect, mutate=None, envelope=None):
     global failures
     with tempfile.TemporaryDirectory() as tmp:
         work = Path(tmp) / 'capture'
@@ -39,7 +39,7 @@ def case(name, expect, mutate=None, envelope=ENVELOPE):
         if mutate:
             mutate(work, diags)
         try:
-            mp.generate(work, LOCATOR, envelope)
+            mp.generate(work, LOCATOR, ENVELOPE if envelope is None else envelope)
             outcome = None
         except mp.Refused as error:
             outcome = str(error)
@@ -53,9 +53,11 @@ def hexword(value):
 
 
 def rtx_gop(text):
-    """The RTX GOP handle block: the only handle block that carries a GOP framebuffer record."""
+    """The unique physical GOP; an aggregate may also record a zero framebuffer."""
     found = [m for m in re.finditer(r'^handle id=(0x[0-9a-f]+)\n(.*?)(?=^handle id=|^capture-complete=|\Z)', text, re.M | re.S)
-             if 'gop framebuffer=' in m[2]]
+             if any(int(base,16) for base in re.findall(r'^gop framebuffer=0x([0-9a-f]+)',m[2],re.M))]
+    if len(found)!=1:
+        raise AssertionError('Expected one physical GOP handle')
     return found[0]
 
 
@@ -64,10 +66,13 @@ def add_edid_open(path, attributes):
     text = path.read_bytes().decode('utf-8-sig').replace('\r\n', '\n')
     block = rtx_gop(text)
     handle = int(block[1], 16)
-    agents = [a for p, a, c, at, n in mp.parse_handles(text)[handle]['edges'] if p == mp.TEXT_OUT and at == mp.BY_DRIVER]
+    edges=mp.parse_handles(text)[handle]['edges']
+    agents = [a for p, a, c, at, n in edges if p == mp.TEXT_OUT and at == mp.BY_DRIVER]
+    if not agents:
+        agents=[a for p,a,c,at,n in edges if p==mp.GOP and at==mp.BY_DRIVER]
     line = 'protocol guid=' + mp.EDID_DISCOVERED + '\n'
     if len(agents) != 1 or line not in block[2]:
-        raise AssertionError(f'{path.name}: RTX GOP has no unique TextOut owner or no EdidDiscovered interface')
+        raise AssertionError(f'{path.name}: RTX GOP has no unique console owner or no EdidDiscovered interface')
     at = block.start(2) + block[2].index(line) + len(line)
     header = re.match(r'opens status=0x0+ count=0x([0-9a-f]+)\n', text[at:])
     if not header:
@@ -94,6 +99,42 @@ def shift_bus(path):
     path.write_text(text[:block.start(1)] + changed + text[block.end(1):], encoding='utf-8')
 
 
+def shift_segment(path):
+    """Move both independent RTX location observations to another segment."""
+    text=path.read_bytes().decode('utf-8-sig').replace('\r\n','\n')
+    target=re.search(r'^probe-target seg=0x([0-9a-f]+)',text,re.M)
+    segment=int(target[1],16)^1
+    text=re.sub(r'^(probe-target seg=0x)[0-9a-f]+',lambda m:m[1]+f'{segment:x}',text,count=1,flags=re.M)
+    blocks=list(re.finditer(r'^handle id=0x[0-9a-f]+\n(.*?)(?=^handle id=|^capture-complete=|\Z)',text,re.M|re.S))
+    block=next(m for m in blocks if (c:=mp.pci_config(m[1])) and c[0]&0xffff==0x10de and c[2]>>24==3)
+    changed,count=re.subn(r'^(pci location-status=0x[0-9a-f]+ segment=0x)[0-9a-f]+',lambda m:m[1]+f'{segment:x}',block[1],count=1,flags=re.M)
+    if count!=1:raise AssertionError('Missing target graph PCI segment')
+    path.write_bytes((text[:block.start(1)]+changed+text[block.end(1):]).encode())
+
+
+def duplicate_igpu(path):
+    """Add an explicit second adapter, without assuming two spare PCI handles."""
+    text=path.read_bytes().decode('utf-8-sig').replace('\r\n','\n')
+    blocks=mp.parse_handles(text)
+    source=next(handle for handle,block in blocks.items()
+                if (config:=mp.pci_config(block['raw'])) and config[0]&0xffff!=0x10de and config[2]>>24==3)
+    block=re.search(rf'^handle id=0x0*{source:x}\n.*?(?=^handle id=|^capture-complete=|\Z)',text,re.M|re.S)
+    if not block:raise AssertionError('Missing integrated GPU block')
+    added=re.sub(r'^handle id=0x[0-9a-f]+',f'handle id=0x{max(blocks)+1:x}',block[0],count=1)
+    text=text.replace('capture-complete=1',added+'capture-complete=1',1)
+    text,hits=re.subn(r'^(handles status=0x0+ count=0x)([0-9a-f]+)',
+                     lambda m:m[1]+f'{int(m[2],16)+1:x}',text,count=1,flags=re.M)
+    if hits!=1:raise AssertionError('Missing handle count')
+    path.write_text(text,encoding='utf-8')
+
+
+def damage_prom(path):
+    data=bytearray(path.read_bytes())
+    if not data:raise AssertionError('Empty baseline PROM')
+    data[0]^=1
+    path.write_bytes(data)
+
+
 def main():
     global CAPTURES, LOCATOR
     CAPTURES, LOCATOR = Path(sys.argv[1]), Path(sys.argv[2])
@@ -102,7 +143,7 @@ def main():
     case('captures disagree', 'disagree on GU_PROM_SHA256',
          lambda w, d: sub(d[0], r'^(prom sha256=)[0-9a-f]{64}', lambda m: m[1] + '0' * 64))
     case('unproven chip', 'no hardware-proven profile',
-         lambda w, d: sub(d[-1], r'^(mmio off=0x00000000 status=0x0+ value=0x)[0-9a-f]{8}', hexword(0xb74000a1)))
+         lambda w, d: sub(d[-1], r'^(mmio off=0x00000000 status=0x0+ value=0x)[0-9a-f]{8}', hexword(0xdead00a1)))
     case('unproven memory size', 'not hardware-proven',
          lambda w, d: sub(d[-1], r'^(mmio off=0x001183a4 status=0x0+ value=0x)[0-9a-f]{8}', hexword(0x2800)))
     case('already unlocked', 'power-on state',
@@ -112,9 +153,13 @@ def main():
     case('second NVIDIA GPU', 'exactly one NVIDIA', lambda w, d: sub(d[-1], r'^probe targets=0001(?: cfg-incomplete=0000)?$', 'probe targets=0002 cfg-incomplete=0000'))
     case('RTX on bus 0', 'nonzero bus',
          lambda w, d: [sub(p, r'^(probe-target seg=0x[0-9a-f]+ bus=0x)[0-9a-f]+', lambda m: m[1] + '0') for p in d])
-    case('RTX on another segment', 'segment 0, device 0, function 0',
-         lambda w, d: [sub(p, r'^(probe-target seg=0x)[0-9a-f]+', lambda m: m[1] + '1') for p in d])
-    case('RTX at device 1', 'segment 0, device 0, function 0',
+    case('RTX segment overflow', '16-bit PCI segment',
+         lambda w, d: [sub(p, r'^(probe-target seg=0x)[0-9a-f]+', lambda m: m[1] + '10000') for p in d])
+    case('captures disagree on segment', 'disagree on GU_TARGET_SEGMENT',lambda w,d:shift_segment(d[-1]))
+    case('RTX on another segment in every capture', None,lambda w,d:[shift_segment(p) for p in d])
+    case('probe/graph disagree on segment', 'PCI location',
+         lambda w,d:sub(d[-1],r'^(probe-target seg=0x)([0-9a-f]+)',lambda m:m[1]+f'{int(m[2],16)^1:x}'))
+    case('RTX at device 1', 'device 0, function 0',
          lambda w, d: [sub(p, r'^(probe-target seg=0x[0-9a-f]+ bus=0x[0-9a-f]+ dev=0x)[0-9a-f]+', lambda m: m[1] + '1') for p in d])
     # The bus is a per-machine constant: moving it in every capture is a different, still valid
     # machine; moving it in one capture only is a capture that does not describe the same boot.
@@ -137,10 +182,15 @@ def main():
         add_igpu = lambda p: sub(p, r'^(pci config-dwords=(?!....10de)[0-9a-f]{8} [0-9a-f]{8} )(?!03)[0-9a-f]{2}', lambda m: m[1] + '03')
         case('an integrated GPU appears in every capture', None, lambda w, d: [add_igpu(p) for p in d])
         case('integrated GPU in only one capture', 'disagree on the integrated GPU', lambda w, d: add_igpu(d[-1]))
-        case('two integrated GPUs', 'at most one non-NVIDIA display controller', lambda w, d: [(add_igpu(p), add_igpu(p)) for p in d])
+        case('two integrated GPUs', 'at most one non-NVIDIA display controller', lambda w, d: [(add_igpu(p), duplicate_igpu(p)) for p in d])
     # The EDID driver is optional, but a driver other than the reviewed AMI one may never own the
     # EdidDiscovered interface of the RTX GOP, whether or not this machine has one.
-    case('unreviewed driver owns the EDID interface', 'edid:',
+    edid_refusal=('BY_DRIVER opener of '+mp.EDID_DISCOVERED) if info and info['aggregate'] else 'edid:'
+    if info and info['no_edid_driver'] and info['child_count']>2:
+        # An EDID owner also removes this topology's permission for 3/4 children,
+        # so the exact topology guard rejects before driver fingerprint parsing.
+        edid_refusal='console topology requires 1..2 unique NVIDIA-owned display children'
+    case('unreviewed driver owns the EDID interface', edid_refusal,
          lambda w, d: [add_edid_open(p, mp.BY_DRIVER) for p in d])
     if info and info['no_edid_driver']:
         # No EDID driver here: any other live opener of EdidDiscovered is unreviewed too.
@@ -156,12 +206,16 @@ def main():
          lambda w, d: sub(d[-1], attributes, lambda m: m[1] + m[2] + m[3] + f'{int(m[4], 16) | 0x400:016x}'))
     case('PciIo attributes lack memory decode', 'disagree with the PCI command register',
          lambda w, d: sub(d[-1], attributes, lambda m: m[1] + m[2] + m[3] + f'{int(m[4], 16) & ~0x200:016x}'))
-    case('aggregate console', 'ConOut',
-         lambda w, d: sub(d[-1], r'^(variable name=ConOut .*\n(?:.*\n)*?path-node raw=0101060000)00', lambda m: m[1] + '1f'))
+    if info and info['aggregate']:
+        case('unresolved aggregate console', 'console handles',
+             lambda w,d: sub(d[-1],r'^(console out=)0x[0-9a-f]+',lambda m:m[1]+'0x0'))
+    else:
+        case('unreviewed ConOut', 'ConOut',
+             lambda w, d: sub(d[-1], r'^(variable name=ConOut .*\n(?:.*\n)*?path-node raw=0101060000)00', lambda m: m[1] + '1f'))
     case('incomplete capture', 'complete, successful',
          lambda w, d: sub(d[-1], r'^diagnostic-result status=0x0+$', 'diagnostic-result status=0x8000000000000006'))
     case('PROM.BIN from another card', 'PROM.BIN is not',
-         lambda w, d: (w / 'PROM.BIN').write_bytes(b'\0' + (w / 'PROM.BIN').read_bytes()[1:]))
+         lambda w, d: damage_prom(w / 'PROM.BIN'))
     case('nvgop never released on proven hardware', 'has not released cleanly',
          envelope={**ENVELOPE, 'nvgop': []})
     case('chip family without proof', 'no hardware-proven profile', envelope={**ENVELOPE, 'chips': []})

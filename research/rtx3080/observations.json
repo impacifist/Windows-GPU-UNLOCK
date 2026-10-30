@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "evidence_type": "windows-inventory-only",
+  "collection_date_utc": "2026-10-26",
+  "upstream_repository": "https://github.com/impacifist/Windows-GPU-UNLOCK",
+  "inspected_upstream_commit": "5c98f11eaafdcb7a2a06fb14fcdcde7297eb409e",
+  "collector": {
+    "path": "tools/collect_compatibility.py",
+    "sha256": "1447a60aaad211c830702b9fa50765e32d8f957d326d15a9f1a6f0817b8be5cf",
+    "python_version": "3.11.9",
+    "command": "py -3.11 .\\tools\\collect_compatibility.py",
+    "exit_code": 0,
+    "collection_complete": true
+  },
+  "supplemental_queries": {
+    "computer_system": {
+      "command": "Get-CimInstance Win32_ComputerSystem -Property PCSystemType | Select-Object PCSystemType",
+      "pc_system_type": 1,
+      "reported_classification": "desktop"
+    },
+    "nvidia_metadata": {
+      "command": "nvidia-smi.exe --query-gpu=name,pci.bus_id,pci.device_id,pci.sub_device_id,memory.total,driver_version,vbios_version --format=csv,noheader",
+      "exit_code": 0,
+      "gpu_name": "NVIDIA GeForce RTX 3080",
+      "pci_bus_id": "00000000:07:00.0",
+      "pci_device_id": "0x221610DE",
+      "pci_sub_device_id": "0x403F1458",
+      "memory_total_mib": 10240,
+      "driver_version": "610.88",
+      "vbios_version": "94.02.71.40.c4"
+    }
+  },
+  "host_tests": {
+    "command": "py -3.11 -m unittest discover -s tools -p test_collect_compatibility.py -v",
+    "test_source_sha256": "b8a464011c15bf732a937c4365b9851cdcc345b0c1fd589a5165364022a4de2c",
+    "test_count": 9,
+    "result": "passed",
+    "exit_code": 0,
+    "scope": "Existing collector tests with synthetic inputs and mocked subprocesses; not GPU compatibility tests."
+  },
+  "physical_details": {
+    "card_manufacturer_and_model": null,
+    "vbios_cross_flash_history": null,
+    "monitor_connections": null,
+    "additional_display_gpu_available": null,
+    "integrated_display_gpu_available": null,
+    "status": "owner-confirmation-pending"
+  },
+  "scope": {
+    "inventory_collected": true,
+    "source_documentation_reviewed": true,
+    "stock_gpu_benchmark_run": false,
+    "experimental_efi_built": false,
+    "experimental_efi_executed": false,
+    "unlock_attempted": false,
+    "raw_firmware_collected": false,
+    "boot_configuration_changed": false,
+    "driver_or_security_settings_changed": false,
+    "hardware_support_established": false
+  },
+  "assessment": {
+    "status": "unestablished",
+    "reason": "No exact profile for this GPU/platform combination is documented at the inspected revision. Read-only Windows metadata and host tests do not establish pre-boot compatibility."
+  }
+}

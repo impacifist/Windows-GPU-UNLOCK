@@ -135,6 +135,7 @@ BOOLEAN GuCheckConfig(const UINT32 Config[64], UINTN Segment, UINTN Bus,
   return TRUE;
 }
 
+#ifndef GU_PROFILE_LOCAL
 static UINT16 Read16(const UINT8 *Bytes) {
   return (UINT16)(Bytes[0] | ((UINT16)Bytes[1] << 8U));
 }
@@ -209,3 +210,19 @@ int GuDisplayPath(const EFI_DEVICE_PATH_PROTOCOL *Path, UINTN MaxBytes) {
     MaxBytes -= Length;
   }
 }
+#else
+#include "gpu-path.h"
+int GuDisplayPath(const EFI_DEVICE_PATH_PROTOCOL *Path, UINTN MaxBytes) {
+  static const UINT8 Amd[]={2,1,12,0,0xd0,0x41,3,0x0a,0,0,0,0,
+    1,1,6,0,1,8,1,1,6,0,0,0,2,3,8,0,0,3,1,0x80,0x7f,0xff,4,0};
+  static const UINT8 Target[]={GU_RTX_PATH_BYTES};
+  const UINT8 *bytes=(const UINT8 *)Path;
+  if(!Path)return 0;
+  if(MaxBytes>=sizeof(Amd)) {
+    BOOLEAN same=TRUE;
+    for(UINTN i=0;i<sizeof(Amd);i++)if(bytes[i]!=Amd[i]){same=FALSE;break;}
+    if(same)return 1;
+  }
+  return GuSameGpuDisplayRoute(Path,MaxBytes,Target,sizeof(Target))?2:0;
+}
+#endif

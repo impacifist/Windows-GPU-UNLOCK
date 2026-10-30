@@ -137,16 +137,49 @@ BOOLEAN GuSameReleaseOwner(const GU_RELEASE_OWNER *A,const GU_RELEASE_OWNER *B) 
     A->version!=B->version || A->stop!=B->stop)return FALSE;
   return TRUE;
 }
+static BOOLEAN RefreshBusy,RefreshReentered;
+static EFI_STATUS RefreshError(EFI_STATUS s) {return RETURN_ERROR(s)?s:EFI_DEVICE_ERROR;}
+static BOOLEAN RefreshStable(EFI_BOOT_SERVICES *bs,EFI_HANDLE handle,EFI_HANDLE_PROTOCOL resolve,
+  EFI_PCI_IO_PROTOCOL *pci,EFI_PCI_IO_PROTOCOL_GET_LOCATION location,
+  EFI_PCI_IO_PROTOCOL_CONFIG read,EFI_PCI_IO_PROTOCOL_CONFIG write) {
+  return !RefreshReentered && !Gu.pci && Gu.bs==bs && Gu.handle==handle && bs->HandleProtocol==resolve &&
+    pci->GetLocation==location && pci->Pci.Read==read && pci->Pci.Write==write;
+}
 EFI_STATUS GuRefreshTargetPci(VOID) {
-  EFI_PCI_IO_PROTOCOL *fresh=NULL;UINTN segment,bus,device,function;UINT32 config[64]={0};
   Gu.pci=NULL;
-  EFI_STATUS status=Gu.bs->HandleProtocol(Gu.handle,&PciGuid,(VOID **)&fresh);
-  if(EFI_ERROR(status) || !fresh || !fresh->GetLocation || !fresh->Pci.Read || !fresh->Pci.Write)return EFI_NOT_FOUND;
-  status=fresh->GetLocation(fresh,&segment,&bus,&device,&function);if(EFI_ERROR(status))return status;
+  if(RefreshBusy){RefreshReentered=TRUE;return EFI_NOT_READY;}
+  RefreshBusy=TRUE;RefreshReentered=FALSE;
+  EFI_STATUS status=EFI_NOT_FOUND;
+  EFI_BOOT_SERVICES *bs=Gu.bs;EFI_HANDLE handle=Gu.handle;
+  EFI_PCI_IO_PROTOCOL *fresh=NULL;
+  if(!bs || !handle || !bs->HandleProtocol)goto done;
+  EFI_HANDLE_PROTOCOL resolve=bs->HandleProtocol;
+  status=resolve(handle,&PciGuid,(VOID **)&fresh);
+  if(status!=EFI_SUCCESS){status=RefreshError(status);goto done;}
+  if(!fresh || !fresh->GetLocation || !fresh->Pci.Read || !fresh->Pci.Write){status=EFI_NOT_FOUND;goto done;}
+  EFI_PCI_IO_PROTOCOL_GET_LOCATION location=fresh->GetLocation;
+  EFI_PCI_IO_PROTOCOL_CONFIG read=fresh->Pci.Read,write=fresh->Pci.Write;
+  if(!RefreshStable(bs,handle,resolve,fresh,location,read,write)){status=EFI_NOT_READY;goto done;}
+  UINTN segment=~(UINTN)0,bus=~(UINTN)0,device=~(UINTN)0,function=~(UINTN)0;
+  status=location(fresh,&segment,&bus,&device,&function);
+  if(status!=EFI_SUCCESS){status=RefreshError(status);goto done;}
+  UINT32 config[64];for(UINTN i=0;i<64;i++)config[i]=0xffffffffU;
   const UINT32 offsets[]={0,8,12,44};
   for(UINTN i=0;i<4;i++) {
-    status=fresh->Pci.Read(fresh,EfiPciIoWidthUint32,offsets[i],1,&config[offsets[i]/4]);if(EFI_ERROR(status))return status;
+    if(!RefreshStable(bs,handle,resolve,fresh,location,read,write)){status=EFI_NOT_READY;goto done;}
+    status=read(fresh,EfiPciIoWidthUint32,offsets[i],1,&config[offsets[i]/4]);
+    if(status!=EFI_SUCCESS){status=RefreshError(status);goto done;}
   }
-  if(!GuTargetConfig(config,segment,bus,device,function))return EFI_UNSUPPORTED;
-  Gu.pci=fresh;return EFI_SUCCESS;
+  if(!RefreshStable(bs,handle,resolve,fresh,location,read,write)){status=EFI_NOT_READY;goto done;}
+  /* This is identity resolution for containment too: do not require MEM-on or
+   * BME-off, and allow a newly resolved valid interface after firmware release. */
+  if(!GuTargetConfig(config,segment,bus,device,function)){status=EFI_UNSUPPORTED;goto done;}
+  UINTN s=~(UINTN)0,b=~(UINTN)0,d=~(UINTN)0,f=~(UINTN)0;
+  status=location(fresh,&s,&b,&d,&f);
+  if(status!=EFI_SUCCESS){status=RefreshError(status);goto done;}
+  if(!RefreshStable(bs,handle,resolve,fresh,location,read,write) || s!=segment || b!=bus || d!=device || f!=function){status=EFI_NOT_READY;goto done;}
+  Gu.pci=fresh;
+done:
+  if(status!=EFI_SUCCESS)Gu.pci=NULL;
+  RefreshBusy=FALSE;return status;
 }

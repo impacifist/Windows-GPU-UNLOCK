@@ -6,6 +6,7 @@
  */
 #include "prepare-console.h"
 #include "../unlock/machine-profile.h"
+#include "../unlock/gpu-path.h"
 #include "media.h"
 #include <Protocol/GraphicsOutput.h>
 #include <Protocol/PciIo.h>
@@ -36,6 +37,13 @@
 
 #define MAX_HANDLES 1024
 #define MAX_RECORDS 4096
+static const UINT8 RtxPath[]={GU_RTX_PATH_BYTES};
+#define GU_RTX_DISPLAY_BYTES (sizeof(RtxPath))
+#ifdef GU_PROFILE_LOCAL
+_Static_assert(GU_RTX_DISPLAY_BYTES>=30 && GU_RTX_DISPLAY_BYTES<=GU_GPU_DISPLAY_PATH_MAX_BYTES,"LOCAL GPU path length outside bounded contract");
+#else
+_Static_assert(GU_RTX_DISPLAY_BYTES==36,"reviewed GPU paths retain their exact size");
+#endif
 typedef struct {
   EFI_HANDLE Handle,Agent,Controller;
   EFI_GUID Protocol;
@@ -52,7 +60,7 @@ typedef struct {
   EFI_HANDLE AggCandidate,AggDriver;
 #if GU_CONSOLE_MULTI_CHILD
   EFI_HANDLE Children[GU_AGGREGATE_MAX_CHILDREN];
-  UINT8 ChildPaths[GU_AGGREGATE_MAX_CHILDREN][36];
+  UINT8 ChildPaths[GU_AGGREGATE_MAX_CHILDREN][GU_RTX_DISPLAY_BYTES];
   UINTN ChildCount;
 #endif
 #endif
@@ -60,7 +68,7 @@ typedef struct {
   EFI_SIMPLE_TEXT_INPUT_PROTOCOL *Keys;
   EFI_PCI_IO_PROTOCOL *AmdIo,*RtxIo;
   UINT32 AmdConfig[16],RtxConfig[16];
-  UINT8 AmdDisplayPath[36],RtxDisplayPath[36];
+  UINT8 AmdDisplayPath[36],RtxDisplayPath[GU_RTX_DISPLAY_BYTES];
 #ifdef GU_SINGLE_RTX_CONSOLE
   EFI_GRAPHICS_OUTPUT_PROTOCOL *Gop;
   EFI_GRAPHICS_OUTPUT_PROTOCOL_MODE *Mode,ModeCopy;
@@ -84,7 +92,6 @@ static const EFI_GUID EdidFile={0xc7a7030c,0xc3d8,0x45ee,{0xbe,0xd9,0x5d,0x9e,0x
 static const EFI_GUID ComboFile={0x55987e62,0x1df6,0x41d1,{0x90,0x62,0x33,0x4f,0xca,0xc3,0xe5,0x4d}};
 #endif
 static const UINT8 AmdPath[]={2,1,12,0,0xd0,0x41,3,10,0,0,0,0,1,1,6,0,1,8,1,1,6,0,0,0,2,3,8,0,0,3,1,128,127,255,4,0};
-static const UINT8 RtxPath[]={GU_RTX_PATH_BYTES};
 static BOOLEAN Bytes(const VOID *a,const VOID *b,UINTN n) {
   const UINT8 *x=a,*y=b;for(UINTN i=0;i<n;i++)if(x[i]!=y[i])return FALSE;return TRUE;
 }
@@ -123,26 +130,37 @@ static EFI_STATUS Interface(EFI_BOOT_SERVICES *bs,EFI_HANDLE h,EFI_GUID *guid,VO
   *out=NULL;EFI_STATUS s=bs->HandleProtocol(h,guid,out);
   return s==EFI_SUCCESS && !*out?EFI_COMPROMISED_DATA:s;
 }
-static BOOLEAN PathMatches(const EFI_DEVICE_PATH_PROTOCOL *p,const UINT8 *expected) {
-  UINTN bytes=0;return GuInspectPath(p,NULL,&bytes,NULL,NULL) && bytes==sizeof(AmdPath) && Bytes(p,expected,bytes);
+static BOOLEAN PathMatches(const EFI_DEVICE_PATH_PROTOCOL *p,const UINT8 *expected,UINTN expectedBytes) {
+  UINTN bytes=0;return GuInspectPath(p,NULL,&bytes,NULL,NULL) && bytes==expectedBytes && Bytes(p,expected,bytes);
 }
 /* Keep the exact platform PCI ancestry and single ACPI ADR node shape.
  * The four-byte ADR is a display endpoint, not the GPU identity: discover
  * it this boot, then pin the entire path for every later check. */
-static BOOLEAN DisplayRoute(const EFI_DEVICE_PATH_PROTOCOL *p,const UINT8 *platform) {
+static BOOLEAN DisplayRoute(const EFI_DEVICE_PATH_PROTOCOL *p,const UINT8 *platform,UINTN platformBytes) {
   UINTN bytes=0;
-  return GuInspectPath(p,NULL,&bytes,NULL,NULL) && bytes==36 &&
+#ifdef GU_PROFILE_LOCAL
+  return GuInspectPath(p,NULL,&bytes,NULL,NULL) && bytes==platformBytes &&
+    GuSameGpuDisplayRoute(p,bytes,platform,platformBytes);
+#else
+  return platformBytes==36 && GuInspectPath(p,NULL,&bytes,NULL,NULL) && bytes==36 &&
     Bytes(p,platform,28) && Bytes((const UINT8 *)p+32,platform+32,4);
+#endif
 }
-static EFI_STATUS PciFor(EFI_BOOT_SERVICES *bs,EFI_DEVICE_PATH_PROTOCOL *path,UINTN bus,UINT32 id,UINT32 subsystem,EFI_HANDLE *handle,EFI_PCI_IO_PROTOCOL **io,UINT32 *config) {
+static EFI_STATUS PciFor(EFI_BOOT_SERVICES *bs,EFI_DEVICE_PATH_PROTOCOL *path,UINTN segment,UINTN bus,UINT32 id,UINT32 subsystem,EFI_HANDLE *handle,EFI_PCI_IO_PROTOCOL **io,UINT32 *config) {
   EFI_DEVICE_PATH_PROTOCOL *rest=path;*handle=NULL;
+  UINTN controllerBytes=24;
+#ifdef GU_PROFILE_LOCAL
+  UINTN pathBytes=0;
+  if(!GuInspectPath(path,NULL,&pathBytes,NULL,NULL) ||
+     !GuDecodeGpuDisplayPath(path,pathBytes,&controllerBytes,NULL))return EFI_UNSUPPORTED;
+#endif
   EFI_STATUS s=bs->LocateDevicePath(&PciGuid,&rest,handle);
-  if(s!=EFI_SUCCESS || !*handle || (UINT8 *)rest!=(UINT8 *)path+24)return EFI_UNSUPPORTED;
+  if(s!=EFI_SUCCESS || !*handle || (UINT8 *)rest!=(UINT8 *)path+controllerBytes)return EFI_UNSUPPORTED;
   s=Interface(bs,*handle,&PciGuid,(VOID **)io);if(s!=EFI_SUCCESS)return s;
   UINTN seg=0,b=0,d=0,f=0;
   if(!(*io)->GetLocation || !(*io)->Pci.Read)return EFI_UNSUPPORTED;
   s=(*io)->GetLocation(*io,&seg,&b,&d,&f);
-  if(s!=EFI_SUCCESS || seg || b!=bus || d || f)return EFI_UNSUPPORTED;
+  if(s!=EFI_SUCCESS || seg!=segment || b!=bus || d || f)return EFI_UNSUPPORTED;
   s=(*io)->Pci.Read(*io,EfiPciIoWidthUint32,0,16,config);
   if(s!=EFI_SUCCESS || config[0]!=id || config[11]!=subsystem || (config[2]>>24)!=3)return EFI_UNSUPPORTED;
   return EFI_SUCCESS;
@@ -208,22 +226,28 @@ static EFI_STATUS Displays(EFI_SYSTEM_TABLE *t,PLAN *p,BOOLEAN first) {
     if(!m->Info || m->SizeOfInfo<sizeof(*m->Info) || !m->FrameBufferBase || !m->FrameBufferSize || m->Mode>=m->MaxMode ||
        m->Info->PixelFormat>PixelBlueGreenRedReserved8BitPerColor || !m->Info->HorizontalResolution || !m->Info->VerticalResolution ||
        m->Info->PixelsPerScanLine<m->Info->HorizontalResolution || (UINT64)m->Info->PixelsPerScanLine*m->Info->VerticalResolution>m->FrameBufferSize/4){s=EFI_UNSUPPORTED;break;}
-    if(DisplayRoute(path,AmdPath) && !amd) {
+    if(DisplayRoute(path,AmdPath,sizeof(AmdPath)) && !amd
+#ifdef GU_PROFILE_LOCAL
+       /* A captured NVIDIA route can share this historical AMD ancestry.
+        * Prefer the pinned LOCAL route; PciFor still verifies its PCI identity. */
+       && !DisplayRoute(path,RtxPath,sizeof(RtxPath))
+#endif
+       ) {
 #ifdef GU_SINGLE_RTX_CONSOLE
       s=EFI_UNSUPPORTED;break; /* Sole physical GOP must be this RTX. */
 #else
       amd=handles[i];UINT32 cfg[16];EFI_HANDLE h=NULL;EFI_PCI_IO_PROTOCOL *io=NULL;
-      s=PciFor(bs,path,12,0x164e1002,0x88771043,&h,&io,cfg);
+      s=PciFor(bs,path,0,12,0x164e1002,0x88771043,&h,&io,cfg);
       if(s!=EFI_SUCCESS)break;
       if(first){p->AmdPci=h;p->AmdIo=io;for(UINTN j=0;j<16;j++)p->AmdConfig[j]=cfg[j];for(UINTN j=0;j<36;j++)p->AmdDisplayPath[j]=((UINT8 *)path)[j];}
-      else if(p->AmdPci!=h || p->AmdIo!=io || !Bytes(cfg,p->AmdConfig,sizeof(cfg)) || !PathMatches(path,p->AmdDisplayPath))s=EFI_NOT_READY;
+      else if(p->AmdPci!=h || p->AmdIo!=io || !Bytes(cfg,p->AmdConfig,sizeof(cfg)) || !PathMatches(path,p->AmdDisplayPath,sizeof(p->AmdDisplayPath)))s=EFI_NOT_READY;
 #endif
-    } else if(DisplayRoute(path,RtxPath) && !rtx) {
+    } else if(DisplayRoute(path,RtxPath,sizeof(RtxPath)) && !rtx) {
       rtx=handles[i];UINT32 cfg[16];EFI_HANDLE h=NULL;EFI_PCI_IO_PROTOCOL *io=NULL;
-      s=PciFor(bs,path,GU_TARGET_BUS,GU_BOARD_ID,GU_BOARD_SUBSYSTEM,&h,&io,cfg);
+      s=PciFor(bs,path,GU_TARGET_SEGMENT,GU_TARGET_BUS,GU_BOARD_ID,GU_BOARD_SUBSYSTEM,&h,&io,cfg);
       if(s!=EFI_SUCCESS)break;
-      if(first){p->RtxPci=h;p->RtxIo=io;for(UINTN j=0;j<16;j++)p->RtxConfig[j]=cfg[j];for(UINTN j=0;j<36;j++)p->RtxDisplayPath[j]=((UINT8 *)path)[j];}
-      else if(p->RtxPci!=h || p->RtxIo!=io || !Bytes(cfg,p->RtxConfig,sizeof(cfg)) || !PathMatches(path,p->RtxDisplayPath))s=EFI_NOT_READY;
+      if(first){p->RtxPci=h;p->RtxIo=io;for(UINTN j=0;j<16;j++)p->RtxConfig[j]=cfg[j];for(UINTN j=0;j<sizeof(p->RtxDisplayPath);j++)p->RtxDisplayPath[j]=((UINT8 *)path)[j];}
+      else if(p->RtxPci!=h || p->RtxIo!=io || !Bytes(cfg,p->RtxConfig,sizeof(cfg)) || !PathMatches(path,p->RtxDisplayPath,sizeof(p->RtxDisplayPath)))s=EFI_NOT_READY;
 #ifdef GU_SINGLE_RTX_CONSOLE
       if(first){p->Gop=gop;p->Mode=m;p->ModeCopy=*m;p->Info=m->Info;p->InfoCopy=*m->Info;}
       else if(p->Gop!=gop || p->Mode!=m || p->Info!=m->Info || !Bytes(&p->ModeCopy,m,sizeof(*m)) || !Bytes(&p->InfoCopy,m->Info,sizeof(*m->Info)))s=EFI_NOT_READY;
@@ -338,12 +362,12 @@ static EFI_STATUS Consumers(EFI_SYSTEM_TABLE *t,PLAN *p,const GRAPH *g) {
     VOID *foundEdid=NULL,*other=NULL;UINT32 config[16];EFI_HANDLE pci=NULL;EFI_PCI_IO_PROTOCOL *io=NULL;
     if(child==p->RtxPci || child==p->Console || child==p->Input || child==p->Error || child==p->Agg)return EFI_ACCESS_DENIED;
     EFI_STATUS s=Interface(t->BootServices,child,&PathGuid,(VOID **)&path);
-    if(s!=EFI_SUCCESS || !DisplayRoute(path,RtxPath))return EFI_UNSUPPORTED;
-    s=PciFor(t->BootServices,path,GU_TARGET_BUS,GU_BOARD_ID,GU_BOARD_SUBSYSTEM,&pci,&io,config);
+    if(s!=EFI_SUCCESS || !DisplayRoute(path,RtxPath,sizeof(RtxPath)))return EFI_UNSUPPORTED;
+    s=PciFor(t->BootServices,path,GU_TARGET_SEGMENT,GU_TARGET_BUS,GU_BOARD_ID,GU_BOARD_SUBSYSTEM,&pci,&io,config);
     if(s!=EFI_SUCCESS || pci!=p->RtxPci || io!=p->RtxIo || !Bytes(config,p->RtxConfig,sizeof(config)))return EFI_NOT_READY;
-    for(UINTN prior=0;prior<c;prior++)if(Bytes(p->ChildPaths[prior],path,36))return EFI_UNSUPPORTED;
-    for(UINTN j=0;j<36;j++)p->ChildPaths[c][j]=((UINT8 *)path)[j];
-    if(c==0 && !Bytes(path,p->RtxDisplayPath,36))return EFI_NOT_READY;
+    for(UINTN prior=0;prior<c;prior++)if(Bytes(p->ChildPaths[prior],path,sizeof(p->ChildPaths[prior])))return EFI_UNSUPPORTED;
+    for(UINTN j=0;j<sizeof(p->ChildPaths[c]);j++)p->ChildPaths[c][j]=((UINT8 *)path)[j];
+    if(c==0 && !Bytes(path,p->RtxDisplayPath,sizeof(p->RtxDisplayPath)))return EFI_NOT_READY;
     if(Interface(t->BootServices,child,&EdidFoundGuid,&foundEdid)!=EFI_SUCCESS || !foundEdid)return EFI_UNSUPPORTED;
     if(c) {
       s=Interface(t->BootServices,child,&GopGuid,&other);
