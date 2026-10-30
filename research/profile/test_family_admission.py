@@ -48,7 +48,7 @@ class FamilyAdmissionTests(unittest.TestCase):
 
     def test_driver_code_is_bound_to_family(self):
         # Hashing is stubbed to isolate the admission decision, not prove driver bytes.
-        cases=((0x220410de,0xb72000a1,0x6000,('60008','60009','60010')),
+        cases=((0x220410de,0xb72000a1,0x6000,('60008','60009','60010','6000a')),
                (0x248710de,0xb74000a1,0x3000,('60010',)),
                (0x250410de,0xb76000a1,0x3000,('60010',)),
                (0x248410de,0xb74000a1,0x2000,('60009',)),
