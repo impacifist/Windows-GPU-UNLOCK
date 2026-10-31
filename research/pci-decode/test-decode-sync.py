@@ -85,6 +85,9 @@ def main():
         mutation_specs += [(name, 'efi-capture.c', 'test_efi_capture.c',
             [str(HERE / 'decode-sync.c'),str(HERE / 'snapshot.c'),str(HERE / 'efi-adapter.c')], replacements)
             for name, replacements in capture_changes.items()]
+        mutation_specs.append(('broaden-msi-identity', 'snapshot.c', 'test_efi_adapter.c',
+                               [str(HERE / 'efi-adapter.c'),str(HERE / 'decode-sync.c')],
+                               [('if(!GuDsMsi3080Ti(s))return FALSE;', 'if(!GuDsMsi3080Ti(s) && FALSE)return FALSE;')]))
         for name, source_file, test_file, support, replacements in mutation_specs:
             broken = (HERE / source_file).read_text()
             for before, after in replacements:

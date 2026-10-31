@@ -1,6 +1,18 @@
 /* GPL-2.0-only. Pure PCI snapshot predicates. No protocol or actuator calls. */
 #include "snapshot.h"
 
+/* Exact MSI PCI envelope, not firmware eligibility or ownership. */
+static BOOLEAN GuDsMsi3080Ti(const GU_DS_SNAPSHOT *s) {
+  const GU_DS_DEVICE *g=&s->Gpu,*p=&s->Parents[0];
+  return s->ParentCount==1 && g->Segment==0 && g->Bus==0x2d &&
+    g->Device==0 && g->Function==0 && g->Config[0]==0x220810deU &&
+    g->Config[11]==0x88031043U && g->Config[4]==0xfa000000U &&
+    p->Segment==0 && p->Bus==0 && p->Device==3 && p->Function==1 &&
+    p->Config[0]==0x14831022U && p->Config[2]==0x06040000U &&
+    (p->Config[6]&0xffffffU)==0x002d2d00U;
+}
+
+
 static BOOLEAN Location(const GU_DS_DEVICE *a,const GU_DS_DEVICE *b) {
   return a->Segment==b->Segment && a->Bus==b->Bus && a->Device==b->Device && a->Function==b->Function;
 }
@@ -25,6 +37,7 @@ BOOLEAN GuDecodeSnapshotValid(const GU_DS_SNAPSHOT *s) {
      (g->Attributes!=GU_DS_MEMORY && g->Attributes!=(GU_DS_IO|GU_DS_MEMORY)))return FALSE;
   switch(g->Config[0]) {
     case 0x220410deU:case 0x220310deU:case 0x248410deU:case 0x248710deU:case 0x250410deU:break;
+    case 0x220810deU:if(!GuDsMsi3080Ti(s))return FALSE;break;
     default:return FALSE;
   }
   for(UINTN i=0;i<s->ParentCount;i++) {

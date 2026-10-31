@@ -135,5 +135,22 @@ int main(void) {
   CaptureSetup(&m,2,0);Check(Collect(&m)==EFI_SUCCESS,"composition capture");
   Check(GuDsEfiInitialize(&m.Adapter,&m.Boot,(EFI_HANDLE)&m.OwnerTag,Capture.Bindings,Capture.Count,&Capture.Snapshot,Log,&m)==EFI_SUCCESS,"capture binds to existing owned adapter");
   Check(Run(&m)==GU_DS_FIXED && m.Writes==1,"captured baseline composes with owned adapter in RAM only");
+  /* Shared MSI snapshot admission is observation only, never a write grant. */
+  CaptureSetup(&m,1,0);
+  /* Populate the exact synthetic route while keeping the collector hooks. */
+  for(unsigned i=0;i<2;i++) {
+    DEVICE *d=&m.Devices[i];GU_DS_DEVICE *v=&d->State;
+    d->Path[8]=0;d->Path[16]=1;d->Path[17]=3;
+    v->Bus=i?0:0x2d;v->Device=i?3:0;v->Function=i?1:0;
+    if(i)v->Config[6]=0x002d2d00;
+    else {v->Config[0]=0x220810de;v->Config[11]=0x88031043;v->Config[4]=0xfa000000;}
+  }
+  Target.Bus=0x2d;Target.PciId=0x220810de;Target.Subsystem=0x88031043;Target.Bar0=0xfa000000;
+  memcpy(Target.Path,m.Devices[0].Path,Target.PathBytes);
+  Check(Collect(&m)==EFI_SUCCESS && Capture.Ready,"exact MSI baseline collects read-only");ReadOnly(&m);
+  m.OwnerMode=1;
+  Check(GuDsEfiInitialize(&m.Adapter,&m.Boot,(EFI_HANDLE)&m.OwnerTag,Capture.Bindings,Capture.Count,&Capture.Snapshot,Log,&m)==EFI_SUCCESS,
+    "MSI captured baseline binds independently of claim observation");
+  Refuse(&m);Check(!m.Writes,"MSI captured baseline cannot replace the required GPU claim");
   printf("PASS %u capture/composition assertions; no EFI execution or hardware access\n",Checks);return 0;
 }

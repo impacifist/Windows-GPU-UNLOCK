@@ -191,6 +191,19 @@ static void Setup(MODEL *m,unsigned parents,UINTN segment) {
     if(i)m->Expected.Parents[i-1]=*s;else m->Expected.Gpu=*s;
   }
 }
+/* Exact MSI route, synthesized values only. No capture, PROM or firmware asset. */
+static void SetupMsi(MODEL *m) {
+  Setup(m,1,0);
+  for(unsigned i=0;i<2;i++) {
+    DEVICE *d=&m->Devices[i];GU_DS_DEVICE *s=&d->State;
+    d->Path[8]=0;d->Path[16]=1;d->Path[17]=3;
+    s->Bus=i?0:0x2d;s->Device=i?3:0;s->Function=i?1:0;
+    if(i)s->Config[6]=0x002d2d00;
+    else {s->Config[0]=0x220810de;s->Config[11]=0x88031043;s->Config[4]=0xfa000000;}
+    memcpy(m->Bindings[i].Path,d->Path,d->Bytes);
+    if(i)m->Expected.Parents[0]=*s;else m->Expected.Gpu=*s;
+  }
+}
 static EFI_STATUS Init(MODEL *m) {return GuDsEfiInitialize(&m->Adapter,&m->Boot,(EFI_HANDLE)&m->OwnerTag,m->Bindings,m->Count,&m->Expected,Log,m);}
 static GU_DS_RESULT Run(MODEL *m) {return GuDsEfiRun(&m->Adapter,&m->Transaction);}
 static void Refuse(MODEL *m) {
@@ -312,6 +325,65 @@ int main(void) {
     }
     Check(Init(&m)!=EFI_SUCCESS && !m.Calls && !m.Writes,"malformed ancestry/capability rejected before firmware");
   }
+  /* Supplied parent bindings need no active parent ownership edge. GPU writes
+   * still require the upstream exclusive self claim. Parent attributes/support
+   * are synthetic consistent values, not captured evidence. */
+  SetupMsi(&m);m.Reenter=1;
+  Check(Init(&m)==EFI_SUCCESS && Run(&m)==GU_DS_FIXED && m.Writes==1,
+    "exact MSI 3080 Ti corrects through existing EFI adapter once");
+  Check(m.Devices[0].State.Config[1]==0x00100002 && m.Devices[0].State.Attributes==0x200,
+    "MSI correction leaves raw command unchanged");
+  SetupMsi(&m);m.WriteStatus=EFI_DEVICE_ERROR;
+  Check(Init(&m)==EFI_SUCCESS,"MSI partial-effect fixture");
+  Refuse(&m);Check(m.Transaction.DisableStatus==EFI_DEVICE_ERROR && m.Transaction.PostObserved &&
+    m.Devices[0].State.Attributes==0x200,"MSI error is not promoted by corrected cache");
+  for(unsigned bad=0;bad<12;bad++) {
+    SetupMsi(&m);
+    switch(bad) {
+      case 0:m.Expected.Gpu.Config[11]^=1;break;
+      case 1:m.Expected.Gpu.Config[4]^=0x1000000;break;
+      case 2:m.Expected.Gpu.Bus^=1;break;
+      case 3:m.Expected.Gpu.Segment=1;break;
+      case 4:m.Expected.Parents[0].Config[0]^=0x10000;break;
+      case 5:m.Expected.Parents[0].Device^=1;break;
+      case 6:m.Expected.Parents[0].Function^=1;break;
+      case 7:m.Expected.Parents[0].Config[2]^=1;break;
+      case 8:m.Expected.Parents[0].Config[6]^=0x100;break;
+      case 9:m.Expected.Gpu.Config[1]|=4;break;
+      case 10:m.Expected.Gpu.Attributes=0x700;break;
+      case 11:m.Expected.ParentCount=2;break;
+    }
+    Check(Init(&m)!=EFI_SUCCESS && !m.Calls && !m.Writes,
+      "MSI near-miss refuses before protocol or write callbacks");
+  }
+  SetupMsi(&m);Check(Init(&m)==EFI_SUCCESS,"MSI final parent drift fixture");
+  m.LogDrift=1;Refuse(&m);Check(!m.Writes,"MSI parent drift prevents correction");
+  SetupMsi(&m);m.Devices[0].State.Attributes=m.Expected.Gpu.Attributes=0x200;
+  Check(Init(&m)==EFI_SUCCESS && Run(&m)==GU_DS_ALREADY_CONSISTENT && !m.Writes,
+    "consistent MSI baseline never requests Disable");
+  /* This exact profile must obey the same observed ownership guards. */
+  for(unsigned mode=1;mode<=34;mode++) {
+    if(mode==11 || mode==20)continue;
+    SetupMsi(&m);m.OwnerMode=mode;
+    Check(Init(&m)==EFI_SUCCESS,"MSI malformed ownership fixture");
+    Refuse(&m);Check(!m.Writes,"MSI admission cannot bypass missing, foreign or malformed ownership");
+  }
+  SetupMsi(&m);Check(Init(&m)==EFI_SUCCESS && Run(&m)==GU_DS_FIXED,"MSI ownership timing control");
+  unsigned msiDisable=m.DisableAt;
+  for(unsigned at=1;at<msiDisable;at++) {
+    SetupMsi(&m);m.OwnerDriftAt=at;
+    Check(Init(&m)==EFI_SUCCESS,"MSI ownership loss fixture");
+    Refuse(&m);Check(!m.Writes,"MSI ownership loss before Disable prevents correction");
+  }
+  SetupMsi(&m);m.FaultAt=msiDisable-1;m.FaultStatus=EFI_NOT_STARTED;
+  Check(Init(&m)==EFI_SUCCESS,"MSI ownership status fixture");Refuse(&m);
+  Check(!m.Writes && m.Adapter.OwnershipObserved && !m.Adapter.DisableInvoked &&
+    m.Adapter.OwnershipStatus==EFI_NOT_STARTED,"MSI preserves actual ownership failure checkpoint");
+  SetupMsi(&m);m.FaultAt=msiDisable+1;m.FaultStatus=EFI_OUT_OF_RESOURCES;
+  Check(Init(&m)==EFI_SUCCESS,"MSI cleanup status fixture");Refuse(&m);
+  Check(m.Writes==1 && m.Adapter.DisableInvoked && m.Adapter.OwnershipFault &&
+    m.Adapter.DisableIoStatus==EFI_SUCCESS && m.Adapter.CleanupStatus==EFI_OUT_OF_RESOURCES,
+    "MSI post-write cleanup failure retains actual write and cleanup status");
   printf("PASS %u UEFI adapter assertions; all EFIAPI services are RAM mocks, no firmware execution\n",Checks);
   return 0;
 }

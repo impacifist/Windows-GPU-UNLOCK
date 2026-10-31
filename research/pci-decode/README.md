@@ -59,7 +59,7 @@ dword of the GPU and all 16 parents, full attribute/token/location drift, and
 attempts to reuse a transaction. All protocol effects are RAM callbacks; no GPU,
 firmware, boot setting or physical media is accessed. Passing this model grants
 no hardware support, LOCAL write evidence or permission to run a correction.
-The optional mutation checks compile twenty deliberately broken copies in the ignored
+The optional mutation checks compile twenty-one deliberately broken copies in the ignored
 output directory and require the host tests to reject them. A compile failure does
 not count as detecting a broken guard. Original source files remain unchanged.
 
@@ -234,3 +234,32 @@ stable wrong GPU pins, bad bus chains, interface replacement between scans, miss
 parent resolution, partial output, strict status handling, mutable input, callback
 reentry and overlapping arguments. Four extra compiled mutations remove GPU pinning,
 two-scan equality, interface pinning and whole-chain capability checks and must fail.
+
+
+## Exact MSI 3080 Ti research envelope
+
+The local MSI predicate in snapshot.c restricts research admission for 10de:2208 to the
+ASUS 1043:8803 subsystem at segment zero, 2d:00.0, BAR0 0xfa000000,
+and one AMD 1022:1483 parent at 00:03.1 forwarding only bus 2d.
+The shared snapshot predicates still validate complete snapshots, raw command, cache,
+parent attributes/support and the one-shot transaction. The adapter additionally
+validates controller paths, interface capabilities, complete repeated reads and
+the upstream exclusive GPU ownership claim. No ownership check is relaxed.
+
+This is a PCI snapshot envelope, not authentication of motherboard/BIOS,
+PROM, GPU memory geometry or firmware signatures. Parent cache/support values
+in the new tests are synthetic consistent assumptions, not values observed
+by the private hardware helper. The mock uses supplied protocol/path bindings
+and needs no active owner edge for the parent. No captured code or private
+asset is needed.
+
+The [hardware report](../../evidence/msi-x570-3080ti/README.md) concerns a
+different private implementation. It supplies supporting observations, not
+hardware validation of this adapter or permission to wire it into production.
+The snapshot envelope is also used by the read-only baseline collector; an
+accepted snapshot is not permission to correct the device. The owned adapter
+still requires its independent self-exclusive claim and lifetime guarantees.
+In particular, the documented pre-NVIDIA-Stop integration gap remains unresolved.
+Normal profile/family/firmware/proven admission remains unchanged. The added
+mutation must compile and then be rejected when the MSI-specific restrictions
+are bypassed; compilation errors do not count as guard detection.
