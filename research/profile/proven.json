@@ -15,17 +15,20 @@
       "nvgop": [
         {"version": "60008", "text_sha256": "6aad26e6909c9791dd0caba92d6658e9dfd8009aee80676002bf24ce2ad24d08"},
         {"version": "60010", "text_sha256": "615b37a708b1894e18d7fa60cfcdacaa4d8b598863a10b8103d231a595847b2b"},
-        {"version": "60009", "text_sha256": "d045cee2113e461c7c678ec21542b1d0f18356765c0fc6a0bf2dcf824088e011"}
+        {"version": "60009", "text_sha256": "d045cee2113e461c7c678ec21542b1d0f18356765c0fc6a0bf2dcf824088e011"},
+        {"version": "6000a", "text_sha256": "8924ba488419e5d82b524d10e8dd63bfe886f077026fae1a9cc03e25b920b276"}
       ],
       "pci_nvgop": {
-        "220410de": [{"version": "60008", "text_sha256": "6aad26e6909c9791dd0caba92d6658e9dfd8009aee80676002bf24ce2ad24d08"}, {"version": "60010", "text_sha256": "615b37a708b1894e18d7fa60cfcdacaa4d8b598863a10b8103d231a595847b2b"}, {"version": "60009", "text_sha256": "d045cee2113e461c7c678ec21542b1d0f18356765c0fc6a0bf2dcf824088e011"}],
+        "220410de": [{"version": "60008", "text_sha256": "6aad26e6909c9791dd0caba92d6658e9dfd8009aee80676002bf24ce2ad24d08"}, {"version": "60010", "text_sha256": "615b37a708b1894e18d7fa60cfcdacaa4d8b598863a10b8103d231a595847b2b"}, {"version": "60009", "text_sha256": "d045cee2113e461c7c678ec21542b1d0f18356765c0fc6a0bf2dcf824088e011"}, {"version": "6000a", "text_sha256": "8924ba488419e5d82b524d10e8dd63bfe886f077026fae1a9cc03e25b920b276"}],
         "220310de": [{"version": "60008", "text_sha256": "6aad26e6909c9791dd0caba92d6658e9dfd8009aee80676002bf24ce2ad24d08"}, {"version": "60010", "text_sha256": "615b37a708b1894e18d7fa60cfcdacaa4d8b598863a10b8103d231a595847b2b"}, {"version": "60009", "text_sha256": "d045cee2113e461c7c678ec21542b1d0f18356765c0fc6a0bf2dcf824088e011"}],
         "220a10de": [{"version": "60010", "text_sha256": "615b37a708b1894e18d7fa60cfcdacaa4d8b598863a10b8103d231a595847b2b"}]
       },
       "evidence": [
         "evidence/headless-handoff",
         "evidence/x870-3090ti-usb",
-        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/73"
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/73",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/102",
+        "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/138"
       ]
     },
     {
@@ -55,6 +58,11 @@
     }
   ],
   "nvgop": [
+    {
+      "version": "6000a",
+      "text_sha256": "8924ba488419e5d82b524d10e8dd63bfe886f077026fae1a9cc03e25b920b276",
+      "evidence": "https://github.com/impacifist/Windows-GPU-UNLOCK/issues/102"
+    },
     {
       "version": "60015",
       "text_sha256": "645a2f416940211e09023838ac03f4b45453f95f457eab2de49628d57e9deb95",
