@@ -1,0 +1,10 @@
+{
+  "Schema": "shared-esp-unlock-qualification-v1",
+  "Approved": true,
+  "WindowsReturned": true,
+  "UsbRestored": true,
+  "MarkerSha256": "985bc9d9f322cd7647a4866efdc9a8127a7de2bfbf7a0b8d732e6b4899d7c4d8",
+  "GpuMarkerSha256": "a7645daf039d87b5f89b5d5e0b2f3e8a44b6e92eb65c37ecd11d276c6ed58fef",
+  "LogSha256": "1b5216b2d88691d72e26dc09083e218ac0674041e1c01f158307f902067d959b",
+  "Note": "Raw QUAL01 marker/log independently inspected 2026-10-28: release, claim/close, state/PROM/platform, restored decode and two captures complete. Windows return and USB restoration are contributor-reported. Approval is only for the first attended shared-ESP transaction; no recovery or unlock success inferred."
+}

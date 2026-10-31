@@ -1,0 +1,61 @@
+{
+  "run": "20261027-204429-131",
+  "archive_sha256": "9efb3f2248652920409feb6bf8a0286afea70c9f782bb4af893067898a0cf7d7",
+  "completion_hashes_valid": true,
+  "identity": {
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "pci": "0000:01:00.0",
+    "compute_capability": "8.6",
+    "cuda_runtime": 12060,
+    "cuda_driver_api": 13050,
+    "cublas": 120600
+  },
+  "comparison_settings": [
+    "NVIDIA GeForce RTX 3090",
+    "00000000:01:00.0",
+    "621.01",
+    "420.00",
+    "2100",
+    "9751"
+  ],
+  "artifact_hashes": {
+    "compute-benchmark-3090.cu": "543dbc9149f01e44373c87cc182a0d8e7757bc8ee081784829335f61e73ea85e",
+    "upstream-compute-benchmark.cu": "57b04fa8599ce298d58237246b4353e72000ce65d3d75bd406e97d1d26ec0fd2",
+    "bin/compute-benchmark-3090.exe": "919ebddfc504e4aed119659bcb6786e5766cf48b2852969e440e11b6e55ef538",
+    "bin/compute-benchmark-3090.exp": "0d674b3a1f85e268dff0650dfcc2627be263f29b44e2996a5f8da8c94c93f146",
+    "bin/compute-benchmark-3090.lib": "cef940c18fe6d00c81b55d8292c1af7404c94d01fb3c13b32af0e07476b6b0a0",
+    "bin/cublas64_12.dll": "e26c6a52b7df762633978b282d6f172d0085719b116ff1a8ca4c96ff5786e142",
+    "bin/cublaslt64_12.dll": "0fa3aabf2e90f0ba3d331699b95305ee29fe1cda0f4d4b64c883e04f01a35b49",
+    "bin/nvblas64_12.dll": "305807fb9ad83e7a900b6bfbd07adb587c678cf28bd6a8f2ce0ff64338ed7b01"
+  },
+  "trials_tflops": {
+    "fp32_pedantic": [
+      26.379272,
+      26.454663,
+      26.37668
+    ],
+    "fp16_tensor_fp32_accumulate": [
+      64.453672,
+      64.527754,
+      64.69883
+    ],
+    "bf16_tensor_fp32_accumulate": [
+      64.558792,
+      64.562675,
+      64.512242
+    ],
+    "tf32_tensor_fp32_accumulate": [
+      32.928783,
+      33.022457,
+      32.982266
+    ]
+  },
+  "medians_tflops": {
+    "fp32_pedantic": 26.379272,
+    "fp16_tensor_fp32_accumulate": 64.527754,
+    "bf16_tensor_fp32_accumulate": 64.558792,
+    "tf32_tensor_fp32_accumulate": 32.982266
+  },
+  "classification": "pre-unlock-attempt baseline; no unlock transaction performed",
+  "unlock_proven": false
+}

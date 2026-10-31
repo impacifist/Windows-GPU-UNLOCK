@@ -1,0 +1,12 @@
+{
+  "capture": "EVGA02.TXT",
+  "bytes": 408950,
+  "sha256": "438b23181faad104a18dac4c730309f6d3f8415c2f49baa0b728166c61681a5e",
+  "capture_complete": true,
+  "pci_inventory_passed": true,
+  "refusal": "evga-console-interfaces",
+  "status": "0x8000000000000003",
+  "stop_called": false,
+  "unlock_proven": false,
+  "windows_return": "automatic, contributor reports same behavior as previous run"
+}

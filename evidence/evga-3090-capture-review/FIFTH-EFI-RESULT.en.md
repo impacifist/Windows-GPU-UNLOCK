@@ -1,0 +1,9 @@
+# Fifth EFI result: explicit console membership
+
+EVGA04 repeats the earlier automatic-Windows behavior without calling Stop. A fresh ProtocolsPerHandle listing confirms zero GOP GUIDs and exactly one SimpleTextOut GUID on the system console. HandleProtocol for GOP nevertheless reports success and a pointer distinct from the system text interface. The reason for that API discrepancy remains unknown; this does not prove a GOP is installed there. See [sanitized evidence](fifth-efi-run-result.json).
+
+The next EFI checks console membership directly with ProtocolsPerHandle on every graph verification. It requires zero GOP GUIDs and exactly one text GUID, rejects errors/null entries/oversized lists, and checks FreePool. It no longer queries an unlisted console GOP. This changes the source of absence evidence, preserving the required topology rather than admitting another GOP. Physical/virtual GOP shape, ownership, exact driver code pins, fresh G, one-shot marker, one IMG13 Stop and post-state checks remain. No additional GPU access or driver Stop is added. Underlying firmware-query behavior remains unresolved.
+
+25 membership host checkpoints and nine capture regressions passed, including missing text, GOP presence, duplicate text, list error/null entry and no system-GOP query. EFI compilation/PE verification passed; local image 22016 bytes SHA256 bed0486716ae043a364b7cb16d40bd9c748db0229af46a5eaea512258c151ac9. These are local checks, not proof of hardware Stop success.
+
+Update via GitHub Desktop, rebuild/stage with existing NEXT-EFI-TEST instructions and run when available. The same display/input/hang/Windows risk and unproven recovery apply. Only fresh Shift+G after Live guards passed authorizes the existing single Stop; send EVGA05 or the next log and Windows-return outcome. No unlock is claimed.

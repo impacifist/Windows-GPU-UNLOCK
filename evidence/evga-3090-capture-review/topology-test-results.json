@@ -1,0 +1,45 @@
+{
+  "test": "offline-evga3090-console-chain-v1",
+  "results": [
+    {
+      "checks": {
+        "one_pci_display_controller": true,
+        "two_gop_handles": true,
+        "one_target_pci_path_gop": true,
+        "target_gop_has_framebuffer": true,
+        "second_gop_has_no_device_path": true,
+        "second_gop_has_zero_framebuffer": true,
+        "graphics_console_links_target_to_second_gop": true,
+        "text_console_links_second_gop_to_system_console": true,
+        "system_console_has_text_but_no_gop": true
+      },
+      "expected_console_chain_observed": true,
+      "interpretation": "Checks describe recorded relationships, not driver-code qualification or proof of another GPU.",
+      "write_eligible": false,
+      "unlock_proven": false,
+      "hardware_accessed": false,
+      "capture": "DIAG00.TXT",
+      "sha256": "85791c0f3f192a36a53f7a7baed56b4b5d31537367c0eeae955ce4aa2a90b813"
+    },
+    {
+      "checks": {
+        "one_pci_display_controller": true,
+        "two_gop_handles": true,
+        "one_target_pci_path_gop": true,
+        "target_gop_has_framebuffer": true,
+        "second_gop_has_no_device_path": true,
+        "second_gop_has_zero_framebuffer": true,
+        "graphics_console_links_target_to_second_gop": true,
+        "text_console_links_second_gop_to_system_console": true,
+        "system_console_has_text_but_no_gop": true
+      },
+      "expected_console_chain_observed": true,
+      "interpretation": "Checks describe recorded relationships, not driver-code qualification or proof of another GPU.",
+      "write_eligible": false,
+      "unlock_proven": false,
+      "hardware_accessed": false,
+      "capture": "DIAG01.TXT",
+      "sha256": "0a67dcbc0d8f4c6484161f9cc1af0c70995c60394c8a5ffdc9270e099a1542b2"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "capture": "EVGA16.TXT",
+  "bytes": 842194,
+  "sha256": "2537c7c9b15911c69a91770467e1e161ffd7d9f362485faf9ac6645fcfd9e01e",
+  "assets_verified": 5,
+  "exclusive_claim": "success",
+  "exclusive_close": "success",
+  "prom_match": true,
+  "decode_disable": "success",
+  "complete_captures": 2,
+  "windows_arrival": "assumed normal unless failure reported",
+  "unlock_attempted": false
+}

@@ -1,0 +1,15 @@
+{
+  "capture": "EVGA06.TXT",
+  "bytes": 822145,
+  "sha256": "cf7fb3897910da7f05d17cc08a70d8595de89398bea85f5e287e9e3c64c5d89f",
+  "both_captures_complete": true,
+  "img13_stop_success": true,
+  "img16_stop_success": true,
+  "operator_report": "same as previous automatic Windows return",
+  "unlock_proven": false,
+  "extra_protocols_removed": [
+    "d3b36f2c-d551-11d4-9a46-0090273fc14d",
+    "e1e4a857-c970-4075-a4da-e9c41b69adfc",
+    "387477c2-69c7-11d2-8e39-00a0c969723b"
+  ]
+}

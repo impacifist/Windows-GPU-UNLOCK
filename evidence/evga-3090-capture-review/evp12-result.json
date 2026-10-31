@@ -1,0 +1,25 @@
+{
+  "schema": "evga-evp12-result-review-v1",
+  "archive_sha256": "09c31a554bfa1d9e4b49edbcd90aed8c0136566907f69374f8f4dbc66cbd3ac8",
+  "files": {
+    "EVGA-UNLOCK12.ARMED": "c81ed25e0ed465df4a3813ac40781f6d0fb46f06fe899d4ed4fb6b4666c70aca",
+    "EVP12.ARMED": "3e7d5d8f12e408f37c557abecba929dec9b8680c7c1eda4c6058a7a6891e0e40",
+    "EVP12.TXT": "ba15d7ef5ffd98ff195bab474f00d541d3b4f492d21831c4ee7e242c078f9db1",
+    "package.json": "8c382b6e26a25f0a4a5b6fe01188f276293a800b4542d86f1305906087c836fa"
+  },
+  "complete_capture_count": 2,
+  "success_events": {
+    "evga-unlock-transaction-return": true,
+    "evga-unlock-close-return": true,
+    "evga-unlock-assets-released": true,
+    "evga-text-stop-ready-windows": true
+  },
+  "operator_reported_direct_windows_return": true,
+  "operator_reported_collection_cleanup_completed": true,
+  "full_shutdown_and_usb_absence_reconfirmation_pending": false,
+  "maintainer_approval_pending": true,
+  "operator_confirmed_full_shutdown": true,
+  "operator_confirmed_usb_absent": true,
+  "final_handoff_archive_sha256": "f112c781dc6c8878ed5425a7295388cf04fe05a32d2e96a62716d8ceb3d58221",
+  "final_handoff_verified": true
+}

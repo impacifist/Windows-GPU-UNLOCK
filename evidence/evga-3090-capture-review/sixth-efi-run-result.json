@@ -1,0 +1,18 @@
+{
+  "test": "offline-evga-one-membership-result-v1",
+  "sha256": "cbbfad6aadb858cdc6311f656c819e6707e52f274e8e0959df4348c51fbbec1a",
+  "bytes": 821126,
+  "both_captures_complete": true,
+  "selected_active_opens_removed": 2,
+  "gop_handles_preserved": 2,
+  "all_other_active_opens_preserved": true,
+  "protocol_guids_removed": [
+    "d3b36f2c-d551-11d4-9a46-0090273fc14d"
+  ],
+  "protocol_guids_added": [],
+  "hardware_accessed": false,
+  "unlock_proven": false,
+  "windows_return": "requires operator report; log proves ready only",
+  "operator_report": "Shift+G then automatic Windows; new ARMED marker",
+  "contributor_efi_sha256": "a10a74bbf528638c745c3873216399b5aff810439b27a5de161ba13e93f10046"
+}

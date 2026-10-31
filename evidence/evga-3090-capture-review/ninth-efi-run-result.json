@@ -1,0 +1,19 @@
+{
+  "capture": "EVGA08.TXT",
+  "bytes": 826407,
+  "sha256": "a7f683fc21550e1ebaa381119ab2feba908f37a0dbefbcc27a3f50f973d03747",
+  "successful_stops": [
+    "IMG13",
+    "IMG16",
+    "IMG17",
+    "IMG07 physical EDID"
+  ],
+  "complete_captures": 2,
+  "handles_retained": 549,
+  "gops_retained": 2,
+  "physical_edid_active_open_removed": true,
+  "two_edid_sibling_owners_retained": true,
+  "other_recorded_active_opens_preserved": true,
+  "operator_report": "Behaviour: Same as previous (automatic Windows return)",
+  "unlock_proven": false
+}

@@ -1,0 +1,22 @@
+{
+  "capture": "EVGA14.TXT",
+  "bytes": 831070,
+  "sha256": "2c6b400998dae1d7d77d943b0d2a5cf7c410507d633a58000d269aebedede24c",
+  "stable_pairs": {
+    "plm": "0x8b8f",
+    "boot": "0x3ff",
+    "cpuctl": "0x10",
+    "wpr": "0x0",
+    "feature-plm": "0xffffff8f",
+    "ss0": "0x30053014",
+    "ss1": "0x7",
+    "memory": "0x6000"
+  },
+  "prom_hash_matches_original": true,
+  "complete_captures": 2,
+  "ready_windows": true,
+  "windows_return": "operator confirmed normal Windows loading after Shift+G at 01:16",
+  "fixed_selector_profile_matches": false,
+  "entry_latched_selector_range_checks_match": true,
+  "unlock_proven": false
+}

@@ -1,0 +1,17 @@
+{
+  "capture": "EVGA11.TXT",
+  "bytes": 827425,
+  "sha256": "927fa507875f37b43d067fe7aa2848b0c635d8abbd9a059803371bf44cdee240",
+  "nvidia_three_child_stop_success": true,
+  "postchecks_passed": true,
+  "complete_captures": 2,
+  "before_handles": 549,
+  "after_handles": 546,
+  "removed_handles": 3,
+  "added_handles": 0,
+  "remaining_gops": 1,
+  "remaining_edid_discovered_handles": 0,
+  "nvidia_pci_ownership_retained": true,
+  "operator_report": "Longer delay after Shift+G, then automatic Windows return",
+  "unlock_proven": false
+}

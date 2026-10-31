@@ -1,0 +1,17 @@
+{
+  "capture": "EVGA13.TXT",
+  "bytes": 828614,
+  "sha256": "4c381605ffb0a25e07414388758d6bb2cb542b4ab4e04e34610d8fd4a9ec3864",
+  "memory_enable_success": true,
+  "command2_check_passed": true,
+  "chip_reads": [
+    "b72000a1",
+    "b72000a1"
+  ],
+  "memory_disable_success": true,
+  "restored_command0_checks": 2,
+  "complete_captures": 2,
+  "ready_windows_success": true,
+  "windows_return": "not explicitly reported in attachment message",
+  "unlock_proven": false
+}

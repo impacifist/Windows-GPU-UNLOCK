@@ -6,8 +6,10 @@ static BOOLEAN GuOwnerError(EFI_STATUS s){return s!=EFI_SUCCESS;}
 #undef EFI_ERROR
 #define EFI_ERROR(Status) GuOwnerError(Status)
 #endif
-static EFI_GUID PciGuid=EFI_PCI_IO_PROTOCOL_GUID,
-  BindingGuid=EFI_DRIVER_BINDING_PROTOCOL_GUID,LoadedGuid=EFI_LOADED_IMAGE_PROTOCOL_GUID;
+static EFI_GUID PciGuid=EFI_PCI_IO_PROTOCOL_GUID;
+#ifndef GU_OWNERSHIP_CLAIM_ONLY
+static EFI_GUID BindingGuid=EFI_DRIVER_BINDING_PROTOCOL_GUID,LoadedGuid=EFI_LOADED_IMAGE_PROTOCOL_GUID;
+#endif
 typedef struct {EFI_GUID protocol;EFI_OPEN_PROTOCOL_INFORMATION_ENTRY entry;} OWNER_RECORD;
 #define MAX_RECORDS 32
 static BOOLEAN Passive(UINT32 A) {
@@ -54,6 +56,7 @@ EFI_STATUS GuClaimController(VOID) {
   }
   Gu.bs->RestoreTPL(old);LogRecords(records,count,status);return status;
 }
+#ifndef GU_OWNERSHIP_CLAIM_ONLY
 static BOOLEAN ConsoleHandle(EFI_SYSTEM_TABLE *Table,EFI_HANDLE Handle) {
   return Handle && (Handle==Table->ConsoleOutHandle || Handle==Table->ConsoleInHandle || Handle==Table->StandardErrorHandle);
 }
@@ -150,3 +153,5 @@ done:
   if(status!=EFI_SUCCESS)Gu.pci=NULL;
   RefreshBusy=FALSE;return status;
 }
+
+#endif /* GU_OWNERSHIP_CLAIM_ONLY: share acquisition without release/reset helpers. */

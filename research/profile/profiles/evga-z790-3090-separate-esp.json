@@ -1,0 +1,16 @@
+{
+  "schema": "evga-attended-profile-v1",
+  "id": "evga-z790-3090-separate-esp",
+  "layout": "SeparateEsp",
+  "machine_profile": "GU_PROFILE_EVGA_Z790_3090",
+  "pci_id": "220410de",
+  "subsystem_id": "33873842",
+  "prom_sha256": "f1c7c6b205d9a5c0626af4f82e28cc377aa16cde8c25c61c77b4b5160b26e71f",
+  "requires_fresh_shift_g": true,
+  "automatic_unlock": false,
+  "permanent_unlock": false,
+  "general_hardware_compatibility": false,
+  "underlying_layout_has_contributor_evidence": false,
+  "reusable_package_hardware_tested": false,
+  "scope": "Exact captured EVGA RTX 3090/Z790 machine; runtime code and graph fingerprints remain mandatory."
+}

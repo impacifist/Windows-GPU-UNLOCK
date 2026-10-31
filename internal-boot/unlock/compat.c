@@ -24,6 +24,18 @@ VOID GuCopyFromIo(VOID *D,const VOID *S,size_t N) {
   if(Gu.fault || Address<Gu.bar_base || Address-Gu.bar_base>Gu.bar_size ||
      N>Gu.bar_size-(Address-Gu.bar_base)){Gu.fault=TRUE;return;}
   Offset=Address-Gu.bar_base;
+#if defined(GU_PROFILE_EVGA_Z790_3090)
+  /* This card was captured with DWORD PROM reads. Do not silently change
+     access width or permit an unqualified MMIO-copy range. */
+  if(Offset!=0x300000 || N!=0x100000){Gu.fault=TRUE;return;}
+  while(Done<N) {
+    UINT32 Value=0;
+    if(Gu.pci->Mem.Read(Gu.pci,EfiPciIoWidthUint32,0,Offset+Done,1,&Value)!=EFI_SUCCESS){Gu.fault=TRUE;return;}
+    for(UINTN i=0;i<4;i++)((UINT8 *)D)[Done+i]=(UINT8)(Value>>(8*i));
+    Done+=4;
+  }
+  return;
+#endif
   while(Done<N) {
     UINTN Count=N-Done<1024?N-Done:1024;
     if(EFI_ERROR(Gu.pci->Mem.Read(Gu.pci,EfiPciIoWidthUint8,0,Offset+Done,Count,(UINT8 *)D+Done))) {

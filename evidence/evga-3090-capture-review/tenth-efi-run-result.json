@@ -1,0 +1,14 @@
+{
+  "capture": "EVGA09.TXT",
+  "bytes": 829599,
+  "sha256": "0385147bd6396028fb9669877b33494f42df76a31b7123ca0294515da8e2c6d1",
+  "stops_succeeded": 6,
+  "postchecks_passed": true,
+  "complete_captures": 2,
+  "handles_retained": 549,
+  "gops_retained": 2,
+  "edid_active_owners_removed": 3,
+  "other_recorded_active_opens_preserved": true,
+  "operator_report": "Behaviour: Same as previous (automatic Windows return)",
+  "unlock_proven": false
+}

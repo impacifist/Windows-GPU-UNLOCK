@@ -1,0 +1,178 @@
+{
+  "base_commit": "c403e8f0002ec69fc162a145d8172b2782ec9645",
+  "archive_sha256": "cbcfe1cf96c408c78bf0b87956ea0e17e19869586da0b6b5bdbaf4ac451a2b1c",
+  "file_count": 50,
+  "capture_files": [
+    {
+      "name": "RTX3090-UNLOCK/DIAG00.TXT",
+      "bytes": 426367,
+      "sha256": "85791c0f3f192a36a53f7a7baed56b4b5d31537367c0eeae955ce4aa2a90b813"
+    },
+    {
+      "name": "RTX3090-UNLOCK/DIAG01.TXT",
+      "bytes": 426367,
+      "sha256": "0a67dcbc0d8f4c6484161f9cc1af0c70995c60394c8a5ffdc9270e099a1542b2"
+    },
+    {
+      "name": "RTX3090-UNLOCK/PROM.BIN",
+      "bytes": 1048576,
+      "sha256": "f1c7c6b205d9a5c0626af4f82e28cc377aa16cde8c25c61c77b4b5160b26e71f"
+    }
+  ],
+  "compatibility": {
+    "format": 2,
+    "checker_version": 1,
+    "envelope_sha256": "355952e6a8e173b1e47a8d6c4033da94a107ff4f04cc41c5f521878b21269928",
+    "route": "automatic_local_profile",
+    "status": "outside_scope",
+    "hardware_tested": false,
+    "write_eligible": false,
+    "checks": [
+      {
+        "state": "outside_scope",
+        "code": "topology_scope",
+        "capture": "DIAG00.TXT",
+        "message": "The console, PCI path or driver ownership layout is not accepted by the current generator."
+      },
+      {
+        "state": "outside_scope",
+        "code": "topology_scope",
+        "capture": "DIAG01.TXT",
+        "message": "The console, PCI path or driver ownership layout is not accepted by the current generator."
+      }
+    ],
+    "capture_count": 2,
+    "observations": [
+      {
+        "capture": "DIAG00.TXT",
+        "available": true,
+        "display_controller_count": 1,
+        "nvidia_display_count": 1,
+        "other_display_count": 0,
+        "display_controllers": [
+          {
+            "pci_id": "220410de",
+            "subsystem_id": "33873842",
+            "class_revision": "030000a1",
+            "location": {
+              "segment": 0,
+              "bus": 1,
+              "device": 0,
+              "function": 0
+            }
+          }
+        ],
+        "display_controllers_truncated": false,
+        "gop_handle_count": 2,
+        "edid_by_driver_open_count": 3,
+        "edid_active_open_count": 3,
+        "chip_id": "b72000a1",
+        "device_memory_size_mib": 24576,
+        "register_snapshot": "complete",
+        "firmware_bindings": [
+          {
+            "role": "console_gfx",
+            "version": "00000010",
+            "image_bytes": 15296
+          },
+          {
+            "role": "nvgop",
+            "version": "00060009",
+            "image_bytes": 177920
+          },
+          {
+            "role": "console_text",
+            "version": "00000010",
+            "image_bytes": 27360
+          },
+          {
+            "role": "console_text",
+            "version": "00000010",
+            "image_bytes": 27360
+          },
+          {
+            "role": "console_text",
+            "version": "00000010",
+            "image_bytes": 27360
+          },
+          {
+            "role": "edid",
+            "version": "00000001",
+            "image_bytes": 36864
+          }
+        ],
+        "firmware_bindings_truncated": false
+      },
+      {
+        "capture": "DIAG01.TXT",
+        "available": true,
+        "display_controller_count": 1,
+        "nvidia_display_count": 1,
+        "other_display_count": 0,
+        "display_controllers": [
+          {
+            "pci_id": "220410de",
+            "subsystem_id": "33873842",
+            "class_revision": "030000a1",
+            "location": {
+              "segment": 0,
+              "bus": 1,
+              "device": 0,
+              "function": 0
+            }
+          }
+        ],
+        "display_controllers_truncated": false,
+        "gop_handle_count": 2,
+        "edid_by_driver_open_count": 3,
+        "edid_active_open_count": 3,
+        "chip_id": "b72000a1",
+        "device_memory_size_mib": 24576,
+        "register_snapshot": "complete",
+        "firmware_bindings": [
+          {
+            "role": "console_gfx",
+            "version": "00000010",
+            "image_bytes": 15296
+          },
+          {
+            "role": "nvgop",
+            "version": "00060009",
+            "image_bytes": 177920
+          },
+          {
+            "role": "console_text",
+            "version": "00000010",
+            "image_bytes": 27360
+          },
+          {
+            "role": "console_text",
+            "version": "00000010",
+            "image_bytes": 27360
+          },
+          {
+            "role": "console_text",
+            "version": "00000010",
+            "image_bytes": 27360
+          },
+          {
+            "role": "edid",
+            "version": "00000001",
+            "image_bytes": 36864
+          }
+        ],
+        "firmware_bindings_truncated": false
+      }
+    ],
+    "summary": "Outside the current automatic local-profile route.",
+    "scope": "Checks the automatic local-profile route only; existing fixed profiles require separate review.",
+    "limitations": "No hardware/provenance, separate cold boots, FWSEC parsing, host tests or Windows recovery verified. No unlock or write eligibility granted.",
+    "next_step": "See docs/COMPATIBILITY.en.md and docs/NEW-MACHINE.en.md for exact configurations and capture review. Do not force another profile."
+  },
+  "first_refusal": "without an integrated GPU the RTX must own the only GOP in the graph, found 2",
+  "capture_complete_markers": true,
+  "separate_cold_boots_independently_verified": false,
+  "windows_returns_independently_verified": false,
+  "firmware_execution_tested": false,
+  "unlock_proven": false
+}

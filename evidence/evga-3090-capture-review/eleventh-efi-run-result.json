@@ -1,0 +1,13 @@
+{
+  "capture": "EVGA10.TXT",
+  "bytes": 830945,
+  "sha256": "16083085694eb60ee6ca2bf2522b9297b35e989efcf3582c57beccbcc51c7c83",
+  "nvidia_code_owner_children_checks_passed": true,
+  "stored_child_class_before_after": 1,
+  "parent_flag98_before_after": 0,
+  "consumer_stops_succeeded": 6,
+  "complete_captures": 2,
+  "operator_report": "Behaviour: Same as previous (automatic Windows return)",
+  "nvidia_stop_called": false,
+  "unlock_proven": false
+}

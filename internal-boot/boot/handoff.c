@@ -5,8 +5,28 @@
 #include <Protocol/LoadedImage.h>
 #include <Protocol/SimpleFileSystem.h>
 #include <Guid/FileInfo.h>
+#ifdef GU_EVGA_UNLOCK
+#include <Guid/GlobalVariable.h>
+#endif
 #include "media.h"
 #include "flow.h"
+#ifdef GU_EVGA_STOP_ONLY
+#include "evga-text-stop.h"
+#ifdef GU_EVGA_PROBE_RESOURCES
+#include "evga-resources.h"
+#endif
+#if !defined(GU_DIAGNOSTIC_ONLY) || (!defined(GU_USB_MEDIA) && !defined(GU_EVGA_SHARED_ESP_ADMISSION) && !defined(GU_EVGA_PACKAGE)) || defined(GU_DIAGNOSTIC_PROBE) || defined(GU_FULL_UNLOCK) || defined(GU_CONSOLE_PREPARE)
+#error EVGA text Stop must be a separate USB image with no GPU probe or unlock
+#endif
+#if defined(GU_EVGA_SHARED_ESP_ADMISSION) && (defined(GU_USB_MEDIA) || (defined(GU_EVGA_UNLOCK) && !defined(GU_SHARED_ESP_UNLOCK)))
+#error Shared ESP unlock requires its explicit isolated mode; USB remains forbidden
+#endif
+#endif
+#if defined(GU_SHARED_ESP_UNLOCK) && !defined(GU_EVGA_PACKAGE)
+#if !defined(GU_EVGA_UNLOCK) || !defined(GU_EVGA_SHARED_ESP_ADMISSION) || !defined(GU_EVGA_STOP_ONLY) || defined(GU_USB_MEDIA) || defined(GU_SHARED_ESP_QUAL)
+#error Shared ESP unlock is the exact standalone transaction build only
+#endif
+#endif
 #ifdef GU_HEADLESS_RESEARCH
 #include "build/headless/child-contract.h"
 #elif defined(GU_AUTOMATIC_BOOT)
@@ -61,12 +81,12 @@ static EFI_STATUS CloseBootFiles(EFI_STATUS *LogStatus,EFI_STATUS *RootStatus) {
   if(RootStatus)*RootStatus=b;
   return a!=EFI_SUCCESS?a:b;
 }
-#ifdef GU_SINGLE_RTX_CONSOLE
+#if defined(GU_SINGLE_RTX_CONSOLE) || defined(GU_EVGA_STOP_ONLY)
 static BOOLEAN ResearchOutputDisabled;
 #endif
 
 static VOID Say(const CHAR16 *Text) {
-#ifdef GU_SINGLE_RTX_CONSOLE
+#if defined(GU_SINGLE_RTX_CONSOLE) || defined(GU_EVGA_STOP_ONLY)
   if(ResearchOutputDisabled)return;
 #endif
   if(Table && Table->ConOut)Table->ConOut->OutputString(Table->ConOut,(CHAR16 *)Text);
@@ -127,6 +147,29 @@ static EFI_STATUS OpenLog(VOID) {
   EFI_STATUS s=Table->BootServices->HandleProtocol(OwnDevice,&FsGuid,(VOID **)&fs);
   if(s!=EFI_SUCCESS || !fs)return EFI_UNSUPPORTED;
   s=fs->OpenVolume(fs,&Root);if(s!=EFI_SUCCESS || !Root)return EFI_DEVICE_ERROR;
+#if defined(GU_SHARED_ESP_INTEGRATION) || defined(GU_SHARED_ESP_QUAL) || defined(GU_SHARED_ESP_UNLOCK)
+  {
+#ifdef GU_SHARED_ESP_UNLOCK
+#ifdef GU_EVGA_PACKAGE
+    CHAR16 name[]=GU_PACKAGE_LOG;
+#elif defined(GU_SHARED_ESP_SECOND)
+    CHAR16 name[]=L"\\RTX3090-UNLOCK\\SULK02.TXT";
+#else
+    CHAR16 name[]=L"\\RTX3090-UNLOCK\\SULK01.TXT";
+#endif
+#elif defined(GU_SHARED_ESP_QUAL)
+    CHAR16 name[]=L"\\RTX3090-UNLOCK\\QUAL01.TXT";
+#else
+    CHAR16 name[]=L"\\RTX3090-UNLOCK\\INTG01.TXT";
+#endif
+    EFI_FILE_PROTOCOL *existing=NULL;
+    s=Root->Open(Root,&existing,name,EFI_FILE_MODE_READ,0);
+    if(s==EFI_SUCCESS){if(existing)existing->Close(existing);return EFI_ALREADY_STARTED;}
+    if(s!=EFI_NOT_FOUND)return s;
+    s=Root->Open(Root,&Log,name,EFI_FILE_MODE_READ|EFI_FILE_MODE_WRITE|EFI_FILE_MODE_CREATE,0);
+    return s==EFI_SUCCESS && Log?EFI_SUCCESS:EFI_DEVICE_ERROR;
+  }
+#else
 #ifdef GU_AUTOMATIC_BOOT
   for(UINTN i=0;i<1000000;i++) {
 #ifdef GU_HEADLESS_RESEARCH
@@ -136,7 +179,9 @@ static EFI_STATUS OpenLog(VOID) {
 #endif
 #else
   for(UINTN i=0;i<100;i++) {
-#ifdef GU_FULL_UNLOCK
+#ifdef GU_EVGA_STOP_ONLY
+    CHAR16 name[]=L"\\RTX3090-UNLOCK\\EVGA00.TXT";
+#elif defined(GU_FULL_UNLOCK)
     CHAR16 name[]=L"\\RTX3090-UNLOCK\\FULL00.TXT";
 #elif defined(GU_CONSOLE_PREPARE)
 #ifdef GU_SINGLE_RTX_CONSOLE
@@ -164,6 +209,7 @@ static EFI_STATUS OpenLog(VOID) {
     return s==EFI_SUCCESS && Log?EFI_SUCCESS:EFI_DEVICE_ERROR;
   }
   return EFI_VOLUME_FULL;
+#endif
 }
 static EFI_STATUS Record(VOID *Context,const char *Event,EFI_STATUS Status) {
   (void)Context;char text[160];UINTN n=0;
@@ -223,7 +269,12 @@ static EFI_STATUS LoadUnlock(VOID) {
 #endif
 static EFI_STATUS Prepare(VOID *Context) {
   (void)Context;EFI_HANDLE own=NULL,windows=NULL;
-#if defined(GU_USB_PROBE) || defined(GU_USB_MEDIA)
+#if defined(GU_EVGA_SHARED_ESP_ADMISSION)
+  EFI_DEVICE_PATH_PROTOCOL *ownPath=NULL;BOOLEAN usb=FALSE,partition=FALSE;
+  EFI_STATUS s=FindPartition(&GuWindowsPartition,&own);
+  if(s!=EFI_SUCCESS || own!=OwnDevice || PathFor(own,&ownPath)!=EFI_SUCCESS ||
+     !GuInspectPath(ownPath,&GuWindowsPartition,NULL,&usb,&partition) || usb || !partition)return EFI_COMPROMISED_DATA;
+#elif defined(GU_USB_PROBE) || defined(GU_USB_MEDIA)
   /* Probe or unlock from an MBR USB stick: no partition GUID to pin, so the log/child
      volume is the device this image was loaded from, and it must be USB. */
   EFI_DEVICE_PATH_PROTOCOL *ownPath=NULL;BOOLEAN usb=FALSE;
@@ -235,7 +286,11 @@ static EFI_STATUS Prepare(VOID *Context) {
   if(s!=EFI_SUCCESS || own!=OwnDevice)return EFI_COMPROMISED_DATA;
 #endif
   s=FindPartition(&GuWindowsPartition,&windows);
+#ifdef GU_EVGA_SHARED_ESP_ADMISSION
+  if(s!=EFI_SUCCESS || windows!=own)return EFI_COMPROMISED_DATA;
+#else
   if(s!=EFI_SUCCESS || windows==own)return EFI_COMPROMISED_DATA;
+#endif
   s=OpenLog();if(s!=EFI_SUCCESS)return s;
   s=Record(NULL,"internal-handoff-v1",EFI_SUCCESS);if(s!=EFI_SUCCESS)return s;
 #ifndef GU_DIAGNOSTIC_ONLY
@@ -351,6 +406,9 @@ static EFI_STATUS Windows(VOID *Context) {
   (void)Context;
   Say(L"Starting Windows Boot Manager directly. No reset.\r\n");
   EFI_STATUS s=CloseBootFiles(NULL,NULL);if(s!=EFI_SUCCESS)return s;
+#ifdef GU_EVGA_STOP_ONLY
+  s=GuEvgaTextStopVerify(Table);if(s!=EFI_SUCCESS)return s;
+#endif
   return Table->BootServices->StartImage(WindowsImage,NULL,NULL);
 }
 #endif
@@ -404,7 +462,48 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE Image,EFI_SYSTEM_TABLE *St) {
   EFI_STATUS s=St->BootServices->HandleProtocol(Image,&LoadedGuid,(VOID **)&loaded);
   if(s!=EFI_SUCCESS || !loaded)Stop();
   OwnDevice=loaded->DeviceHandle;
-#ifdef GU_FULL_UNLOCK
+#ifdef GU_EVGA_UNLOCK
+  EFI_GUID global=EFI_GLOBAL_VARIABLE;UINT8 secure=0xff;UINTN secureBytes=sizeof(secure);
+  if(!St->RuntimeServices || !St->RuntimeServices->GetVariable ||
+     St->RuntimeServices->GetVariable(L"SecureBoot",&global,NULL,&secureBytes,&secure)!=EFI_SUCCESS ||
+     secureBytes!=1 || secure!=0)return EFI_SECURITY_VIOLATION;
+#endif
+#ifdef GU_EVGA_STOP_ONLY
+#ifdef GU_EVGA_UNLOCK
+  Say(L"EVGA 3090 EXPERIMENTAL UNLOCK: ONE GPU TRANSACTION.\r\nAfter guards, fresh Shift+G starts release, GPU writes, DMA, FLR and firmware. Esc cancels.\r\nDisplay may stop; failure may require manual power off and USB removal. Recovery unproven.\r\n");
+#else
+  Say(L"EVGA 3090 TEXT MEMBERSHIP TEST. NO UNLOCK.\r\nPress fresh Shift+G when ready (60 seconds), Esc cancels.\r\nScreen may stop updating. Manifest-selected EVGA sequence; Windows handoff on success.\r\nNo Windows after 3 minutes: power off, remove USB, use Windows Boot Manager. Recovery is unproven.\r\n");
+#endif
+  s=Prepare(NULL);
+  BOOLEAN evgaPrepared=s==EFI_SUCCESS;
+  if(s==EFI_SUCCESS)s=Record(NULL,"evga-text-stop-capture-before",EFI_SUCCESS);
+  if(s==EFI_SUCCESS)s=GuCaptureGraphOnVolume(Table,Log,Root);
+  if(s==EFI_SUCCESS)Say(L"Capture saved. Checking live inventory, ownership and code pins...\r\nWait for Live guards passed before Shift+G.\r\n");
+#ifdef GU_EVGA_PROBE_RESOURCES
+#ifdef GU_EVGA_UNLOCK
+  if(s==EFI_SUCCESS)Say(L"Loading and retaining all five firmware assets. Wait for Live guards passed before Shift+G.\r\n");
+#else
+  if(s==EFI_SUCCESS)Say(L"Verifying five assets in EFI memory. Wait for Live guards passed before Shift+G.\r\n");
+#endif
+  if(s==EFI_SUCCESS)s=GuEvgaResourcesPrepare(Table,Root,Image,Record);
+#endif
+  if(s==EFI_SUCCESS)s=GuEvgaTextStop(Table,Root,Record,&ResearchOutputDisabled);
+  if(s==EFI_SUCCESS)s=Record(NULL,"evga-text-stop-capture-after",EFI_SUCCESS);
+  if(s==EFI_SUCCESS)s=GuCaptureGraphOnVolume(Table,Log,Root);
+  if(s==EFI_SUCCESS)s=Record(NULL,"evga-text-stop-ready-windows",EFI_SUCCESS);
+  if(s==EFI_SUCCESS)s=Windows(NULL);
+  if(s!=EFI_SUCCESS && evgaPrepared && !ResearchOutputDisabled) {
+    /* The test never reached the Stop call. Preserve the refusal and attempt
+     * the preloaded normal Windows entry without pretending release passed. */
+    EFI_STATUS refusal=s;
+    s=Record(NULL,"evga-pre-stop-refusal-normal-windows",refusal);
+    if(s==EFI_SUCCESS) {
+      Say(L"Test stopped BEFORE the driver call; no detach attempted. Starting normal Windows.\r\n");
+      s=CloseBootFiles(NULL,NULL);
+      if(s==EFI_SUCCESS)s=Table->BootServices->StartImage(WindowsImage,NULL,NULL);
+    }
+  }
+#elif defined(GU_FULL_UNLOCK)
   GU_FULL_FLOW_OPS ops={NULL,Prepare,FullChoice,FullCapture,FullRelease,FullVerifyCold,Unlock,Windows,FullWindows,Record};
   s=GuFullFlow(&ops);
 #elif defined(GU_CONSOLE_PREPARE)
@@ -439,7 +538,7 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE Image,EFI_SYSTEM_TABLE *St) {
     return s==EFI_SUCCESS || s==EFI_ABORTED?EFI_NOT_STARTED:s;
   }
 #endif
-#if defined(GU_DIAGNOSTIC_ONLY) && defined(GU_USB_MEDIA)
+#if defined(GU_DIAGNOSTIC_ONLY) && defined(GU_USB_MEDIA) && !defined(GU_EVGA_STOP_ONLY)
   /* Observation stick: this image never releases a driver or writes GPU state,
    * so a failed capture or Windows load hands back to the firmware BootOrder. */
   if(Log){(void)Log->Close(Log);Log=NULL;}

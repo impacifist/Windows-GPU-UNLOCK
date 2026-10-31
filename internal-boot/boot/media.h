@@ -3,7 +3,25 @@
 #include <Uefi.h>
 #include <Protocol/DevicePath.h>
 
+#if defined(GU_EVGA_PACKAGE)
+/* Partition and receipt constants are force-included from the per-attempt build header. */
+#elif defined(GU_SHARED_ESP_UNLOCK) || defined(GU_SHARED_ESP_UNLOCK_CONFIG)
+#include "build/shared-esp-unlock/platform-config.h"
+#elif defined(GU_SHARED_ESP_QUAL)
+#include "build/shared-esp-qualification/platform-config.h"
+#elif defined(GU_SHARED_ESP_INTEGRATION)
+#include "build/shared-esp-integration/platform-config.h"
+#elif defined(GU_SHARED_ESP_RETAIN)
+#include "build/shared-esp-retain/platform-config.h"
+#elif defined(GU_SHARED_ESP_ASSETS)
+#include "build/shared-esp-assets/platform-config.h"
+#elif defined(GU_SHARED_ESP_AUDIT)
+#include "build/shared-esp-audit/platform-config.h"
+#elif defined(GU_EVGA_STOP_ONLY)
+#include "build/evga-text-stop/platform-config.h"
+#else
 #include "platform-config.h" /* Generated locally by Configure.ps1. */
+#endif
 static const EFI_GUID GuInternalPartition = GU_INTERNAL_PARTITION_INITIALIZER;
 static const EFI_GUID GuWindowsPartition = GU_WINDOWS_PARTITION_INITIALIZER;
 

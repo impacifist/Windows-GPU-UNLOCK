@@ -1,0 +1,14 @@
+{
+  "capture": "EVGA01.TXT",
+  "bytes": 408537,
+  "sha256": "d743a246a38946fef7ad458a6142355cf2f6eec5a908377ce43f17a8fc09838c",
+  "capture_complete": true,
+  "pre_stop_refusal": "0x8000000000000003",
+  "stop_before_event_present": false,
+  "stop_return_event_present": false,
+  "operator_report_windows_direct": true,
+  "refusing_check": "not identified by the original phase logging",
+  "driver_stop_proven": false,
+  "unlock_proven": false,
+  "contributor_build_sha256": "8d19e2659328ef85d64ceacdd4680848d5be6fdf95865735cd85290a61161dd2"
+}

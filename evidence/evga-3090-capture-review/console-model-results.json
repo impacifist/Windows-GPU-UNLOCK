@@ -1,0 +1,63 @@
+{
+  "scope": "selected saved GOP/text edges only",
+  "captures": [
+    {
+      "capture": "DIAG00.TXT",
+      "sha256": "85791c0f3f192a36a53f7a7baed56b4b5d31537367c0eeae955ce4aa2a90b813",
+      "modeled_edges": 5,
+      "unmodeled_active_edges": [
+        {
+          "source": "physical",
+          "protocol": "1c0c34f6-d380-41fa-a049-8ad06c1a66aa",
+          "binding_identity": "c7a7030c-c3d8-45ee-bed9-5d9e76762953",
+          "dump": "IMG07.BIN",
+          "attributes": 16,
+          "count": 1
+        }
+      ],
+      "result": {
+        "model_passed": true,
+        "write_eligible": false,
+        "unlock_proven": false,
+        "hardware_accessed": false,
+        "remaining_qualification": [
+          "EDID consumer",
+          "NVIDIA parent",
+          "helper effects",
+          "console object lifetimes"
+        ],
+        "refusal": null,
+        "interpretation": "Selected edge-removal assumptions passed in a symbolic model only."
+      }
+    },
+    {
+      "capture": "DIAG01.TXT",
+      "sha256": "0a67dcbc0d8f4c6484161f9cc1af0c70995c60394c8a5ffdc9270e099a1542b2",
+      "modeled_edges": 5,
+      "unmodeled_active_edges": [
+        {
+          "source": "physical",
+          "protocol": "1c0c34f6-d380-41fa-a049-8ad06c1a66aa",
+          "binding_identity": "c7a7030c-c3d8-45ee-bed9-5d9e76762953",
+          "dump": "IMG07.BIN",
+          "attributes": 16,
+          "count": 1
+        }
+      ],
+      "result": {
+        "model_passed": true,
+        "write_eligible": false,
+        "unlock_proven": false,
+        "hardware_accessed": false,
+        "remaining_qualification": [
+          "EDID consumer",
+          "NVIDIA parent",
+          "helper effects",
+          "console object lifetimes"
+        ],
+        "refusal": null,
+        "interpretation": "Selected edge-removal assumptions passed in a symbolic model only."
+      }
+    }
+  ]
+}

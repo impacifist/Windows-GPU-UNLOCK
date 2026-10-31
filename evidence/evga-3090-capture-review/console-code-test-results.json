@@ -1,0 +1,50 @@
+{
+  "results": [
+    {
+      "capture": "DIAG00.TXT",
+      "roles": {
+        "graphics_console": {
+          "identity": "55987e62-1df6-41d1-9062-334fcac3e54d",
+          "dump": "IMG17.BIN",
+          "code_bytes": 6544,
+          "code_sha256": "3f4c4ea26023ddf00990b59385d0fcf3139acb583c70406828777cdceab8cecb",
+          "stop_rva": 2188,
+          "version": 17
+        },
+        "text_console": {
+          "identity": "628a497d-2bf6-4264-8741-069dbd3399d6",
+          "dump": "IMG13.BIN",
+          "code_bytes": 22048,
+          "code_sha256": "e2b072199726ae784f749057c3c5453ed8db0bb3fbe1a73ccca7e6f302325291",
+          "stop_rva": 4172,
+          "version": 16
+        }
+      }
+    },
+    {
+      "capture": "DIAG01.TXT",
+      "roles": {
+        "graphics_console": {
+          "identity": "55987e62-1df6-41d1-9062-334fcac3e54d",
+          "dump": "IMG17.BIN",
+          "code_bytes": 6544,
+          "code_sha256": "3f4c4ea26023ddf00990b59385d0fcf3139acb583c70406828777cdceab8cecb",
+          "stop_rva": 2188,
+          "version": 17
+        },
+        "text_console": {
+          "identity": "628a497d-2bf6-4264-8741-069dbd3399d6",
+          "dump": "IMG13.BIN",
+          "code_bytes": 22048,
+          "code_sha256": "e2b072199726ae784f749057c3c5453ed8db0bb3fbe1a73ccca7e6f302325291",
+          "stop_rva": 4172,
+          "version": 16
+        }
+      }
+    }
+  ],
+  "console_code_matches_across_captures": true,
+  "write_eligible": false,
+  "unlock_proven": false,
+  "hardware_accessed": false
+}

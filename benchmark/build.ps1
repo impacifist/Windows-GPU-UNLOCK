@@ -1,5 +1,5 @@
 # Modified 2026-10-19/20 for Windows GPU UNLOCK; changes documented in CHANGES.md.
-param([string]$VcVars='C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxiliary\Build\vcvars64.bat',[switch]$AllowUnsupportedCompiler,[ValidateSet('3090','3090ti','3070ti')][string]$Card='3090')
+param([string]$VcVars,[switch]$AllowUnsupportedCompiler,[ValidateSet('3090','3090ti','3070ti')][string]$Card='3090')
 $ErrorActionPreference = 'Stop'
 $root = $PSScriptRoot
 $nvcc = Join-Path $root 'packages\cuda_nvcc\cuda_nvcc-windows-x86_64-12.6.20-archive'
@@ -7,7 +7,18 @@ $runtime = Join-Path $root 'packages\cuda_cudart\cuda_cudart-windows-x86_64-12.6
 $cccl = Join-Path $root 'packages\cuda_cccl\cuda_cccl-windows-x86_64-12.6.37-archive'
 $blas = Join-Path $root 'packages\libcublas\libcublas-windows-x86_64-12.6.0.22-archive'
 $vcvars = $VcVars
-if (-not (Test-Path -LiteralPath $vcvars)) { throw 'Required VS2019 build tools missing' }
+if ([string]::IsNullOrWhiteSpace($vcvars)) {
+    # CUDA 12.6 supports VS2019; never select a newer installation just because it is latest.
+    $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio\Installer\vswhere.exe'
+    if (-not (Test-Path -LiteralPath $vswhere)) { throw 'vswhere missing; supply -VcVars for a supported C++ toolchain' }
+    $installation = @(& $vswhere -latest -products '*' -version '[16.0,17.0)' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath)
+    if ($LASTEXITCODE -ne 0 -or $installation.Count -ne 1 -or [string]::IsNullOrWhiteSpace($installation[0])) {
+        throw 'VS2019 C++ x64 tools not found; supply -VcVars for a supported toolchain. No compiler guard was bypassed.'
+    }
+    $vcvars = Join-Path $installation[0] 'VC\Auxiliary\Build\vcvars64.bat'
+}
+if (-not (Test-Path -LiteralPath $vcvars)) { throw "C++ environment script missing: $vcvars" }
+Write-Output "Using C++ environment: $vcvars"
 $bin = Join-Path $root 'bin'
 New-Item -ItemType Directory -Force -Path $bin | Out-Null
 # Import vcvars only into this child PowerShell process, never the user/machine environment.

@@ -1,0 +1,12 @@
+{
+  "capture": "EVGA04.TXT",
+  "bytes": 409460,
+  "sha256": "f6786213e9f3c3620bfdaffb4c5c6888531f6e25bb06041ef76114457086944c",
+  "capture_complete": true,
+  "console_listed_gops": 0,
+  "console_listed_texts": 1,
+  "system_gop_query": "EFI_SUCCESS with non-null pointer",
+  "query_aliases_system_text": false,
+  "stop_called": false,
+  "unlock_proven": false
+}

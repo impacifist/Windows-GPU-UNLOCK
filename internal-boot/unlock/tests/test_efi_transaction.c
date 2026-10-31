@@ -75,7 +75,7 @@ static struct {
   UINTN maps,unmaps,frees,live_maps,live_buffers,mmio_writes,pci_writes;
   UINTN gsp_starts,sec2_starts,flrs,flushes,dma_reads,radix_bytes;
   UINTN dmem_reads,pio_reads,pio_writes,gsp_poll_reads,trace_count;
-  UINTN master_enables,master_disables;
+  UINTN master_enables,master_disables,prom_dword_reads,prom_byte_reads;
   UINT64 pci_attributes;
   UINT32 write_trace[8192][4];
   UINT64 next_dma,delay_since_flr,elapsed,meta_dma;
@@ -142,6 +142,8 @@ static VOID check_fwsec_image(void) {
   CHECK(fw.image_off==0x416bc && fw.image_size==0xea00 && fw.dmem_size==sizeof(gsp_dmem)); /* Gigabyte RTX 3060 12GB PROM 727dd833 */
 #elif defined(GU_PROFILE_B660PLUS_3060)
   CHECK(fw.image_off==0x416b4 && fw.image_size==0xea00 && fw.dmem_size==sizeof(gsp_dmem)); /* VBIOS 94.04.71.00.87 */
+#elif defined(GU_PROFILE_EVGA_Z790_3090)
+  CHECK(fw.image_off==0x4289c && fw.image_size==0xe200 && fw.dmem_size==sizeof(gsp_dmem)); /* EVGA captured PROM f1c7...6e71f */
 #elif defined(GU_PROFILE_LOCAL)
   /* Pinned by make-profile.py from fwsec-locate on this machine's PROM.BIN. */
   CHECK(fw.image_off==GU_LOCAL_FWSEC_IMAGE_OFF && fw.image_size==GU_LOCAL_FWSEC_IMAGE_SIZE && fw.dmem_size==sizeof(gsp_dmem));
@@ -286,8 +288,17 @@ static EFI_STATUS EFIAPI read_memory(EFI_PCI_IO_PROTOCOL *p,EFI_PCI_IO_PROTOCOL_
   CHECK(p==&pci && !bar);quiet_check();
   CHECK(width==EfiPciIoWidthUint8 || (width==EfiPciIoWidthUint32 && count==1));
   UINTN bytes=((UINTN)1<<width)*count;CHECK(offset+bytes<=sizeof(registers));
+#ifdef GU_PROFILE_EVGA_Z790_3090
+  if(offset>=0x300000 && offset<0x400000){if(width==EfiPciIoWidthUint32)fake.prom_dword_reads+=count;else fake.prom_byte_reads+=count;}
+#endif
 #ifdef GU_ENTRY_LATCHED
-  if(offset==0x300000 && width==EfiPciIoWidthUint8 && fake.maps && !fake.gsp_starts) {
+  if(offset==0x300000 &&
+#ifdef GU_PROFILE_EVGA_Z790_3090
+     width==EfiPciIoWidthUint32 &&
+#else
+     width==EfiPciIoWidthUint8 &&
+#endif
+     fake.maps && !fake.gsp_starts) {
     if(fake.mode==BEFORE_FW_SS0)registers[SS0/4]^=1;
     if(fake.mode==BEFORE_FW_SS1)registers[SS1/4]^=1;
   }
@@ -429,6 +440,10 @@ static VOID setup(enum scenario mode) {
   GuInit(&bs,&pci);Gu.bar_base=0x84000000;Gu.bar_size=sizeof(registers);
 #ifdef GU_EXPERIMENTAL_3090
   if(core_use_capture)memcpy(config,core_captured_config,sizeof(config));
+#ifdef GU_PROFILE_EVGA_Z790_3090
+  /* EVGA parent Stop leaves I/O and BME off; the harness enables MEMORY only. */
+  fake.pci_attributes=EFI_PCI_IO_ATTRIBUTE_MEMORY;
+#endif
   Gu.bar_base=GU_BAR0_BASE;
 #endif
   Gu.pcie_cap=0x78;Gu.pcie_version=2;Gu.pm_cap=0x60;Gu.msi_cap=0x68;Gu.msix_cap=0;
@@ -486,8 +501,13 @@ int main(int argc,char **argv) {
     fclose(capture);CHECK(count==64);core_use_capture=TRUE;
   }
 #ifdef GU_ENTRY_LATCHED
+#ifdef GU_PROFILE_EVGA_Z790_3090
+  for(unsigned permutation=0;permutation<1;permutation++) {
+    (void)permutation;test_entry_ss0=0x12053015U;test_entry_ss1=7;
+#else
   for(unsigned permutation=0;permutation<4;permutation++) {
     test_entry_ss0=permutation&1?0x03000062U:0x03100062U;test_entry_ss1=6+(permutation>>1);
+#endif
 #endif
   for(int mode=SUCCESS;mode<SCENARIO_COUNT;mode++) {
     setup((enum scenario)mode);UINT64 mask=0xffffffffffffULL;
@@ -499,6 +519,9 @@ int main(int argc,char **argv) {
     if(mode==SUCCESS || mode==FWSEC_RUNNING || mode==PIO_UNAVAILABLE) {
       CHECK(!result && safe && Gu.started && Gu.quiesced && !Gu.fault && !Gu.retained);
       CHECK(fake.gsp_starts==1 && fake.sec2_starts==1 && fake.flrs==1 && fake.radix_bytes==0x5053000);
+#ifdef GU_PROFILE_EVGA_Z790_3090
+      CHECK(fake.prom_dword_reads==0x40000 && !fake.prom_byte_reads);
+#endif
       CHECK(!fake.live_maps && !fake.live_buffers && !Gu.allocations && !fake.pool_live);
       CHECK(fake.unmaps==fake.maps && fake.frees==fake.buffer_count);
       CHECK(registers[SS0/4]==0x88888888);
@@ -586,7 +609,7 @@ int main(int argc,char **argv) {
 #endif
   for(UINTN i=0;i<5;i++)free((VOID *)GuAssets[i].firmware.data);
   printf("%u real core + compat + UEFI port scenarios passed; all PCI/MMIO/DMA/firmware execution simulated.\n",
-#ifdef GU_ENTRY_LATCHED
+#if defined(GU_ENTRY_LATCHED) && !defined(GU_PROFILE_EVGA_Z790_3090)
     SCENARIO_COUNT*4
 #else
     SCENARIO_COUNT

@@ -1,0 +1,15 @@
+{
+  "schema": "evga-evp11-benchmark-review-v1",
+  "archive_sha256": "b31e920052a7cc8f5ac291984a2d45d0b7be45d1397ebca6f54d142b388b819f",
+  "recorded_context_matches_sulk02": true,
+  "completion_hashes_pass": true,
+  "operator_confirmed_full_shutdown": true,
+  "operator_confirmed_no_intervening_reboot": true,
+  "operator_confirmed_usb_absent": true,
+  "medians_tflops": {
+    "fp32_pedantic": 26.504291000000002,
+    "fp16_tensor_fp32_accumulate": 123.135526,
+    "bf16_tensor_fp32_accumulate": 122.758938,
+    "tf32_tensor_fp32_accumulate": 64.172952
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "capture": "EVGA07.TXT",
+  "bytes": 823318,
+  "sha256": "4fd72a6ad44025d31909900acde4db086ca56c7d678084df258c585936c42818",
+  "stops_returned_success": [
+    "IMG13",
+    "IMG16",
+    "IMG17"
+  ],
+  "postchecks_passed": true,
+  "complete_captures": 2,
+  "handle_inventory_unchanged": true,
+  "gop_handles_preserved": 2,
+  "physical_gop_active_opens_removed": 2,
+  "virtual_gop_active_opens_removed": 1,
+  "virtual_text_protocol_removed_with_prior_active_opens": 2,
+  "operator_report": "Behavior: Same as previous (automatic Windows return)",
+  "unlock_proven": false
+}

@@ -1,0 +1,17 @@
+{
+  "capture": "EVGA12.TXT",
+  "bytes": 827576,
+  "sha256": "cafbcb9a6fd0b20ba1eb68502e6cfc464c28bf1bee1e5cb72fa65b712fb46869",
+  "nvidia_parent_stop_success": true,
+  "post_parent_pci_command": "0x0000",
+  "postchecks_passed": true,
+  "complete_captures": 2,
+  "before_handles": 549,
+  "after_handles": 546,
+  "removed_handles": 3,
+  "added_handles": 0,
+  "nvidia_pci_ownership_retained": false,
+  "parent_private_protocol_remaining": false,
+  "operator_report": "Same as last: automatic Windows return after a delay",
+  "unlock_proven": false
+}

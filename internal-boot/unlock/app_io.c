@@ -2,6 +2,7 @@
 #include "compat/compat.h"
 #include "format.h"
 #include "sha256.h"
+#include "asset-reader.h"
 #include <Protocol/LoadedImage.h>
 #include <Protocol/SimpleFileSystem.h>
 #include <Guid/FileInfo.h>
@@ -137,22 +138,9 @@ EFI_STATUS GuIoOpen(EFI_HANDLE Image,EFI_SYSTEM_TABLE *St) {
 }
 EFI_STATUS GuLoadAssets(VOID) {
   for(UINTN i=0;i<5;i++) {
-    EFI_FILE_PROTOCOL *file=NULL;const ASSET_SPEC *spec=&Specs[i];
-    EFI_STATUS status=Parent->Open(Parent,&file,spec->file,EFI_FILE_MODE_READ,0);
-    if(EFI_ERROR(status) || !file)return EFI_NOT_FOUND;
-    status=Metadata(file,FALSE,spec->size);
-    UINT8 *data=NULL;
-    if(!EFI_ERROR(status)) {
-      data=GuAlloc(spec->size);if(!data)status=EFI_OUT_OF_RESOURCES;
-    }
-    for(UINTN done=0;!EFI_ERROR(status) && done<spec->size;) {
-      UINTN n=spec->size-done;if(n>1048576)n=1048576;UINTN want=n;
-      status=file->Read(file,&n,data+done);
-      if(!EFI_ERROR(status) && n!=want)status=EFI_END_OF_FILE;done+=n;
-    }
-    EFI_STATUS closed=file->Close(file);if(!EFI_ERROR(status))status=closed;
-    if(!EFI_ERROR(status) && !GuHashMatches(data,spec->size,spec->hash))status=EFI_CRC_ERROR;
-    if(EFI_ERROR(status)){GuFree(data);return status;}
+    const ASSET_SPEC *spec=&Specs[i];VOID *data=NULL;
+    EFI_STATUS status=GuReadVerifiedAsset(Table->BootServices,Parent,spec->file,spec->size,spec->hash,&data);
+    if(status!=EFI_SUCCESS)return status;
     GuAssets[i].name=spec->name;GuAssets[i].firmware.data=data;GuAssets[i].firmware.size=spec->size;
     GuLog("asset verified: %s bytes=%zu sha256=%s\n",spec->name,(size_t)spec->size,spec->hash);
     if(!GuLogReady())return EFI_DEVICE_ERROR;

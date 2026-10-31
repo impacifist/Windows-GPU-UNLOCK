@@ -1,0 +1,19 @@
+{
+  "capture": "EVGA00.TXT",
+  "bytes": 408651,
+  "sha256": "c0bc72185c59d24e685b875bb58b6701c01c84eaeb165aa848cad48b13d8cc43",
+  "capture_complete": false,
+  "incomplete_reasons": [
+    "gop-info"
+  ],
+  "handoff_status": "0x8000000000000006",
+  "stop_before_event_present": false,
+  "stop_return_event_present": false,
+  "interpretation": "Initial capture refused; source control flow never reached the one-call Stop routine.",
+  "operator_report": {
+    "windows_direct": false,
+    "manual_power_cycle": true,
+    "standard_boot_and_display_after_cycle": "reported fine"
+  },
+  "unlock_proven": false
+}

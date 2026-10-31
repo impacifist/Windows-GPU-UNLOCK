@@ -1,0 +1,13 @@
+# Second EFI run: complete capture and pre-call unsupported guard
+
+[English](SECOND-EFI-RESULT.en.md) | [한국어](SECOND-EFI-RESULT.ko.md)
+
+Movian reported the screen appearing briefly, no opportunity to press Shift+G, and automatic Windows boot. His build/staging output reports 19,456 bytes and identical SHA256 8d19e2659328ef85d64ceacdd4680848d5be6fdf95865735cd85290a61161dd2. EVGA01.TXT is 408,537 bytes, SHA256 d743a246a38946fef7ad458a6142355cf2f6eec5a908377ce43f17a8fc09838c. Raw evidence is preserved locally; [sanitized results](second-efi-run-result.json) retain its identity.
+
+The log reports capture-complete=1 and evga-pre-stop-refusal-normal-windows with EFI_UNSUPPORTED (0x8000000000000003). There is no Stop-before or Stop-return event. The pre-call normal-Windows path therefore operated as designed, but this is not successful console removal. Source control flow shows either inventory or initial graph qualification refused before the fresh-G wait; the previous build did not log which check. The exact refusal is unresolved. Recorded PCI identity/subsystem, console shape, selected driver sizes/versions/Stop RVAs remain consistent with the prior captures; that does not prove each live API/loaded-code check passed.
+
+The new image records each inventory/ownership/code qualification result, binding versions, image sizes and Stop RVAs without logging load addresses. Code-pin failures identify binding, loaded-image or Stop-address checks. No qualification check is relaxed. Final verification after closing files explicitly disables logging. The fresh-G prompt now appears only after live qualification succeeds: `Live guards passed. NOW press fresh Shift+G once`. A refusal still attempts normal Windows before any Stop; once a Stop starts, failed checks still hold.
+
+Validation: 18 membership host checkpoints (including final verification issuing no log calls), nine capture-path regressions and 78 Python tests passed. EFI compiled with warnings as errors and passed PE verification. New local build: 20,992 bytes; SHA256 d01da964d90279b84b902dfa6c493f1091b9944a8af85b6df4aa2d62b4db92ce. Different contributor toolchains can produce different hashes; match the staging result to his own manifest.
+
+Next: update through GitHub Desktop, rebuild and restage with the same commands, and perform the same one-call attended test. No new GPU address, reset, firmware upload, PCI write or additional Stop method is introduced. If a guard refuses again, the next log should identify it; do not force it. Preserve existing logs/backups and any marker, and send the next EVGAnn.TXT plus direct/manual Windows arrival. The previously disclosed risk remains; no separate confirmation reply is needed.

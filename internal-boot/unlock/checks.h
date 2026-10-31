@@ -16,3 +16,8 @@ BOOLEAN GuCheckConfig(const UINT32 Config[64], UINTN Segment, UINTN Bus,
    Returns 1 for the exact captured AMD GOP route/ADR, 2 for RTX, 0 otherwise.
    Route alone does not establish PCI identity: validate the GOP PCI parent. */
 int GuDisplayPath(const EFI_DEVICE_PATH_PROTOCOL *Path, UINTN MaxBytes);
+
+/* Read-only admission for an explicitly supplied captured identity. Existing
+ * transaction paths continue to call GuCheckConfig with compile-time pins. */
+BOOLEAN GuCheckConfigIdentity(const UINT32 Config[64],UINTN Segment,UINTN Bus,
+  UINTN Device,UINTN Function,UINTN TargetBus,UINT32 Board,UINT32 Subsystem,GU_CAPS *Out);

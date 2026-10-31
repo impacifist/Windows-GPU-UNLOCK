@@ -1,0 +1,13 @@
+{
+  "capture": "EVGA03.TXT",
+  "bytes": 409186,
+  "sha256": "1bb207feffe444cae57c3425ad5f5fb99c5bb3c6be9945551247a25730727711",
+  "capture_complete": true,
+  "inventory_passed": true,
+  "virtual_text_status": "EFI_SUCCESS",
+  "system_text_status": "EFI_SUCCESS",
+  "system_gop_status": "EFI_SUCCESS",
+  "system_gop_pointer_present": true,
+  "stop_called": false,
+  "unlock_proven": false
+}

@@ -1,0 +1,37 @@
+{
+  "schema": "evga-sulk02-benchmark-review-v1",
+  "archive_sha256": "88de065a5e0d5420b8f670c19f53dce32fdda20ab037062bb3e2d7f48e2a8443",
+  "recorded_contexts_match": true,
+  "completion_checks_passed": true,
+  "operator_confirmed_no_reboot_since_sulk02": true,
+  "operator_confirmed_usb_absent_at_boot": true,
+  "operator_confirmed_shift_g": true,
+  "benchmarks": [
+    {
+      "mode": "fp32_pedantic",
+      "before": 26.379272,
+      "after": 26.489006,
+      "change_percent": 0.41598570271386137
+    },
+    {
+      "mode": "fp16_tensor_fp32_accumulate",
+      "before": 64.527754,
+      "after": 123.248599,
+      "change_percent": 91.00091256856699
+    },
+    {
+      "mode": "bf16_tensor_fp32_accumulate",
+      "before": 64.558792,
+      "after": 123.36188,
+      "change_percent": 91.0845543702243
+    },
+    {
+      "mode": "tf32_tensor_fp32_accumulate",
+      "before": 32.982266,
+      "after": 64.159053,
+      "change_percent": 94.5259097722394
+    }
+  ],
+  "manual_tuning_freshly_reconfirmed": false,
+  "limitations": "Recorded context/identity and operator session report; not independent hardware attestation, causality or general workload/stability proof."
+}

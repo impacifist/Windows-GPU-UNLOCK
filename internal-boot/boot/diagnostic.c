@@ -153,6 +153,15 @@ static VOID Details(CAPTURE *c,EFI_HANDLE h,EFI_GUID *g) {
       /* Aggregate/pathless GOPs legitimately lack Mode->Info on this firmware;
          record it as an observation, not a capture failure (generic probe: topology unknown). */
       Field(c,"gop info-bytes=0x",gp->Mode->SizeOfInfo);End(c);
+#elif defined(GU_EVGA_STOP_ONLY)
+      /* The exact captured virtual GOP has no mode-info block. Do not widen
+       * the exception to physical GOPs, nonempty metadata or path errors. */
+      VOID *devicePath=NULL;
+      EFI_STATUS ps=bs->HandleProtocol(h,&PathGuid,&devicePath);
+      if(!gp->Mode->SizeOfInfo &&
+         !gp->Mode->FrameBufferBase && !gp->Mode->FrameBufferSize && ps==EFI_UNSUPPORTED) {
+        Field(c,"gop info-bytes=0x",gp->Mode->SizeOfInfo);End(c);
+      } else Problem(c,"gop-info",EFI_NOT_READY);
 #else
       Problem(c,"gop-info",EFI_NOT_READY);
 #endif
