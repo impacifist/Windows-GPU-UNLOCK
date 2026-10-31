@@ -2,6 +2,8 @@
 
 **English** | [한국어](CHECK-COMPATIBILITY.ko.md) | [README](../README.md)
 
+Want to include file fingerprints and your observed Windows outcome in one report? Use the [evidence reporter](EVIDENCE-REPORT.en.md), which wraps these same offline checks without running an experiment.
+
 This offline checker explains whether **existing capture files** fit the automatic
 local-profile route. It does not scan your running PC, collect a probe, run firmware,
 generate a profile, build or stage an unlock, or change boot settings. Python 3.10+

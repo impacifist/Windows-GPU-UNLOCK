@@ -238,7 +238,7 @@ def shared_observations(name, text, blocks):
     return result
 
 
-def check(folder, envelope):
+def check(folder, envelope, *, inputs=None):
     report = {'format': 2, 'checker_version': CHECKER_VERSION, 'envelope_sha256': None,
               'route': 'automatic_local_profile', 'status': 'candidate',
               'hardware_tested': False, 'write_eligible': False,
@@ -275,7 +275,8 @@ def check(folder, envelope):
             return report
         if len(diags) < envelope['min_captures']:
             add('needs_data', 'capture_count')
-        inputs, observations = Inputs(folder), []
+        inputs = Inputs(folder) if inputs is None else inputs
+        observations = []
         for name in diags:
             diag = inputs.read(name, DIAG_LIMIT)
             text = diag.data.decode('utf-8-sig').replace('\r\n', '\n')
