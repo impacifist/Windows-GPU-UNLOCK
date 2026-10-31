@@ -1,0 +1,30 @@
+{
+  "benchmark_protocol": 3,
+  "build_manifest_sha256": "6670f71b4dcf05284a8257ad688f8fff3b8927aa4c1879d09234056b49467e41",
+  "completed_at_utc": "2026-10-26T14:20:55.411Z",
+  "files": [
+    {
+      "path": "context.json",
+      "sha256": "21a6bdec41fec0c4f7d58ab81286051caa7c006b56bc464232dd0e66b86cab8d"
+    },
+    {
+      "path": "summary.json",
+      "sha256": "0585f66de0e6304acaaa37954f44b50198ce030a00436f4afcecc7556b953c3f"
+    },
+    {
+      "path": "trial-1.json",
+      "sha256": "ecabf365e98f5f3db3e54610d374ce05da3f5d34f86a2308bbf45ceadbf33a11"
+    },
+    {
+      "path": "trial-2.json",
+      "sha256": "5457ea3b6706909efc522aa35be4675bacf187bc01cc61302d2e6984f655ad46"
+    },
+    {
+      "path": "trial-3.json",
+      "sha256": "6aa0d17d68a67da5ba8f672e19cc73697ab2844f9e46765208f83f5c54a57614"
+    }
+  ],
+  "schema_version": 1,
+  "status": "complete",
+  "trial_count": 3
+}

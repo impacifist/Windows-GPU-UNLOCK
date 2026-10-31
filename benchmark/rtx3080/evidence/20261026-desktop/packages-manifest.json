@@ -1,0 +1,46 @@
+{
+    "schema_version":  2,
+    "cuda_toolkit":  "12.6.0",
+    "components":  [
+                       {
+                           "component":  "cuda_nvcc",
+                           "version":  "12.6.20",
+                           "archive":  "cuda_nvcc/windows-x86_64/cuda_nvcc-windows-x86_64-12.6.20-archive.zip",
+                           "sha256":  "03282a36fb98c2f227877a62efd04c36b1ab01fb1b676d9edbd0b10179e0a40a",
+                           "bytes":  79358872,
+                           "tree_sha256":  "7b068dc779170e3bd92ab04a9982329046b3a1da5b6c4db97a1f9a63bb43595b",
+                           "file_count":  41,
+                           "directory_count":  13
+                       },
+                       {
+                           "component":  "cuda_cudart",
+                           "version":  "12.6.37",
+                           "archive":  "cuda_cudart/windows-x86_64/cuda_cudart-windows-x86_64-12.6.37-archive.zip",
+                           "sha256":  "c66badb16921c4acb7abc38f211d530c2f290bd52c2cbdb5fb12095dc6eab0a9",
+                           "bytes":  2512085,
+                           "tree_sha256":  "33678bc750521bdc07d36731ab66132636f9d16fec6483f2a9cdb5e8fb97b037",
+                           "file_count":  102,
+                           "directory_count":  7
+                       },
+                       {
+                           "component":  "cuda_cccl",
+                           "version":  "12.6.37",
+                           "archive":  "cuda_cccl/windows-x86_64/cuda_cccl-windows-x86_64-12.6.37-archive.zip",
+                           "sha256":  "4fe0460b101887a62fd8ceb1e518926439148c23ec95ef41b694c583031392e9",
+                           "bytes":  2929962,
+                           "tree_sha256":  "5bfd7c96418adb82981333d7f794bc2d67b1ed8a69ca1fbc2b9217c9cbcd9731",
+                           "file_count":  1564,
+                           "directory_count":  100
+                       },
+                       {
+                           "component":  "libcublas",
+                           "version":  "12.6.0.22",
+                           "archive":  "libcublas/windows-x86_64/libcublas-windows-x86_64-12.6.0.22-archive.zip",
+                           "sha256":  "4f38ba0ab036296bcc48727cc3ed27e633911c0fc5dccb60d5131657b1a58002",
+                           "bytes":  404037803,
+                           "tree_sha256":  "7ed71ffbe36161666f7cc8344df96057c03b90705f19a5d03675896721e65a6c",
+                           "file_count":  18,
+                           "directory_count":  6
+                       }
+                   ]
+}

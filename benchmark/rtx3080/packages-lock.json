@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "cuda_toolkit": "12.6.0",
+  "manifest_url": "https://developer.download.nvidia.com/compute/cuda/redist/redistrib_12.6.0.json",
+  "manifest_sha256": "87740b01676b3d18982982ab96ec7fa1a626d03a96df070a6b0f258d01ff5fab",
+  "components": [
+    {
+      "name": "cuda_nvcc",
+      "version": "12.6.20",
+      "relative_path": "cuda_nvcc/windows-x86_64/cuda_nvcc-windows-x86_64-12.6.20-archive.zip",
+      "sha256": "03282a36fb98c2f227877a62efd04c36b1ab01fb1b676d9edbd0b10179e0a40a",
+      "bytes": 79358872
+    },
+    {
+      "name": "cuda_cudart",
+      "version": "12.6.37",
+      "relative_path": "cuda_cudart/windows-x86_64/cuda_cudart-windows-x86_64-12.6.37-archive.zip",
+      "sha256": "c66badb16921c4acb7abc38f211d530c2f290bd52c2cbdb5fb12095dc6eab0a9",
+      "bytes": 2512085
+    },
+    {
+      "name": "cuda_cccl",
+      "version": "12.6.37",
+      "relative_path": "cuda_cccl/windows-x86_64/cuda_cccl-windows-x86_64-12.6.37-archive.zip",
+      "sha256": "4fe0460b101887a62fd8ceb1e518926439148c23ec95ef41b694c583031392e9",
+      "bytes": 2929962
+    },
+    {
+      "name": "libcublas",
+      "version": "12.6.0.22",
+      "relative_path": "libcublas/windows-x86_64/libcublas-windows-x86_64-12.6.0.22-archive.zip",
+      "sha256": "4f38ba0ab036296bcc48727cc3ed27e633911c0fc5dccb60d5131657b1a58002",
+      "bytes": 404037803
+    }
+  ]
+}

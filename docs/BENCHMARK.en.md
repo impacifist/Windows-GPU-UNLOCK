@@ -2,6 +2,20 @@
 
 **English** | [한국어](BENCHMARK.ko.md)
 
+## RTX 3080 development baseline
+
+The separate [ordinary RTX 3080 baseline](../benchmark/rtx3080/README.md)
+targets the inventoried 10 GiB card with a stricter numerical/result protocol.
+Its native CUDA build, metadata inspection and three GPU trials passed using
+the explicit desktop entry profile. Median throughput was 21.57 TFLOPS FP32,
+60.44 FP16, 60.30 BF16 and 30.60 TF32. See the conditions, numerical coverage
+and original evidence in its
+[native validation record](../benchmark/rtx3080/NATIVE-VALIDATION.md).
+It adds no firmware or unlock support. The commands and historical comparisons
+below continue to apply to the existing 3090, 3090 Ti and 3070 Ti benchmarks.
+
+## Existing benchmark protocol
+
 The benchmark extends the upstream 4096×4096 cuBLAS GEMM with TF32. It measures
 these four modes in order, with two seconds of warmup and 30 samples per mode:
 

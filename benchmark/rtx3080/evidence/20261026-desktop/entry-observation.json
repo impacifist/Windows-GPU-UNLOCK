@@ -1,0 +1,20 @@
+{
+  "observed_at_utc": "2026-10-26T14:12:58.877384Z",
+  "gpu_workload_run": false,
+  "observation": {
+    "gpu_name": "NVIDIA GeForce RTX 3080",
+    "pci_bus_id": "00000000:07:00.0",
+    "pci_device_id": "10de:2216",
+    "pci_subsystem_id": "1458:403f",
+    "memory_total_mib": 10240,
+    "driver_version": "610.88",
+    "utilization_percent": 0,
+    "memory_used_mib": 2136,
+    "temperature_celsius": 34,
+    "power_limit_watts": 370,
+    "maximum_sm_clock_mhz": 2115,
+    "maximum_memory_clock_mhz": 9501,
+    "operating_sm_clock_mhz": 210,
+    "operating_memory_clock_mhz": 405
+  }
+}

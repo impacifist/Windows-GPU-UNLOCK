@@ -36,3 +36,10 @@ internal-boot/deps/
 # Per-machine pipeline (research/profile): generated profile, captures, fixtures, evidence.
 internal-boot/unlock/profile-local.h
 research/profile/local/
+# Ordinary RTX 3080 baseline: local dependencies, artifacts and unreviewed results.
+benchmark/rtx3080/bin/
+benchmark/rtx3080/packages/
+benchmark/rtx3080/downloads/
+benchmark/rtx3080/results/
+benchmark/rtx3080/build-manifest.json*
+benchmark/rtx3080/packages-manifest.json*

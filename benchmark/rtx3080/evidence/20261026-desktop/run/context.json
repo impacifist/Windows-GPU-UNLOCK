@@ -1,0 +1,238 @@
+{
+  "artifacts": [
+    {
+      "path": "bin/cublas64_12.dll",
+      "sha256": "e26c6a52b7df762633978b282d6f172d0085719b116ff1a8ca4c96ff5786e142"
+    },
+    {
+      "path": "bin/cublasLt64_12.dll",
+      "sha256": "0fa3aabf2e90f0ba3d331699b95305ee29fe1cda0f4d4b64c883e04f01a35b49"
+    },
+    {
+      "path": "bin/rtx3080-baseline.exe",
+      "sha256": "a7fc27d2db177caf3a7b2ca367e49794ebe755df46d83d61f55d96b01029f57d"
+    }
+  ],
+  "benchmark_protocol": 3,
+  "build_manifest_sha256": "6670f71b4dcf05284a8257ad688f8fff3b8927aa4c1879d09234056b49467e41",
+  "entry_limits": {
+    "max_memory_used_mib": 3072,
+    "max_temperature_celsius": 65,
+    "max_utilization_percent": 5
+  },
+  "entry_profile": "desktop",
+  "environment": {
+    "CUBLAS_WORKSPACE_CONFIG": null,
+    "CUDA_DEVICE_ORDER": null,
+    "CUDA_VISIBLE_DEVICES": null,
+    "NVIDIA_TF32_OVERRIDE": null
+  },
+  "execution": {
+    "fresh_process_count": 3,
+    "minimum_available_host_memory_bytes": 1073741824,
+    "native_arguments": [
+      "--run",
+      "--expected-pci",
+      "00000000:07:00.0"
+    ],
+    "overall_deadline_seconds": 360,
+    "per_process_deadline_seconds": 120,
+    "query_deadline_seconds": 10,
+    "sequential": true,
+    "stderr_limit_bytes": 65536,
+    "stdout_limit_bytes": 2097152,
+    "tf32_override_present": false
+  },
+  "limitations": [
+    "Ordinary computation on current settings; factory stock state is not established.",
+    "Matrix results do not establish firmware compatibility, unlock state, gaming or application gains.",
+    "SHA-256 records detect changes; they are not signed hardware attestation.",
+    "This runner launches separate native processes; JSON alone cannot prove freshness.",
+    "A process deadline cannot guarantee recovery from a driver or hardware hang."
+  ],
+  "schema_version": 2,
+  "source_commit": "439291fbbbc50e410985113a3f252059f93c6044",
+  "source_dirty": false,
+  "sources": [
+    {
+      "path": "benchmark/rtx3080/baseline.cu",
+      "sha256": "0449f89cffaa0c8ea3b3b2c2b1e85a31d4075789bee214814923e9e4f6538238"
+    },
+    {
+      "path": "benchmark/rtx3080/build.ps1",
+      "sha256": "c15918767f983d09638fd1abb853f28696c6e327987a34e658712d6d04efa143"
+    },
+    {
+      "path": "benchmark/rtx3080/numerics.hpp",
+      "sha256": "e4c606b99f5f451d0d83f6ae798e8c165149a4a14dda2e6c2898ef0d95ac93ce"
+    },
+    {
+      "path": "benchmark/rtx3080/package-tools.ps1",
+      "sha256": "24b4ed7602ca9e9353fda5a41a4116d855cb4952e414608d84a8dabe26e740f6"
+    },
+    {
+      "path": "benchmark/rtx3080/packages-lock.json",
+      "sha256": "d8b7654fd22684f67b87c6cf9e724b29ed1aadbf94fb5a2a914dd9b4cd10b667"
+    },
+    {
+      "path": "benchmark/rtx3080/result_protocol.py",
+      "sha256": "2159d838bb4e34fc0c6065847a84cc7ba2640bd44d4bd199e29b0f610c9b2e37"
+    },
+    {
+      "path": "benchmark/rtx3080/run.py",
+      "sha256": "a77d70350e8094abe6ea25c42c8d53855e7e5071f04d0ce7402e435b45d8c85d"
+    },
+    {
+      "path": "benchmark/rtx3080/setup.ps1",
+      "sha256": "b77ca180b2ce6a2f05b4e347741ae9f2894fb06f71b4c357c3f0f7dbdb468402"
+    }
+  ],
+  "toolchain": {
+    "compiler_options": [
+      "-std=c++17",
+      "-O3",
+      "-arch=sm_86",
+      "--cudart=static",
+      "-Xcompiler",
+      "/EHsc"
+    ],
+    "cublas": "12.6.0.22",
+    "cuda_toolkit": "12.6.0",
+    "msvc_compiler_sha256": "8e4352b523f4ff37b429aea1d340094be1e17bbdf4f687247fc0be92d6eb9440",
+    "msvc_compiler_version": "19.29.30159.0",
+    "msvc_toolset": "14.29.30133",
+    "nvcc": "12.6.20",
+    "target_arch": "sm_86"
+  },
+  "trials": [
+    {
+      "after": {
+        "driver_version": "610.88",
+        "gpu_name": "NVIDIA GeForce RTX 3080",
+        "maximum_memory_clock_mhz": 9501,
+        "maximum_sm_clock_mhz": 2115,
+        "memory_total_mib": 10240,
+        "memory_used_mib": 2138,
+        "observed_at_utc": "2026-10-26T14:20:27.497Z",
+        "operating_memory_clock_mhz": 9501,
+        "operating_sm_clock_mhz": 1935,
+        "pci_bus_id": "00000000:07:00.0",
+        "pci_device_id": "10de:2216",
+        "pci_subsystem_id": "1458:403f",
+        "power_limit_watts": 370,
+        "temperature_celsius": 47,
+        "utilization_percent": 2
+      },
+      "available_host_memory_bytes": 6285324288,
+      "before": {
+        "driver_version": "610.88",
+        "gpu_name": "NVIDIA GeForce RTX 3080",
+        "maximum_memory_clock_mhz": 9501,
+        "maximum_sm_clock_mhz": 2115,
+        "memory_total_mib": 10240,
+        "memory_used_mib": 2138,
+        "observed_at_utc": "2026-10-26T14:20:13.782Z",
+        "operating_memory_clock_mhz": 405,
+        "operating_sm_clock_mhz": 210,
+        "pci_bus_id": "00000000:07:00.0",
+        "pci_device_id": "10de:2216",
+        "pci_subsystem_id": "1458:403f",
+        "power_limit_watts": 370,
+        "temperature_celsius": 35,
+        "utilization_percent": 0
+      },
+      "elapsed_seconds": 12.796999999991385,
+      "ended_at_utc": "2026-10-26T14:20:27.408Z",
+      "fresh_process": true,
+      "host_memory_observed_at_utc": "2026-10-26T14:20:14.585Z",
+      "started_at_utc": "2026-10-26T14:20:14.601Z",
+      "trial_index": 1
+    },
+    {
+      "after": {
+        "driver_version": "610.88",
+        "gpu_name": "NVIDIA GeForce RTX 3080",
+        "maximum_memory_clock_mhz": 9501,
+        "maximum_sm_clock_mhz": 2115,
+        "memory_total_mib": 10240,
+        "memory_used_mib": 2138,
+        "observed_at_utc": "2026-10-26T14:20:41.151Z",
+        "operating_memory_clock_mhz": 9251,
+        "operating_sm_clock_mhz": 1950,
+        "pci_bus_id": "00000000:07:00.0",
+        "pci_device_id": "10de:2216",
+        "pci_subsystem_id": "1458:403f",
+        "power_limit_watts": 370,
+        "temperature_celsius": 53,
+        "utilization_percent": 0
+      },
+      "available_host_memory_bytes": 6244286464,
+      "before": {
+        "driver_version": "610.88",
+        "gpu_name": "NVIDIA GeForce RTX 3080",
+        "maximum_memory_clock_mhz": 9501,
+        "maximum_sm_clock_mhz": 2115,
+        "memory_total_mib": 10240,
+        "memory_used_mib": 2138,
+        "observed_at_utc": "2026-10-26T14:20:28.356Z",
+        "operating_memory_clock_mhz": 9501,
+        "operating_sm_clock_mhz": 1935,
+        "pci_bus_id": "00000000:07:00.0",
+        "pci_device_id": "10de:2216",
+        "pci_subsystem_id": "1458:403f",
+        "power_limit_watts": 370,
+        "temperature_celsius": 46,
+        "utilization_percent": 0
+      },
+      "elapsed_seconds": 12.078000000008615,
+      "ended_at_utc": "2026-10-26T14:20:41.103Z",
+      "fresh_process": true,
+      "host_memory_observed_at_utc": "2026-10-26T14:20:29.036Z",
+      "started_at_utc": "2026-10-26T14:20:29.037Z",
+      "trial_index": 2
+    },
+    {
+      "after": {
+        "driver_version": "610.88",
+        "gpu_name": "NVIDIA GeForce RTX 3080",
+        "maximum_memory_clock_mhz": 9501,
+        "maximum_sm_clock_mhz": 2115,
+        "memory_total_mib": 10240,
+        "memory_used_mib": 2138,
+        "observed_at_utc": "2026-10-26T14:20:54.506Z",
+        "operating_memory_clock_mhz": 9501,
+        "operating_sm_clock_mhz": 1950,
+        "pci_bus_id": "00000000:07:00.0",
+        "pci_device_id": "10de:2216",
+        "pci_subsystem_id": "1458:403f",
+        "power_limit_watts": 370,
+        "temperature_celsius": 51,
+        "utilization_percent": 1
+      },
+      "available_host_memory_bytes": 6333190144,
+      "before": {
+        "driver_version": "610.88",
+        "gpu_name": "NVIDIA GeForce RTX 3080",
+        "maximum_memory_clock_mhz": 9501,
+        "maximum_sm_clock_mhz": 2115,
+        "memory_total_mib": 10240,
+        "memory_used_mib": 2138,
+        "observed_at_utc": "2026-10-26T14:20:41.799Z",
+        "operating_memory_clock_mhz": 9501,
+        "operating_sm_clock_mhz": 1950,
+        "pci_bus_id": "00000000:07:00.0",
+        "pci_device_id": "10de:2216",
+        "pci_subsystem_id": "1458:403f",
+        "power_limit_watts": 370,
+        "temperature_celsius": 49,
+        "utilization_percent": 0
+      },
+      "elapsed_seconds": 12.030999999988126,
+      "ended_at_utc": "2026-10-26T14:20:54.449Z",
+      "fresh_process": true,
+      "host_memory_observed_at_utc": "2026-10-26T14:20:42.426Z",
+      "started_at_utc": "2026-10-26T14:20:42.426Z",
+      "trial_index": 3
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+    "schema_version":  1,
+    "benchmark_protocol":  3,
+    "source_commit":  "439291fbbbc50e410985113a3f252059f93c6044",
+    "source_dirty":  false,
+    "toolchain":  {
+                      "cuda_toolkit":  "12.6.0",
+                      "nvcc":  "12.6.20",
+                      "cublas":  "12.6.0.22",
+                      "msvc_toolset":  "14.29.30133",
+                      "msvc_compiler_version":  "19.29.30159.0",
+                      "msvc_compiler_sha256":  "8e4352b523f4ff37b429aea1d340094be1e17bbdf4f687247fc0be92d6eb9440",
+                      "target_arch":  "sm_86",
+                      "compiler_options":  [
+                                               "-std=c++17",
+                                               "-O3",
+                                               "-arch=sm_86",
+                                               "--cudart=static",
+                                               "-Xcompiler",
+                                               "/EHsc"
+                                           ]
+                  },
+    "artifacts":  [
+                      {
+                          "path":  "bin/rtx3080-baseline.exe",
+                          "sha256":  "a7fc27d2db177caf3a7b2ca367e49794ebe755df46d83d61f55d96b01029f57d"
+                      },
+                      {
+                          "path":  "bin/cublas64_12.dll",
+                          "sha256":  "e26c6a52b7df762633978b282d6f172d0085719b116ff1a8ca4c96ff5786e142"
+                      },
+                      {
+                          "path":  "bin/cublasLt64_12.dll",
+                          "sha256":  "0fa3aabf2e90f0ba3d331699b95305ee29fe1cda0f4d4b64c883e04f01a35b49"
+                      }
+                  ],
+    "sources":  [
+                    {
+                        "path":  "benchmark/rtx3080/baseline.cu",
+                        "sha256":  "0449f89cffaa0c8ea3b3b2c2b1e85a31d4075789bee214814923e9e4f6538238"
+                    },
+                    {
+                        "path":  "benchmark/rtx3080/numerics.hpp",
+                        "sha256":  "e4c606b99f5f451d0d83f6ae798e8c165149a4a14dda2e6c2898ef0d95ac93ce"
+                    },
+                    {
+                        "path":  "benchmark/rtx3080/result_protocol.py",
+                        "sha256":  "2159d838bb4e34fc0c6065847a84cc7ba2640bd44d4bd199e29b0f610c9b2e37"
+                    },
+                    {
+                        "path":  "benchmark/rtx3080/run.py",
+                        "sha256":  "a77d70350e8094abe6ea25c42c8d53855e7e5071f04d0ce7402e435b45d8c85d"
+                    },
+                    {
+                        "path":  "benchmark/rtx3080/build.ps1",
+                        "sha256":  "c15918767f983d09638fd1abb853f28696c6e327987a34e658712d6d04efa143"
+                    },
+                    {
+                        "path":  "benchmark/rtx3080/setup.ps1",
+                        "sha256":  "b77ca180b2ce6a2f05b4e347741ae9f2894fb06f71b4c357c3f0f7dbdb468402"
+                    },
+                    {
+                        "path":  "benchmark/rtx3080/packages-lock.json",
+                        "sha256":  "d8b7654fd22684f67b87c6cf9e724b29ed1aadbf94fb5a2a914dd9b4cd10b667"
+                    },
+                    {
+                        "path":  "benchmark/rtx3080/package-tools.ps1",
+                        "sha256":  "24b4ed7602ca9e9353fda5a41a4116d855cb4952e414608d84a8dabe26e740f6"
+                    }
+                ]
+}

@@ -1,2 +1,6 @@
 # Preserve the exact reviewed bytes and SHA256 evidence across checkouts.
 * -text
+
+# Keep original measurements available without expanding every generated sample.
+# Preserve the Windows line endings in the original PowerShell receipts.
+benchmark/rtx3080/evidence/**/*.json linguist-generated=true whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

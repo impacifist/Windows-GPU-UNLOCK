@@ -1,0 +1,10 @@
+{
+  "benchmark_protocol": 3,
+  "completion_record_written": false,
+  "observed_at_utc": "2026-10-26T14:11:09.431Z",
+  "phase": "pre_query",
+  "reason": "entry_not_quiet",
+  "schema_version": 1,
+  "status": "incomplete",
+  "validated_trials": 0
+}
