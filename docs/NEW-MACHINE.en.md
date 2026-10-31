@@ -140,8 +140,12 @@ below. Passing this check is not proof of hardware compatibility.
 
 ## Steps
 
-Needs: LLVM (`clang`, `lld-link`), MSVC build tools, Python 3.10+, the five firmware assets
-(`docs/ASSETS.en.md`) and a FAT32 USB stick. Fast Startup off.
+Start with the [capture-only setup guide](CAPTURE-SETUP.en.md)
+([한국어](CAPTURE-SETUP.ko.md)) to check tools and collect diagnostics without firmware
+assets or MSVC. Use `-CaptureOnly` to keep repeated runs at the collection stage.
+Continuing to profile generation and host replay needs MSVC build tools and the
+five firmware assets (`docs/ASSETS.en.md`) in addition to LLVM, Python 3.10+ and
+the FAT32 USB stick. Fast Startup off.
 
 ```powershell
 # Windows ESP GUID: Get-Partition | Where-Object IsSystem | Select Guid

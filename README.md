@@ -7,6 +7,16 @@ Contributor tooling: [entry-point inventory and cleanup proposal](docs/ENTRYPOIN
 Experimental UEFI GPU unlock and direct Windows handoff, expanded through
 community contributions.
 
+New to the tools? Start with [guided capture setup](docs/CAPTURE-SETUP.en.md).
+It prepares diagnostics only; it does not establish support or run unlock.
+
+## Agent-assisted capture
+
+Using an agent with local Windows tools? Copy the [single setup prompt and agent
+runbook](docs/AGENT-CAPTURE.en.md). It covers prerequisite setup, USB preparation,
+resuming after an attended boot and reviewing a GitHub report. Capture is the
+default boundary; unlock is a separate task.
+
 [![Join our Discord community](https://img.shields.io/badge/Join%20Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/WjKsjEqxF)
 [![View compatibility and supported configurations](https://img.shields.io/badge/Compatibility-455A64?style=for-the-badge)](docs/COMPATIBILITY.en.md)
 [![Contribute research and improvements](https://img.shields.io/badge/Contribute-37474F?style=for-the-badge&logo=github&logoColor=white)](docs/CONTRIBUTING.en.md)

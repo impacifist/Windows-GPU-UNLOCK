@@ -6,13 +6,17 @@
 #   2. Enough captures: copy them here, generate profile-local.h (refused outside
 #      research/profile/proven.json), run test-profile.ps1, build the USB package.
 #   3. With -StageUnlock only: copy that package and the assets to the stick.
-# Files only: no partitioning, formatting, boot entries or firmware settings change. Nothing
-# here touches the GPU; only booting the staged unlock does, and that is never automatic.
+# -CaptureOnly stops at collection, including on later runs with enough captures.
+# Assets are required only when continuing to profile generation/host replay.
+# Host execution changes files only: no partitioning, formatting, boot entries or firmware
+# settings change. Booting the probe reads the GPU; booting unlock can mutate it. Neither is automatic.
 param([Parameter(Mandatory)][ValidatePattern('^[D-Zd-z]$')][string]$Drive,[Parameter(Mandatory)][guid]$WindowsEspGuid,
- [Parameter(Mandatory)][string]$Assets,[switch]$StageUnlock,
+ [string]$Assets,[switch]$StageUnlock,[switch]$CaptureOnly,
  [string]$Clang='clang',[string]$LldLink='lld-link',[string]$Python='python',[string]$VcVars,
  [ValidateRange(1,255)][int]$TargetBus)
 $ErrorActionPreference='Stop'
+if($CaptureOnly -and ($StageUnlock -or $Assets)){throw 'CaptureOnly cannot be combined with Assets or StageUnlock'}
+if($StageUnlock -and !$Assets){throw 'StageUnlock requires -Assets; use -CaptureOnly for diagnostics without firmware assets'}
 $repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 . (Join-Path $repo 'internal-boot/unlock/local-profile.ps1')
 . (Join-Path $PSScriptRoot 'host.ps1')
@@ -50,6 +54,13 @@ if(!(Test-Path -LiteralPath $dir) -or (Captures).Count -lt $need) {
  "let Windows start, and repeat until there are $need; then run this command again."
  exit 0
 }
+
+if($CaptureOnly) {
+ "Capture-only complete: $((Captures).Count) complete logs found in $dir; hardware compatibility is not assessed."
+ 'No profile generation, asset replay, unlock package build or unlock staging was attempted. Keep the original files for offline review.'
+ exit 0
+}
+if(!$Assets){throw 'Captures are ready. Use -CaptureOnly to stop at collection, or supply -Assets to explicitly continue to profile generation and host replay'}
 
 $selectedCaptures=@(Captures)
 if($PSBoundParameters.ContainsKey('TargetBus')) {

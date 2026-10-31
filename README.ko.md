@@ -6,6 +6,16 @@
 
 커뮤니티 기여로 확장하는 실험용 UEFI GPU 언락과 Windows 직접 인계 구현입니다.
 
+처음이라면 [캡처 설정 안내](docs/CAPTURE-SETUP.ko.md)부터 시작하세요.
+진단만 준비하며 지원 여부를 입증하거나 언락을 실행하지 않습니다.
+
+## 에이전트를 통한 캡처
+
+로컬 Windows 도구를 사용할 수 있는 에이전트라면 [단일 설정 프롬프트와 실행
+안내](docs/AGENT-CAPTURE.ko.md)를 복사하세요. 도구 설치, USB 준비, 사람이 지켜보는
+부팅 이후 재개와 GitHub 보고서 검토를 다룹니다. 기본 범위는 캡처이며 언락은
+별도 작업입니다.
+
 [![Discord 커뮤니티 참여](https://img.shields.io/badge/Join%20Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/WjKsjEqxF)
 [![지원 구성과 호환성 확인](https://img.shields.io/badge/Compatibility-455A64?style=for-the-badge)](docs/COMPATIBILITY.ko.md)
 [![연구와 개선에 기여하기](https://img.shields.io/badge/Contribute-37474F?style=for-the-badge&logo=github&logoColor=white)](docs/CONTRIBUTING.ko.md)
