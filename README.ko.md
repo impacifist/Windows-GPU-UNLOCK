@@ -2,6 +2,8 @@
 
 [English](README.md) | **한국어**
 
+기여자 도구: [진입점 목록 및 정리 제안](docs/ENTRYPOINT-PLAN.ko.md).
+
 커뮤니티 기여로 확장하는 실험용 UEFI GPU 언락과 Windows 직접 인계 구현입니다.
 
 [![Discord 커뮤니티 참여](https://img.shields.io/badge/Join%20Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/WjKsjEqxF)
