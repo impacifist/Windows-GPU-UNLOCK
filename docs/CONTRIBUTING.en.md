@@ -2,6 +2,8 @@
 
 **English** | [한국어](CONTRIBUTING.ko.md)
 
+Maintainers: use the [compatibility triage guide](COMPATIBILITY-TRIAGE.en.md) to track missing evidence, related reports and actual Windows outcomes separately from support qualification.
+
 Reports from other motherboard, CPU and GPU configurations help prioritize ports. **Submitting a report does not require booting the EFI, changing BIOS settings or running the unlock.** EFI support is restricted to the exact [published machine profiles](COMPATIBILITY.en.md); a matching GPU model alone is insufficient.
 
 ## Collect an inventory on Windows

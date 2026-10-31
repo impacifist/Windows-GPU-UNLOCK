@@ -2,6 +2,8 @@
 
 [English](CONTRIBUTING.en.md) | **한국어**
 
+관리자는 [호환성 보고 분류 안내](COMPATIBILITY-TRIAGE.ko.md)에 따라 누락된 증거, 관련 보고, 실제 Windows 결과를 지원 적격성과 별도로 기록합니다.
+
 다른 메인보드·CPU·GPU의 환경 정보는 지원 확대 우선순위를 정하는 데 도움이 됩니다. **제보를 위해 EFI 부팅·BIOS 설정 변경·언락 실행을 할 필요가 없습니다.** EFI 지원은 정확히 일치하는 [공개된 장비 프로필](COMPATIBILITY.ko.md)에 한정되며 GPU 모델명이 같다는 이유만으로 호환되지는 않습니다.
 
 ## Windows에서 환경 수집

@@ -9,6 +9,7 @@ body:
         A report does not authorize unlock. Do not bypass checks or run a new experiment to complete this form.
         Read docs/CONTRIBUTING.en.md. Review all content before posting publicly.
         Never attach firmware, PROM/VBIOS dumps, recovery keys, serials, UUIDs or personal paths.
+        Search existing reports first. If this is the same machine and experiment, update the existing issue rather than opening a duplicate.
   - type: dropdown
     id: evidence_kind
     attributes:
@@ -50,6 +51,30 @@ body:
     attributes:
       label: Existing diagnostic or experiment source and build
       description: If an experiment already occurred, provide source commit, local diff, profile, EFI SHA-256 and compiler version. Tie each capture to its build and display/BIOS settings. Leave unknown fields unknown; do not run an EFI to fill this form.
+  - type: textarea
+    id: related_report
+    attributes:
+      label: Related issue or pull request (optional)
+      description: Link your earlier report or a potentially related case. State what changed; another card with the same model name is not necessarily the same configuration.
+  - type: dropdown
+    id: windows_outcome
+    attributes:
+      label: Windows outcome of the existing run
+      description: Choose only what you observed. A completed EFI log does not establish Windows recovery. No new run is needed.
+      options:
+        - "Not applicable — no EFI run"
+        - "Unknown / not recorded"
+        - "Windows started directly and display was usable"
+        - "Windows started directly but display was missing or required intervention"
+        - "Manual power-off/reboot or USB removal was needed"
+        - "Windows did not start / firmware hung"
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps already performed and expected versus observed result
+      description: For an existing run, give the command/options, boot method, last visible stage and any manual recovery. For inventory-only reports, describe the question instead. Do not repeat a failed run for this form.
   - type: textarea
     id: existing_evidence
     attributes:
