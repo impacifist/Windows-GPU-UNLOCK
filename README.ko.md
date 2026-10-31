@@ -10,6 +10,30 @@
 [![지원 구성과 호환성 확인](https://img.shields.io/badge/Compatibility-455A64?style=for-the-badge)](docs/COMPATIBILITY.ko.md)
 [![연구와 개선에 기여하기](https://img.shields.io/badge/Contribute-37474F?style=for-the-badge&logo=github&logoColor=white)](docs/CONTRIBUTING.ko.md)
 
+## 여기서 시작하세요
+
+**PC 정보를 확인하거나 호환성을 제보하려면 Windows 내 검사부터 시작하세요.** 언락을 시도할 필요가 없습니다.
+
+| 목표 | 진행 방법 |
+| :--- | :--- |
+| **처음인데 무엇을 보고해야 하나요?** | [초보자 안내: PC 확인 및 결과 공유](docs/START-HERE.ko.md) |
+| **내 PC의 캡처 파일이 이미 있어요** | [기존 파일 오프라인 검사](docs/START-HERE.ko.md#2--기존-파일-검사) |
+| **동작한 구성들을 알고 싶어요** | [보고된 구성과 제한](docs/CONFIRMED-SETUPS.ko.md) |
+| **언락을 조사할 준비가 됐어요** | [정확한 구성과 부팅 경로부터 확인](docs/COMPATIBILITY.ko.md) |
+
+### 빠른 확인 · 재부팅 없음
+
+**Code → Download ZIP**으로 다운로드하고 압축을 푼 다음 프로젝트 폴더에서 PowerShell을 엽니다. Python 3.10 이상이 설치되어 있으면 실행합니다.
+
+```powershell
+python -I .\tools\collect_compatibility.py
+```
+
+하드웨어/드라이버 정보를 출력하며 언락, 설정 변경, 업로드는 하지 않습니다. **`not-assessed`와 `can_unlock: false`는 정상입니다.** 개인 정보를 제거한 텍스트를 검토한 뒤 [호환성 보고](https://github.com/impacifist/Windows-GPU-UNLOCK/issues/new?template=compatibility.yml)에 붙여 넣습니다. 펌웨어나 원시 덤프는 첨부하지 마세요.
+
+> [!TIP]
+> Python이나 터미널이 익숙하지 않나요? [단계별 안내](docs/START-HERE.ko.md)에서 시작 방법, 결과 의미, 공유 항목을 설명합니다. 하드웨어 정보를 직접 입력해도 됩니다. 제보에 EFI 테스트는 필요하지 않습니다.
+
 ## 커뮤니티
 
 [Discord 커뮤니티](https://discord.gg/WjKsjEqxF)에서 편하게 대화하고,
@@ -60,6 +84,10 @@ X870·B660-PLUS·H610M은 `Configure.ps1`·`Headless.ps1`에 연결하지 않았
 설정하는 것만으로 직접 인계가 구현되지는 않습니다.
 
 ## 내부 headless 빠른 시작
+
+<details>
+<summary><strong>고급 · 정확한 프로필의 내부 헤드리스 설정</strong></summary>
+
 
 **아래 예시는 기본 B650M / RTX 3090 FE 프로필용입니다.** B660M은
 [호환성 문서](docs/COMPATIBILITY.ko.md)에 따라 설정과 빌드 양쪽에
@@ -123,6 +151,9 @@ MSVC/Windows SDK와 개인 fixture가 필요합니다.
 Windows 우선순위 복구는 실험 EFI·빌드 산출물·저장된 상태 없이도 진행합니다.
 이전 빠른 시작 값 복원에는 로컬 상태가 필요하므로 상태와 백업을 보존하세요.
 [자세한 복구 설명](docs/HEADLESS.ko.md#recovery)을 참고하세요.
+
+
+</details>
 
 ## 최초 B650M 결과와 한계
 

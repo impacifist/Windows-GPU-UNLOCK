@@ -11,6 +11,30 @@ community contributions.
 [![View compatibility and supported configurations](https://img.shields.io/badge/Compatibility-455A64?style=for-the-badge)](docs/COMPATIBILITY.en.md)
 [![Contribute research and improvements](https://img.shields.io/badge/Contribute-37474F?style=for-the-badge&logo=github&logoColor=white)](docs/CONTRIBUTING.en.md)
 
+## Start here
+
+**Want to find out about your PC or help report compatibility? Start with a Windows-only check.** You do not need to attempt an unlock.
+
+| Your goal | What to do |
+| :--- | :--- |
+| **I'm new. What information should I report?** | [Beginner guide: check your PC and share results](docs/START-HERE.en.md) |
+| **I already have capture files from my PC** | [Check those files offline](docs/START-HERE.en.md#2--check-existing-files) |
+| **I want to know which setups have worked** | [Reported setups and their limits](docs/CONFIRMED-SETUPS.en.md) |
+| **I'm ready to investigate an unlock** | [Check the exact configuration and boot route first](docs/COMPATIBILITY.en.md) |
+
+### Quick check · No reboot
+
+Download **Code → Download ZIP**, extract it, and open PowerShell in the extracted project folder. With Python 3.10+ installed, run:
+
+```powershell
+python -I .\tools\collect_compatibility.py
+```
+
+This prints hardware/driver information; it does not unlock, change settings or upload anything. **`not-assessed` and `can_unlock: false` are normal.** Remove personal details from the output, then paste the reviewed text into a [compatibility report](https://github.com/impacifist/Windows-GPU-UNLOCK/issues/new?template=compatibility.yml). Do not attach firmware or raw dumps.
+
+> [!TIP]
+> No Python or terminal experience? The [step-by-step guide](docs/START-HERE.en.md) explains how to start, what the result means and what to share. You can also enter hardware details manually; no EFI test is required to report findings.
+
 ## Community
 
 Join our [Discord community](https://discord.gg/WjKsjEqxF) for conversations,
@@ -64,6 +88,10 @@ AMD display requirement. BIOS priority `USB → Windows` alone does not implemen
 direct handoff.
 
 ## Internal headless quick start
+
+<details>
+<summary><strong>Advanced · Exact-profile internal headless setup</strong></summary>
+
 
 **This example is for the default B650M / RTX 3090 FE profile.** For B660M,
 select `-HardwareProfile b660m-3070ti` in both configuration and build as described
@@ -129,6 +157,9 @@ does not return, fully power off and choose **F8 → Windows Boot Manager**.
 Windows-first recovery is independent of experimental EFI/build artifacts and
 still works without saved state. Restoring the prior Fast Startup setting needs
 that state; retain it and backups. [Recovery details](docs/HEADLESS.en.md#recovery).
+
+
+</details>
 
 ## Original B650M results and limits
 
